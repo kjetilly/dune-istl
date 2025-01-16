@@ -173,7 +173,7 @@ namespace Dune
         pinfo.copyOwnerToAll(gmap,gmap);
         // communication only needed for ALU
         // (ghosts with same global id as owners on the same process)
-        if (SolverCategory::category(pinfo) == static_cast<int>(SolverCategory::nonoverlapping))
+        if (SolverCategory::category(pinfo) == static_cast<long long>(SolverCategory::nonoverlapping))
           pinfo.copyCopyToAll(gmap,gmap);
 
         typedef typename ParallelInformation::RemoteIndices::const_iterator Lists;
@@ -239,7 +239,7 @@ namespace Dune
     typedef Amg::AggregatesMap<T> Type;
     typedef typename Amg::GlobalAggregatesMap<T,TI>::IndexedType IndexedType;
     typedef SizeOne IndexedTypeFlag;
-    static int getSize(const Type&, int)
+    static long long getSize(const Type&, long long)
     {
       return 1;
     }

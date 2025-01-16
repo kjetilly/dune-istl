@@ -150,7 +150,7 @@ void testInterfaceMethods()
   }
 }
 
-int main(int argc, char** argv) try
+long long main(long long argc, char** argv) try
 {
   // Run the standard tests for the dune-istl matrix interface
   testInterfaceMethods();
@@ -165,10 +165,10 @@ int main(int argc, char** argv) try
   typedef Dune::FieldMatrix<double,1,1> LittleBlock;                    //matrix block type
   typedef Dune::BCRSMatrix<LittleBlock> BCRSMat;                        //matrix type
 
-  const int X1=3;                                                       //index bounds of all four matrices
-  const int X2=2;
-  const int Y1=3;
-  const int Y2=2;
+  const long long X1=3;                                                       //index bounds of all four matrices
+  const long long X2=2;
+  const long long Y1=3;
+  const long long Y2=2;
   BCRSMat A11 = BCRSMat(X1,Y1,X1*Y1,BCRSMat::random);                   //A11 is 3x3
   BCRSMat A12 = BCRSMat(X1,Y2,X1*Y2,BCRSMat::random);                   //A12 is 2x3
   BCRSMat A21 = BCRSMat(X2,Y1,X2*Y1,BCRSMat::random);                   //A11 is 3x2
@@ -185,7 +185,7 @@ int main(int argc, char** argv) try
   x = 1; b = 1;
 
   //set row sizes
-  for (int i=0; i<Y1; i++)
+  for (long long i=0; i<Y1; i++)
   {
     A11.setrowsize(i,X1);
     A12.setrowsize(i,X2);
@@ -193,7 +193,7 @@ int main(int argc, char** argv) try
   A11.endrowsizes();
   A12.endrowsizes();
 
-  for (int i=0; i<Y2; i++)
+  for (long long i=0; i<Y2; i++)
   {
     A21.setrowsize(i,X1);
     A22.setrowsize(i,X2);
@@ -202,9 +202,9 @@ int main(int argc, char** argv) try
   A22.endrowsizes();
 
   //set indices
-  for (int i=0; i<X1+X2; i++)
+  for (long long i=0; i<X1+X2; i++)
   {
-    for (int j=0; j<Y1+Y2; j++)
+    for (long long j=0; j<Y1+Y2; j++)
     {
       if (i<X1 && j<Y1)
         A11.addindex(i,j);
@@ -227,7 +227,7 @@ int main(int argc, char** argv) try
   A22 = 0;
 
   //fill in values (row-wise) in A11 and A22
-  for (int i=0; i<Y1; i++)
+  for (long long i=0; i<Y1; i++)
   {
     if (i>0)
       A11[i][i-1]=-1;

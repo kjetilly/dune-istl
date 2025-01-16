@@ -68,7 +68,7 @@ namespace Dune {
    *
    * \note This will only work if dune-istl has been configured to use LDL
    */
-  template<typename T, typename A, int n, int m>
+  template<typename T, typename A, long long n, long long m>
   class LDL<BCRSMatrix<FieldMatrix<T,n,m>,A > >
     : public InverseOperator<BlockVector<FieldVector<T,m>, typename std::allocator_traits<A>::template rebind_alloc<FieldVector<T,m> > >,
                              BlockVector<FieldVector<T,n>, typename std::allocator_traits<A>::template rebind_alloc<FieldVector<T,n> > > >
@@ -78,9 +78,9 @@ namespace Dune {
     typedef Dune::BCRSMatrix<FieldMatrix<T,n,m>,A> Matrix;
     typedef Dune::BCRSMatrix<FieldMatrix<T,n,m>,A> matrix_type;
     /** @brief The corresponding SuperLU Matrix type. */
-    typedef Dune::ISTL::Impl::BCCSMatrix<T,int> LDLMatrix;
+    typedef Dune::ISTL::Impl::BCCSMatrix<T,long long> LDLMatrix;
     /** @brief Type of an associated initializer class. */
-    typedef ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<FieldMatrix<T,n,m>,A>, int> MatrixInitializer;
+    typedef ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<FieldMatrix<T,n,m>,A>, long long> MatrixInitializer;
     /** @brief The type of the domain of the solver. */
     typedef Dune::BlockVector<FieldVector<T,m>, typename std::allocator_traits<A>::template rebind_alloc<FieldVector<T,m> > > domain_type;
     /** @brief The type of the range of the solver. */
@@ -101,7 +101,7 @@ namespace Dune {
      * @param matrix the matrix to solve for
      * @param verbose 0 or 1 set the verbosity level, defaults to 0
      */
-    LDL(const Matrix& matrix, int verbose=0) : matrixIsLoaded_(false), verbose_(verbose)
+    LDL(const Matrix& matrix, long long verbose=0) : matrixIsLoaded_(false), verbose_(verbose)
     {
       //check whether T is a supported type
       static_assert(std::is_same<T,double>::value,"Unsupported Type in LDL (only double supported)");
@@ -117,7 +117,7 @@ namespace Dune {
      * @param matrix the matrix to solve for
      * @param verbose 0 or 1 set the verbosity level, defaults to 0
      */
-    LDL(const Matrix& matrix, int verbose, bool) : matrixIsLoaded_(false), verbose_(verbose)
+    LDL(const Matrix& matrix, long long verbose, bool) : matrixIsLoaded_(false), verbose_(verbose)
     {
       //check whether T is a supported type
       static_assert(std::is_same<T,double>::value,"Unsupported Type in LDL (only double supported)");
@@ -134,7 +134,7 @@ namespace Dune {
      * verbose           | The verbosity level. default=0
     */
     LDL(const Matrix& matrix, const ParameterTree& config)
-      : LDL(matrix, config.get<int>("verbose", 0))
+      : LDL(matrix, config.get<long long>("verbose", 0))
     {}
 
     /** @brief Default constructor. */
@@ -151,7 +151,7 @@ namespace Dune {
     /** \copydoc InverseOperator::apply(X&, Y&, InverseOperatorResult&) */
     virtual void apply(domain_type& x, range_type& b, InverseOperatorResult& res)
     {
-      const int dimMat(ldlMatrix_.N());
+      const long long dimMat(ldlMatrix_.N());
       ldl_perm(dimMat, Y_, reinterpret_cast<double*>(&b[0]), P_);
       ldl_lsolve(dimMat, Y_, Lp_, Li_, Lx_);
       ldl_dsolve(dimMat, Y_, D_);
@@ -175,7 +175,7 @@ namespace Dune {
      */
     void apply(T* x, T* b)
     {
-      const int dimMat(ldlMatrix_.N());
+      const long long dimMat(ldlMatrix_.N());
       ldl_perm(dimMat, Y_, b, P_);
       ldl_lsolve(dimMat, Y_, Lp_, Li_, Lx_);
       ldl_dsolve(dimMat, Y_, D_);
@@ -183,7 +183,7 @@ namespace Dune {
       ldl_permt(dimMat, x, Y_, P_);
     }
 
-    void setOption([[maybe_unused]] unsigned int option, [[maybe_unused]] double value)
+    void setOption([[maybe_unused]] size_t option, [[maybe_unused]] double value)
     {}
 
     /** @brief Initialize data from given matrix. */
@@ -196,7 +196,7 @@ namespace Dune {
         ldlMatrix_.free();
       ldlMatrix_.setSize(MatrixDimension<Matrix>::rowdim(matrix),
                          MatrixDimension<Matrix>::coldim(matrix));
-      ISTL::Impl::BCCSMatrixInitializer<Matrix, int> initializer(ldlMatrix_);
+      ISTL::Impl::BCCSMatrixInitializer<Matrix, long long> initializer(ldlMatrix_);
 
       copyToBCCSMatrix(initializer, matrix);
 
@@ -214,7 +214,7 @@ namespace Dune {
 
       ldlMatrix_.setSize(rowIndexSet.size()*MatrixDimension<Matrix>::rowdim(matrix) / matrix.N(),
                          rowIndexSet.size()*MatrixDimension<Matrix>::coldim(matrix) / matrix.M());
-      ISTL::Impl::BCCSMatrixInitializer<Matrix, int> initializer(ldlMatrix_);
+      ISTL::Impl::BCCSMatrixInitializer<Matrix, long long> initializer(ldlMatrix_);
 
       copyToBCCSMatrix(initializer, ISTL::Impl::MatrixRowSubset<Matrix,std::set<std::size_t> >(matrix,rowIndexSet));
 
@@ -225,7 +225,7 @@ namespace Dune {
      * @brief Sets the verbosity level for the solver.
      * @param v verbosity level: 0 only error messages, 1 a bit of statistics.
      */
-    inline void setVerbosity(int v)
+    inline void setVerbosity(long long v)
     {
       verbose_=v;
     }
@@ -275,7 +275,7 @@ namespace Dune {
      * @brief Get factorization Lp.
      * @warning It is up to the user to preserve consistency.
      */
-    inline int* getLp()
+    inline long long* getLp()
     {
       return Lp_;
     }
@@ -284,7 +284,7 @@ namespace Dune {
      * @brief Get factorization Li.
      * @warning It is up to the user to preserve consistency.
      */
-    inline int* getLi()
+    inline long long* getLi()
     {
       return Li_;
     }
@@ -308,16 +308,16 @@ namespace Dune {
     void decompose()
     {
       // allocate vectors
-      const int dimMat(ldlMatrix_.N());
+      const long long dimMat(ldlMatrix_.N());
       D_ = new double [dimMat];
       Y_ = new double [dimMat];
-      Lp_ = new int [dimMat + 1];
-      Parent_ = new int [dimMat];
-      Lnz_ = new int [dimMat];
-      Flag_ = new int [dimMat];
-      Pattern_ = new int [dimMat];
-      P_ = new int [dimMat];
-      Pinv_ = new int [dimMat];
+      Lp_ = new long long [dimMat + 1];
+      Parent_ = new long long [dimMat];
+      Lnz_ = new long long [dimMat];
+      Flag_ = new long long [dimMat];
+      Pattern_ = new long long [dimMat];
+      P_ = new long long [dimMat];
+      Pinv_ = new long long [dimMat];
 
       double Info [AMD_INFO];
       if(amd_order (dimMat, ldlMatrix_.getColStart(), ldlMatrix_.getRowIndex(), P_, (double *) NULL, Info) < AMD_OK)
@@ -328,9 +328,9 @@ namespace Dune {
       ldl_symbolic(dimMat, ldlMatrix_.getColStart(), ldlMatrix_.getRowIndex(), Lp_, Parent_, Lnz_, Flag_, P_, Pinv_);
       // initialise those entries of additionalVectors_ whose dimension is known only now
       Lx_ = new double [Lp_[dimMat]];
-      Li_ = new int [Lp_[dimMat]];
+      Li_ = new long long [Lp_[dimMat]];
       // compute the numeric factorisation
-      const int rank(ldl_numeric(dimMat, ldlMatrix_.getColStart(), ldlMatrix_.getRowIndex(), ldlMatrix_.getValues(),
+      const long long rank(ldl_numeric(dimMat, ldlMatrix_.getColStart(), ldlMatrix_.getRowIndex(), ldlMatrix_.getValues(),
                                  Lp_, Parent_, Lnz_, Li_, Lx_, D_, Y_, Pattern_, Flag_, P_, Pinv_));
       // free temporary vectors
       delete [] Flag_;
@@ -344,27 +344,27 @@ namespace Dune {
 
     LDLMatrix ldlMatrix_;
     bool matrixIsLoaded_;
-    int verbose_;
-    int* Lp_;
-    int* Parent_;
-    int* Lnz_;
-    int* Flag_;
-    int* Pattern_;
-    int* P_;
-    int* Pinv_;
+    long long verbose_;
+    long long* Lp_;
+    long long* Parent_;
+    long long* Lnz_;
+    long long* Flag_;
+    long long* Pattern_;
+    long long* P_;
+    long long* Pinv_;
     double* D_;
     double* Y_;
     double* Lx_;
-    int* Li_;
+    long long* Li_;
   };
 
-  template<typename T, typename A, int n, int m>
+  template<typename T, typename A, long long n, long long m>
   struct IsDirectSolver<LDL<BCRSMatrix<FieldMatrix<T,n,m>,A> > >
   {
     enum {value = true};
   };
 
-  template<typename T, typename A, int n, int m>
+  template<typename T, typename A, long long n, long long m>
   struct StoresColumnCompressed<LDL<BCRSMatrix<FieldMatrix<T,n,m>,A> > >
   {
     enum {value = true};
@@ -372,16 +372,16 @@ namespace Dune {
 
   struct LDLCreator {
     template<class F> struct isValidBlock : std::false_type{};
-    template<int k> struct isValidBlock<FieldVector<double,k>> : std::true_type{};
+    template<long long k> struct isValidBlock<FieldVector<double,k>> : std::true_type{};
 
     template<typename TL, typename M>
     std::shared_ptr<Dune::InverseOperator<typename Dune::TypeListElement<1, TL>::type,
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& mat, const Dune::ParameterTree& config,
       std::enable_if_t<
-                isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
-      int verbose = config.get("verbose", 0);
+      long long verbose = config.get("verbose", 0);
       return std::make_shared<Dune::LDL<M>>(mat,verbose);
     }
 
@@ -391,7 +391,7 @@ namespace Dune {
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& /*mat*/, const Dune::ParameterTree& /*config*/,
       std::enable_if_t<
-                !isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                !isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
       DUNE_THROW(UnsupportedType,
         "Unsupported Type in LDL (only double and std::complex<double> supported)");

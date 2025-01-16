@@ -62,7 +62,7 @@ void randomize(const M& mat, V& b)
   mat.mv(static_cast<const V&>(x), b);
 }
 
-typedef Dune::ParallelIndexSet<int,LocalIndex,512> ParallelIndexSet;
+typedef Dune::ParallelIndexSet<long long,LocalIndex,512> ParallelIndexSet;
 typedef Dune::FieldMatrix<XREAL,1,1> MatrixBlock;
 typedef Dune::BCRSMatrix<MatrixBlock> BCRSMat;
 typedef Dune::FieldVector<XREAL,1> VectorBlock;
@@ -108,8 +108,8 @@ void *solve2(void* arg)
   return 0;
 }
 
-template <int BS, typename AMG>
-void testAMG(int N, int coarsenTarget, int ml)
+template <long long BS, typename AMG>
+void testAMG(long long N, long long coarsenTarget, long long ml)
 {
 
   std::cout<<"N="<<N<<" coarsenTarget="<<coarsenTarget<<" maxlevel="<<ml<<std::endl;
@@ -117,7 +117,7 @@ void testAMG(int N, int coarsenTarget, int ml)
 
 
   ParallelIndexSet indices;
-  int n;
+  long long n;
 
   Comm c;
   BCRSMat mat = setupAnisotropic2d<MatrixBlock>(N, indices, c, &n, 1);
@@ -182,7 +182,7 @@ void testAMG(int N, int coarsenTarget, int ml)
   std::vector<AMG> amgs(NUM_THREADS, amg);
   std::vector<thread_arg> args(NUM_THREADS);
   std::vector<pthread_t> threads(NUM_THREADS);
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
   {
     args[i].amg=&amgs[i];
     args[i].b=&bs[i];
@@ -192,14 +192,14 @@ void testAMG(int N, int coarsenTarget, int ml)
   }
   void* retval;
 
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
     pthread_join(threads[i], &retval);
 
   amgs.clear();
   args.clear();
   amg.pre(x, b);
   amgs.resize(NUM_THREADS, amg);
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
   {
     args[i].amg=&amgs[i];
     args[i].b=&bs[i];
@@ -207,18 +207,18 @@ void testAMG(int N, int coarsenTarget, int ml)
     args[i].fop=&fop;
     pthread_create(&threads[i], NULL, solve2, (void*) &args[i]);
   }
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
     pthread_join(threads[i], &retval);
 
 }
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 try
 {
-  int N=100;
-  int coarsenTarget=1200;
-  int ml=10;
+  long long N=100;
+  long long coarsenTarget=1200;
+  long long ml=10;
 
   if(argc>1)
     N = atoi(argv[1]);

@@ -44,7 +44,7 @@ namespace Dune
       /**
        * @brief The numbe of iterations to perform.
        */
-      int iterations;
+      long long iterations;
       /**
        * @brief The relaxation factor to use.
        */
@@ -216,7 +216,7 @@ namespace Dune
     /**
      * @brief Policy for the construction of the SeqSSOR smoother
      */
-    template<class M, class X, class Y, int l>
+    template<class M, class X, class Y, long long l>
     struct ConstructionTraits<SeqSSOR<M,X,Y,l> >
     {
       typedef DefaultConstructionArgs<SeqSSOR<M,X,Y,l> > Arguments;
@@ -232,7 +232,7 @@ namespace Dune
     /**
      * @brief Policy for the construction of the SeqSOR smoother
      */
-    template<class M, class X, class Y, int l>
+    template<class M, class X, class Y, long long l>
     struct ConstructionTraits<SeqSOR<M,X,Y,l> >
     {
       typedef DefaultConstructionArgs<SeqSOR<M,X,Y,l> > Arguments;
@@ -248,7 +248,7 @@ namespace Dune
     /**
      * @brief Policy for the construction of the SeqJac smoother
      */
-    template<class M, class X, class Y, int l>
+    template<class M, class X, class Y, long long l>
     struct ConstructionTraits<SeqJac<M,X,Y,l> >
     {
       typedef DefaultConstructionArgs<SeqJac<M,X,Y,l> > Arguments;
@@ -281,22 +281,22 @@ namespace Dune
       : public DefaultConstructionArgs<SeqILU<M,X,Y> >
     {
     public:
-      ConstructionArgs(int n=0)
+      ConstructionArgs(long long n=0)
         : n_(n)
       {}
 
-      void setN(int n)
+      void setN(long long n)
       {
         n_ = n;
       }
 
-      int getN()
+      long long getN()
       {
         return n_;
       }
 
     private:
-      int n_;
+      long long n_;
     };
 
 
@@ -440,7 +440,7 @@ namespace Dune
         }
     }
 
-    template<class M, class X, class Y, int l>
+    template<class M, class X, class Y, long long l>
     struct SmootherApplier<SeqSOR<M,X,Y,l> >
     {
       typedef SeqSOR<M,X,Y,l> Smoother;
@@ -459,7 +459,7 @@ namespace Dune
       }
     };
 
-    template<class M, class X, class Y, class C, int l>
+    template<class M, class X, class Y, class C, long long l>
     struct SmootherApplier<BlockPreconditioner<X,Y,C,SeqSOR<M,X,Y,l> > >
     {
       typedef BlockPreconditioner<X,Y,C,SeqSOR<M,X,Y,l> > Smoother;
@@ -478,7 +478,7 @@ namespace Dune
       }
     };
 
-    template<class M, class X, class Y, class C, int l>
+    template<class M, class X, class Y, class C, long long l>
     struct SmootherApplier<NonoverlappingBlockPreconditioner<C,SeqSOR<M,X,Y,l> > >
     {
       typedef NonoverlappingBlockPreconditioner<C,SeqSOR<M,X,Y,l> > Smoother;
@@ -667,13 +667,13 @@ namespace Dune
           if(aggregates[edge.target()]!=AggregatesMap::ISOLATED)
             subdomains[subdomain].insert(edge.target());
         }
-        int setAggregate(const AggregateDescriptor& aggregate_)
+        long long setAggregate(const AggregateDescriptor& aggregate_)
         {
           subdomain=aggregate_;
           max = std::max(subdomain, aggregate_);
           return subdomain;
         }
-        int noSubdomains() const
+        long long noSubdomains() const
         {
           return max+1;
         }
@@ -688,11 +688,11 @@ namespace Dune
         template<class T>
         void operator()(const T& edge)
         {}
-        int setAggregate(const AggregateDescriptor& aggregate_)
+        long long setAggregate(const AggregateDescriptor& aggregate_)
         {
           return -1;
         }
-        int noSubdomains() const
+        long long noSubdomains() const
         {
           return -1;
         }
@@ -722,13 +722,13 @@ namespace Dune
           }
         }
 
-        int setAggregate(const AggregateDescriptor& aggregate_)
+        long long setAggregate(const AggregateDescriptor& aggregate_)
         {
           adder.setAggregate(aggregate_);
           aggregate=aggregate_;
           return ++subdomain;
         }
-        int noSubdomains() const
+        long long noSubdomains() const
         {
           return subdomain+1;
         }
@@ -736,7 +736,7 @@ namespace Dune
       private:
         AggregateDescriptor aggregate;
         Vector& subdomains;
-        int subdomain;
+        long long subdomain;
         const AggregatesMap& aggregates;
         VertexAdder adder;
         const MatrixGraph<const M>& graph;
@@ -750,7 +750,7 @@ namespace Dune
         typedef typename M::size_type size_type;
 
         std::set<std::pair<size_type,size_type> > pairs;
-        int total=0;
+        long long total=0;
         for(VIter v=graph.begin(), ve=graph.end(); ve != v; ++v)
           for(EIter e = v.begin(), ee=v.end(); ee!=e; ++e)
           {
@@ -775,7 +775,7 @@ namespace Dune
         }
         std::size_t minsize=10000;
         std::size_t maxsize=0;
-        int sum=0;
+        long long sum=0;
         for(typename Vector::size_type i=0; i < subdomains.size(); ++i) {
           sum+=subdomains[i].size();
           minsize=std::min(minsize, subdomains[i].size());
@@ -794,7 +794,7 @@ namespace Dune
         // aggregates are numbered consecutively from 0 except
         // for the isolated ones. All isolated vertices form
         // one aggregate, here.
-        int isolated=0;
+        long long isolated=0;
         AggregateDescriptor maxAggregate=0;
 
         for(std::size_t i=0; i < amap.noVertices(); ++i)
@@ -833,7 +833,7 @@ namespace Dune
 
         std::size_t minsize=10000;
         std::size_t maxsize=0;
-        int sum=0;
+        long long sum=0;
         for(typename Vector::size_type i=0; i < subdomains.size(); ++i) {
           sum+=subdomains[i].size();
           minsize=std::min(minsize, subdomains[i].size());

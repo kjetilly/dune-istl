@@ -64,7 +64,7 @@ namespace Dune
     }
 
     /** \brief Number of iterations */
-    int iterations;
+    long long iterations;
 
     /** \brief Reduction achieved: \f$ \|b-A(x^n)\|/\|b-A(x^0)\|\f$ */
     double reduction;
@@ -227,7 +227,7 @@ namespace Dune
        <li> 2 : print line for each iteration </li>
        </ul>
      */
-    IterativeSolver (const LinearOperator<X,Y>& op, Preconditioner<X,Y>& prec, scalar_real_type reduction, int maxit, int verbose) :
+    IterativeSolver (const LinearOperator<X,Y>& op, Preconditioner<X,Y>& prec, scalar_real_type reduction, long long maxit, long long verbose) :
       _op(stackobject_to_shared_ptr(op)),
       _prec(stackobject_to_shared_ptr(prec)),
       _sp(new SeqScalarProduct<X>),
@@ -260,7 +260,7 @@ namespace Dune
         </ul>
      */
     IterativeSolver (const LinearOperator<X,Y>& op, const ScalarProduct<X>& sp, Preconditioner<X,Y>& prec,
-      scalar_real_type reduction, int maxit, int verbose) :
+      scalar_real_type reduction, long long maxit, long long verbose) :
       _op(stackobject_to_shared_ptr(op)),
       _prec(stackobject_to_shared_ptr(prec)),
       _sp(stackobject_to_shared_ptr(sp)),
@@ -290,8 +290,8 @@ namespace Dune
     IterativeSolver (std::shared_ptr<const LinearOperator<X,Y> > op, std::shared_ptr<Preconditioner<X,X> > prec, const ParameterTree& configuration) :
       IterativeSolver(op,std::make_shared<SeqScalarProduct<X>>(),prec,
         configuration.get<real_type>("reduction"),
-        configuration.get<int>("maxit"),
-        configuration.get<int>("verbose"))
+        configuration.get<long long>("maxit"),
+        configuration.get<long long>("verbose"))
     {}
 
     /*!
@@ -313,8 +313,8 @@ namespace Dune
     IterativeSolver (std::shared_ptr<const LinearOperator<X,Y> > op, std::shared_ptr<const ScalarProduct<X> > sp, std::shared_ptr<Preconditioner<X,X> > prec, const ParameterTree& configuration) :
       IterativeSolver(op,sp,prec,
         configuration.get<scalar_real_type>("reduction"),
-        configuration.get<int>("maxit"),
-        configuration.get<int>("verbose"))
+        configuration.get<long long>("maxit"),
+        configuration.get<long long>("verbose"))
     {}
 
     /**
@@ -340,7 +340,7 @@ namespace Dune
     IterativeSolver (std::shared_ptr<const LinearOperator<X,Y>> op,
                      std::shared_ptr<const ScalarProduct<X>> sp,
                      std::shared_ptr<Preconditioner<X,Y>> prec,
-                     scalar_real_type reduction, int maxit, int verbose) :
+                     scalar_real_type reduction, long long maxit, long long verbose) :
       _op(op),
       _prec(prec),
       _sp(sp),
@@ -407,7 +407,7 @@ namespace Dune
      the current iteration count and norm of the residual. It returns true if
      convergence is achieved.
    */
-    template<class CountType = unsigned int>
+    template<class CountType = size_t>
     class Iteration {
     public:
       Iteration(const IterativeSolver& parent, InverseOperatorResult& res)
@@ -505,8 +505,8 @@ namespace Dune
     std::shared_ptr<Preconditioner<X,Y>> _prec;
     std::shared_ptr<const ScalarProduct<X>> _sp;
     scalar_real_type _reduction;
-    int _maxit;
-    int _verbose;
+    long long _maxit;
+    long long _verbose;
     SolverCategory::Category _category;
   };
 

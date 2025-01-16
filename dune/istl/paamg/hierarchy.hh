@@ -263,7 +263,7 @@ namespace Dune
       /** @brief The allocator for the list elements. */
       Allocator allocator_;
       /** @brief The number of levels in the hierarchy. */
-      int levels_;
+      long long levels_;
     };
 
     template<class T, class A>

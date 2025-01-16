@@ -95,9 +95,9 @@ namespace Dune
         pybind11::options opts;
         opts.disable_function_signatures();
 
-        module.def( "LoopSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, int maxit, int verbose ) {
+        module.def( "LoopSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, long long maxit, long long verbose ) {
             return static_cast< Solver * >( new Dune::LoopSolver< X >( op, prec, reduction, maxit, verbose ) );
-          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< int >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
+          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< long long >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
           R"doc(
             Loop solver
 
@@ -115,9 +115,9 @@ namespace Dune
                 The loop solver will apply the preconditioner once in each step.
           )doc" );
 
-        module.def( "GradientSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, int maxit, int verbose ) {
+        module.def( "GradientSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, long long maxit, long long verbose ) {
             return static_cast< Solver * >( new Dune::GradientSolver< X >( op, prec, reduction, maxit, verbose ) );
-          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< int >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
+          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< long long >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
           R"doc(
             Gradient iterative solver
 
@@ -135,9 +135,9 @@ namespace Dune
                 This method is also know as steepest descend method.
           )doc" );
 
-        module.def( "CGSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, int maxit, int verbose ) {
+        module.def( "CGSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, long long maxit, long long verbose ) {
             return static_cast< Solver * >( new Dune::CGSolver< X >( op, prec, reduction, maxit, verbose ) );
-          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< int >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
+          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< long long >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
           R"doc(
             Conjugate gradient iterative solver
 
@@ -155,9 +155,9 @@ namespace Dune
                 The conjucate gradient method can only be applied if the operator and the preconditioner are both symmetric and positive definite.
           )doc" );
 
-        module.def( "BiCGSTABSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, int maxit, int verbose ) {
+        module.def( "BiCGSTABSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, long long maxit, long long verbose ) {
             return static_cast< Solver * >( new Dune::CGSolver< X >( op, prec, reduction, maxit, verbose ) );
-          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< int >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
+          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< long long >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
           R"doc(
             Biconjugate gradient stabilized iterative solver
 
@@ -172,9 +172,9 @@ namespace Dune
                 ISTL Biconjugate gradient stabilized solver
           )doc" );
 
-        module.def( "MinResSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, int maxit, int verbose ) {
+        module.def( "MinResSolver", [] ( LinearOperator< X, X > &op, Preconditioner< X, X > &prec, double reduction, long long maxit, long long verbose ) {
             return static_cast< Solver * >( new Dune::CGSolver< X >( op, prec, reduction, maxit, verbose ) );
-          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< int >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
+          }, "operator"_a, "preconditioner"_a, "reduction"_a, "maxIterations"_a = std::numeric_limits< long long >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
           R"doc(
             Minimal residual iterative solver
 
@@ -226,9 +226,9 @@ namespace Dune
 
       detail::registerEndomorphismSolvers( module, cls );
 
-      module.def( "RestartedGMResSolver", [] ( LinearOperator< X, Y > &op, Preconditioner< X, Y > &prec, double reduction, int restart, int maxit, int verbose ) {
+      module.def( "RestartedGMResSolver", [] ( LinearOperator< X, Y > &op, Preconditioner< X, Y > &prec, double reduction, long long restart, long long maxit, long long verbose ) {
           return static_cast< Solver * >( new Dune::RestartedGMResSolver< X, Y >( op, prec, reduction, restart, maxit, verbose ) );
-        }, "operator"_a, "preconditioner"_a, "reduction"_a, "restart"_a, "maxIterations"_a = std::numeric_limits< int >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
+        }, "operator"_a, "preconditioner"_a, "reduction"_a, "restart"_a, "maxIterations"_a = std::numeric_limits< long long >::max(), "verbose"_a = 0, pybind11::keep_alive< 0, 1 >(), pybind11::keep_alive< 0, 2 >(),
           R"doc(
             Restarted generalized minimal residual iterative solver
 

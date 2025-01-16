@@ -79,18 +79,18 @@ void randomize(const M& mat, V& b)
 
 
 template <class Matrix, class Vector>
-Dune::InverseOperatorResult testAMG(int N, int coarsenTarget, int ml, int gamma = 1)
+Dune::InverseOperatorResult testAMG(long long N, long long coarsenTarget, long long ml, long long gamma = 1)
 {
 
   std::cout<<"N="<<N<<" coarsenTarget="<<coarsenTarget<<" maxlevel="<<ml<<std::endl;
 
 
-  typedef Dune::ParallelIndexSet<int,LocalIndex,512> ParallelIndexSet;
+  typedef Dune::ParallelIndexSet<long long,LocalIndex,512> ParallelIndexSet;
 
   ParallelIndexSet indices;
   typedef Dune::MatrixAdapter<Matrix,Vector,Vector> Operator;
   typedef Dune::Communication<void*> Comm;
-  int n;
+  long long n;
 
   Comm c;
   Matrix mat = setupAnisotropic2d<typename Matrix::block_type>(N, indices, c, &n, 1);
@@ -183,12 +183,12 @@ Dune::InverseOperatorResult testAMG(int N, int coarsenTarget, int ml, int gamma 
 }
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 try
 {
-  int N=100;
-  int coarsenTarget=1200;
-  int ml=10;
+  long long N=100;
+  long long coarsenTarget=1200;
+  long long ml=10;
 
   if(argc>1)
     N = atoi(argv[1]);
@@ -200,7 +200,7 @@ try
     ml = atoi(argv[3]);
 
   Dune::InverseOperatorResult gamma1_res;
-  for(int gamma = 1; gamma<=2;++gamma){
+  for(long long gamma = 1; gamma<=2;++gamma){
     {
       using Matrix = Dune::BCRSMatrix<XREAL>;
       using Vector = Dune::BlockVector<XREAL>;

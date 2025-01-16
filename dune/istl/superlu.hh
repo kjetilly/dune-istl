@@ -60,7 +60,7 @@ namespace Dune
   template<>
   struct SuperLUDenseMatChooser<float>
   {
-    static void create(SuperMatrix *mat, int n, int m, float *dat, int n1,
+    static void create(SuperMatrix *mat, long long n, long long m, float *dat, long long n1,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       sCreate_Dense_Matrix(mat, n, m, dat, n1, stype, dtype, mtype);
@@ -74,11 +74,11 @@ namespace Dune
   template<>
   struct SuperLUSolveChooser<float>
   {
-    static void solve(superlu_options_t *options, SuperMatrix *mat, int *perm_c, int *perm_r, int *etree,
+    static void solve(superlu_options_t *options, SuperMatrix *mat, long long *perm_c, long long *perm_r, long long *etree,
                       char *equed, float *R, float *C, SuperMatrix *L, SuperMatrix *U,
-                      void *work, int lwork, SuperMatrix *B, SuperMatrix *X,
+                      void *work, long long lwork, SuperMatrix *B, SuperMatrix *X,
                       float *rpg, float *rcond, float *ferr, float *berr,
-                      mem_usage_t *memusage, SuperLUStat_t *stat, int *info)
+                      mem_usage_t *memusage, SuperLUStat_t *stat, long long *info)
     {
       GlobalLU_t gLU;
       sgssvx(options, mat, perm_c, perm_r, etree, equed, R, C,
@@ -103,7 +103,7 @@ namespace Dune
   template<>
   struct SuperLUDenseMatChooser<double>
   {
-    static void create(SuperMatrix *mat, int n, int m, double *dat, int n1,
+    static void create(SuperMatrix *mat, long long n, long long m, double *dat, long long n1,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       dCreate_Dense_Matrix(mat, n, m, dat, n1, stype, dtype, mtype);
@@ -116,11 +116,11 @@ namespace Dune
   template<>
   struct SuperLUSolveChooser<double>
   {
-    static void solve(superlu_options_t *options, SuperMatrix *mat, int *perm_c, int *perm_r, int *etree,
+    static void solve(superlu_options_t *options, SuperMatrix *mat, long long *perm_c, long long *perm_r, long long *etree,
                       char *equed, double *R, double *C, SuperMatrix *L, SuperMatrix *U,
-                      void *work, int lwork, SuperMatrix *B, SuperMatrix *X,
+                      void *work, long long lwork, SuperMatrix *B, SuperMatrix *X,
                       double *rpg, double *rcond, double *ferr, double *berr,
-                      mem_usage_t *memusage, SuperLUStat_t *stat, int *info)
+                      mem_usage_t *memusage, SuperLUStat_t *stat, long long *info)
     {
       GlobalLU_t gLU;
       dgssvx(options, mat, perm_c, perm_r, etree, equed, R, C,
@@ -143,7 +143,7 @@ namespace Dune
   template<>
   struct SuperLUDenseMatChooser<std::complex<double> >
   {
-    static void create(SuperMatrix *mat, int n, int m, std::complex<double> *dat, int n1,
+    static void create(SuperMatrix *mat, long long n, long long m, std::complex<double> *dat, long long n1,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       zCreate_Dense_Matrix(mat, n, m, reinterpret_cast<doublecomplex*>(dat), n1, stype, dtype, mtype);
@@ -157,11 +157,11 @@ namespace Dune
   template<>
   struct SuperLUSolveChooser<std::complex<double> >
   {
-    static void solve(superlu_options_t *options, SuperMatrix *mat, int *perm_c, int *perm_r, int *etree,
+    static void solve(superlu_options_t *options, SuperMatrix *mat, long long *perm_c, long long *perm_r, long long *etree,
                       char *equed, double *R, double *C, SuperMatrix *L, SuperMatrix *U,
-                      void *work, int lwork, SuperMatrix *B, SuperMatrix *X,
+                      void *work, long long lwork, SuperMatrix *B, SuperMatrix *X,
                       double *rpg, double *rcond, double *ferr, double *berr,
-                      mem_usage_t *memusage, SuperLUStat_t *stat, int *info)
+                      mem_usage_t *memusage, SuperLUStat_t *stat, long long *info)
     {
       GlobalLU_t gLU;
       zgssvx(options, mat, perm_c, perm_r, etree, equed, R, C,
@@ -184,7 +184,7 @@ namespace Dune
   template<>
   struct SuperLUDenseMatChooser<std::complex<float> >
   {
-    static void create(SuperMatrix *mat, int n, int m, std::complex<float> *dat, int n1,
+    static void create(SuperMatrix *mat, long long n, long long m, std::complex<float> *dat, long long n1,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       cCreate_Dense_Matrix(mat, n, m, reinterpret_cast< ::complex*>(dat), n1, stype, dtype, mtype);
@@ -198,11 +198,11 @@ namespace Dune
   template<>
   struct SuperLUSolveChooser<std::complex<float> >
   {
-    static void solve(superlu_options_t *options, SuperMatrix *mat, int *perm_c, int *perm_r, int *etree,
+    static void solve(superlu_options_t *options, SuperMatrix *mat, long long *perm_c, long long *perm_r, long long *etree,
                       char *equed, float *R, float *C, SuperMatrix *L, SuperMatrix *U,
-                      void *work, int lwork, SuperMatrix *B, SuperMatrix *X,
+                      void *work, long long lwork, SuperMatrix *B, SuperMatrix *X,
                       float *rpg, float *rcond, float *ferr, float *berr,
-                      mem_usage_t *memusage, SuperLUStat_t *stat, int *info)
+                      mem_usage_t *memusage, SuperLUStat_t *stat, long long *info)
     {
       GlobalLU_t gLU;
       cgssvx(options, mat, perm_c, perm_r, etree, equed, R, C,
@@ -227,7 +227,7 @@ namespace Dune
     struct SuperLUVectorChooser
     {};
 
-    template<typename T, typename A, int n, int m>
+    template<typename T, typename A, long long n, long long m>
     struct SuperLUVectorChooser<BCRSMatrix<FieldMatrix<T,n,m>,A > >
     {
       /** @brief The type of the domain of the solver */
@@ -381,13 +381,13 @@ namespace Dune
 
     SuperLUMatrix mat;
     SuperMatrix L, U, B, X;
-    int *perm_c, *perm_r, *etree;
+    long long *perm_c, *perm_r, *etree;
     typename GetSuperLUType<T>::float_type *R, *C;
     T *bstore;
     superlu_options_t options;
     char equed;
     void *work;
-    int lwork;
+    long long lwork;
     bool first, verbose, reusevector;
   };
 
@@ -472,9 +472,9 @@ namespace Dune
   {
 
     first = true;
-    perm_c = new int[mat.M()];
-    perm_r = new int[mat.N()];
-    etree  = new int[mat.M()];
+    perm_c = new long long[mat.M()];
+    perm_r = new long long[mat.N()];
+    etree  = new long long[mat.M()];
     R = new typename GetSuperLUType<T>::float_type[mat.N()];
     C = new typename GetSuperLUType<T>::float_type[mat.M()];
 
@@ -494,7 +494,7 @@ namespace Dune
     X.Store=&fakeFormat;
 
     typename GetSuperLUType<T>::float_type rpg, rcond, ferr=1e10, berr=1e10;
-    int info;
+    long long info;
     mem_usage_t memusage;
     SuperLUStat_t stat;
 
@@ -532,11 +532,11 @@ namespace Dune
     StatFree(&stat);
     /*
        NCformat* Ustore = (NCformat *) U.Store;
-       int k=0;
+       long long k=0;
        dPrint_CompCol_Matrix("U", &U);
-       for(int i=0; i < U.ncol; ++i, ++k){
+       for(long long i=0; i < U.ncol; ++i, ++k){
        std::cout<<i<<": ";
-       for(int c=Ustore->colptr[i]; c < Ustore->colptr[i+1]; ++c)
+       for(long long c=Ustore->colptr[i]; c < Ustore->colptr[i+1]; ++c)
         //if(Ustore->rowind[c]==i)
         std::cout<<Ustore->rowind[c]<<"->"<<((double*)Ustore->nzval)[c]<<" ";
        if(k==0){
@@ -545,9 +545,9 @@ namespace Dune
        }std::cout<<std::endl;
        }
        dPrint_SuperNode_Matrix("L", &L);
-       for(int i=0; i < U.ncol; ++i, ++k){
+       for(long long i=0; i < U.ncol; ++i, ++k){
        std::cout<<i<<": ";
-       for(int c=Ustore->colptr[i]; c < Ustore->colptr[i+1]; ++c)
+       for(long long c=Ustore->colptr[i]; c < Ustore->colptr[i+1]; ++c)
         //if(Ustore->rowind[c]==i)
         std::cout<<Ustore->rowind[c]<<"->"<<((double*)Ustore->nzval)[c]<<" ";
        if(k==0){
@@ -574,21 +574,21 @@ namespace Dune
     SuperMatrix rB, rX;
     if (reusevector) {
       if(first) {
-        SuperLUDenseMatChooser<T>::create(&B, (int)mat.N(), 1,  reinterpret_cast<T*>(&b[0]), (int)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
-        SuperLUDenseMatChooser<T>::create(&X, (int)mat.N(), 1,  reinterpret_cast<T*>(&x[0]), (int)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
+        SuperLUDenseMatChooser<T>::create(&B, (long long)mat.N(), 1,  reinterpret_cast<T*>(&b[0]), (long long)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
+        SuperLUDenseMatChooser<T>::create(&X, (long long)mat.N(), 1,  reinterpret_cast<T*>(&x[0]), (long long)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
         first=false;
       }else{
         ((DNformat*)B.Store)->nzval=&b[0];
         ((DNformat*)X.Store)->nzval=&x[0];
       }
     } else {
-      SuperLUDenseMatChooser<T>::create(&rB, (int)mat.N(), 1,  reinterpret_cast<T*>(&b[0]), (int)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
-      SuperLUDenseMatChooser<T>::create(&rX, (int)mat.N(), 1,  reinterpret_cast<T*>(&x[0]), (int)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
+      SuperLUDenseMatChooser<T>::create(&rB, (long long)mat.N(), 1,  reinterpret_cast<T*>(&b[0]), (long long)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
+      SuperLUDenseMatChooser<T>::create(&rX, (long long)mat.N(), 1,  reinterpret_cast<T*>(&x[0]), (long long)mat.N(), SLU_DN, GetSuperLUType<T>::type, SLU_GE);
       mB = &rB;
       mX = &rX;
     }
     typename GetSuperLUType<T>::float_type rpg, rcond, ferr=1e10, berr;
-    int info;
+    long long info;
     mem_usage_t memusage;
     SuperLUStat_t stat;
     /* Initialize the statistics variables. */
@@ -674,7 +674,7 @@ namespace Dune
     }
 
     typename GetSuperLUType<T>::float_type rpg, rcond, ferr=1e10, berr;
-    int info;
+    long long info;
     mem_usage_t memusage;
     SuperLUStat_t stat;
     /* Initialize the statistics variables. */
@@ -726,15 +726,15 @@ namespace Dune
 
   struct SuperLUCreator {
     template<class> struct isValidBlock : std::false_type{};
-    template<int k> struct isValidBlock<Dune::FieldVector<double,k>> : std::true_type{};
-    template<int k> struct isValidBlock<Dune::FieldVector<std::complex<double>,k>> : std::true_type{};
+    template<long long k> struct isValidBlock<Dune::FieldVector<double,k>> : std::true_type{};
+    template<long long k> struct isValidBlock<Dune::FieldVector<std::complex<double>,k>> : std::true_type{};
     template<typename TL, typename M>
     std::shared_ptr<Dune::InverseOperator<typename Dune::TypeListElement<1, TL>::type,
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& mat, const Dune::ParameterTree& config,
-                std::enable_if_t<isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                std::enable_if_t<isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
-      int verbose = config.get("verbose", 0);
+      long long verbose = config.get("verbose", 0);
       return std::make_shared<Dune::SuperLU<M>>(mat,verbose);
     }
 
@@ -743,7 +743,7 @@ namespace Dune
     std::shared_ptr<Dune::InverseOperator<typename Dune::TypeListElement<1, TL>::type,
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& /*mat*/, const Dune::ParameterTree& /*config*/,
-      std::enable_if_t<!isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+      std::enable_if_t<!isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
       DUNE_THROW(UnsupportedType,
         "Unsupported Type in SuperLU (only double and std::complex<double> supported)");

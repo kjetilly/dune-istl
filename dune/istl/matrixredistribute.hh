@@ -83,8 +83,8 @@ namespace Dune
       auto ri = std::make_unique<RemoteIndices<IS> >(source, target, comm);
       ri->template rebuild<true>();
       Interface inf;
-      typename OwnerOverlapCopyCommunication<int>::OwnerSet flags;
-      int rank;
+      typename OwnerOverlapCopyCommunication<long long>::OwnerSet flags;
+      long long rank;
       MPI_Comm_rank(MPI_COMM_WORLD, &rank);
       inf.free();
       inf.build(*ri, flags, flags);
@@ -277,10 +277,10 @@ namespace Dune
     {
       // insert diagonal to overlap rows
       typedef typename Dune::GlobalLookupIndexSet<I>::const_iterator IIter;
-      typedef typename Dune::OwnerOverlapCopyCommunication<int>::OwnerSet OwnerSet;
+      typedef typename Dune::OwnerOverlapCopyCommunication<long long>::OwnerSet OwnerSet;
       std::size_t nnz=0;
 #ifdef DEBUG_REPART
-      int rank;
+      long long rank;
 
       MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
@@ -339,7 +339,7 @@ namespace Dune
      */
     void completeSparsityPattern(std::vector<std::set<size_type> > add_sparsity)
     {
-      for (unsigned int i = 0; i != sparsity.size(); ++i) {
+      for (size_t i = 0; i != sparsity.size(); ++i) {
         if (add_sparsity[i].size() != 0) {
           typedef std::set<size_type> Set;
           Set tmp_set;
@@ -421,7 +421,7 @@ namespace Dune
     void setOverlapRowsToDirichlet()
     {
       typedef typename Dune::GlobalLookupIndexSet<I>::const_iterator Iter;
-      typedef typename Dune::OwnerOverlapCopyCommunication<int>::OwnerSet OwnerSet;
+      typedef typename Dune::OwnerOverlapCopyCommunication<long long>::OwnerSet OwnerSet;
 
       for(Iter i= aggidxset.begin(), end=aggidxset.end(); i!=end; ++i)
         if(!OwnerSet::contains(i->local().attribute())) {
@@ -559,7 +559,7 @@ namespace Dune
           std::size_t column = ip.local();
           cont.sparsity[i].insert(column);
 
-          typedef typename Dune::OwnerOverlapCopyCommunication<int>::OwnerSet OwnerSet;
+          typedef typename Dune::OwnerOverlapCopyCommunication<long long>::OwnerSet OwnerSet;
           if(!OwnerSet::contains(ip.local().attribute()))
             // preserve symmetry for overlap
             cont.sparsity[column].insert(i);
@@ -570,13 +570,13 @@ namespace Dune
 #ifdef DEBUG_REPART
         typedef typename Container::LookupIndexSet GlobalLookup;
         typedef typename GlobalLookup::IndexPair IndexPair;
-        typedef typename Dune::OwnerOverlapCopyCommunication<int>::OwnerSet OwnerSet;
+        typedef typename Dune::OwnerOverlapCopyCommunication<long long>::OwnerSet OwnerSet;
 
         GlobalLookup lookup(cont.aggidxset);
         const IndexPair* pi=lookup.pair(i);
         assert(pi);
         if(OwnerSet::contains(pi->local().attribute())) {
-          int rank;
+          long long rank;
           MPI_Comm_rank(MPI_COMM_WORLD,&rank);
           std::cout<<rank<<cont.aggidxset<<std::endl;
           std::cout<<rank<<": row "<<i<<" (global="<<gi <<") not in index set for owner index "<<pi->global()<<std::endl;
@@ -730,7 +730,7 @@ namespace Dune
 
 #ifdef DUNE_ISTL_WITH_CHECKING
     // Check for symmetry
-    int ret=0;
+    long long ret=0;
     typedef typename M::ConstRowIterator RIter;
     for(RIter row=newMatrix.begin(), rend=newMatrix.end(); row != rend; ++row) {
       typedef typename M::ConstColIterator CIter;
@@ -796,7 +796,7 @@ namespace Dune
     CommMatrixRow<M,IndexSet>
     newrow(newMatrix, origComm.globalLookup(), newComm.indexSet(),rowsize);
     ri.template redistribute<MatrixRowGatherScatter<M,IndexSet> >(origrow,newrow);
-    if (SolverCategory::category(origComm) != static_cast<int>(SolverCategory::nonoverlapping))
+    if (SolverCategory::category(origComm) != static_cast<long long>(SolverCategory::nonoverlapping))
       newrow.setOverlapRowsToDirichlet();
   }
 

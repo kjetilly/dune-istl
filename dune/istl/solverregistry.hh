@@ -29,7 +29,7 @@ namespace Dune{
     struct PreconditionerTag {};
     struct IterativeSolverTag {};
   }
-  template<template<class,class,class,int>class Preconditioner, int blockLevel=1>
+  template<template<class,class,class,long long>class Preconditioner, long long blockLevel=1>
   auto defaultPreconditionerBlockLevelCreator(){
     return [](auto typeList, const auto& matrix, const Dune::ParameterTree& config)
            {

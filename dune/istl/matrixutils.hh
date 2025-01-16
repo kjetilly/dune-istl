@@ -23,7 +23,7 @@ namespace Dune
   template<typename B, typename A>
   class BCRSMatrix;
 
-  template<typename K, int n, int m>
+  template<typename K, long long n, long long m>
   class FieldMatrix;
 
   template<class T, class A>
@@ -336,7 +336,7 @@ namespace Dune
   };
 
 
-  template<typename B, int n, int m, typename TA>
+  template<typename B, long long n, long long m, typename TA>
   struct MatrixDimension<BCRSMatrix<FieldMatrix<B,n,m> ,TA> >
   {
     typedef BCRSMatrix<FieldMatrix<B,n,m> ,TA> Matrix;
@@ -361,7 +361,7 @@ namespace Dune
     }
   };
 
-  template<typename K, int n, int m>
+  template<typename K, long long n, long long m>
   struct MatrixDimension<FieldMatrix<K,n,m> >
   {
     typedef FieldMatrix<K,n,m> Matrix;
@@ -415,7 +415,7 @@ namespace Dune
     }
   };
 
-  template<typename K, int n, int m, typename TA>
+  template<typename K, long long n, long long m, typename TA>
   struct MatrixDimension<Matrix<FieldMatrix<K,n,m>, TA> >
   {
     typedef Matrix<FieldMatrix<K,n,m>, TA> ThisMatrix;
@@ -442,7 +442,7 @@ namespace Dune
     }
   };
 
-  template<typename K, int n>
+  template<typename K, long long n>
   struct MatrixDimension<DiagonalMatrix<K,n> >
   {
     typedef DiagonalMatrix<K,n> Matrix;
@@ -469,7 +469,7 @@ namespace Dune
     }
   };
 
-  template<typename K, int n>
+  template<typename K, long long n>
   struct MatrixDimension<ScaledIdentityMatrix<K,n> >
   {
     typedef ScaledIdentityMatrix<K,n> Matrix;

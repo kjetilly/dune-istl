@@ -442,7 +442,7 @@ namespace Dune
       if(SolverCategory::category(matrix) != SolverCategory::category(pinfo))
         DUNE_THROW(InvalidSolverCategory, "Matrix and Communication must have the same SolverCategory!");
       // TODO: reestablish compile time checks.
-      //static_assert(static_cast<int>(PI::category)==static_cast<int>(S::category),
+      //static_assert(static_cast<long long>(PI::category)==static_cast<long long>(S::category),
       //             "Matrix and Solver must match in terms of category!");
       auto matrixptr = stackobject_to_shared_ptr(matrix);
       createHierarchies(criterion, matrixptr, pinfo);
@@ -459,13 +459,13 @@ namespace Dune
     {
 
       if (configuration.hasKey ("smootherIterations"))
-        smootherArgs_.iterations = configuration.get<int>("smootherIterations");
+        smootherArgs_.iterations = configuration.get<long long>("smootherIterations");
 
       if (configuration.hasKey ("smootherRelaxation"))
         smootherArgs_.relaxationFactor = configuration.get<typename SmootherArgs::RelaxationFactor>("smootherRelaxation");
 
       auto normName = ToLower()(configuration.get("strengthMeasure", "diagonal"));
-      auto index =  configuration.get<int>("diagonalRowIndex", 0);
+      auto index =  configuration.get<long long>("diagonalRowIndex", 0);
 
       if ( normName == "diagonal")
       {
@@ -538,13 +538,13 @@ namespace Dune
   void AMG<M,X,S,PI,A>::createHierarchies(C& criterion, std::shared_ptr<const Operator> matrixptr, const PI& pinfo, const ParameterTree& configuration)
   {
       if (configuration.hasKey ("maxLevel"))
-        criterion.setMaxLevel(configuration.get<int>("maxLevel"));
+        criterion.setMaxLevel(configuration.get<long long>("maxLevel"));
 
       if (configuration.hasKey ("minCoarseningRate"))
-        criterion.setMinCoarsenRate(configuration.get<int>("minCoarseningRate"));
+        criterion.setMinCoarsenRate(configuration.get<long long>("minCoarseningRate"));
 
       if (configuration.hasKey ("coarsenTarget"))
-        criterion.setCoarsenTarget (configuration.get<int>("coarsenTarget"));
+        criterion.setCoarsenTarget (configuration.get<long long>("coarsenTarget"));
 
       if (configuration.hasKey ("accumulationMode"))
       {
@@ -1168,7 +1168,7 @@ namespace Dune
 
   struct AMGCreator{
     template<class> struct isValidBlockType : std::false_type{};
-    template<class T, int n, int m> struct isValidBlockType<FieldMatrix<T,n,m>> : std::true_type{};
+    template<class T, long long n, long long m> struct isValidBlockType<FieldMatrix<T,n,m>> : std::true_type{};
 
     template<class OP>
     std::shared_ptr<Dune::Preconditioner<typename OP::element_type::domain_type, typename OP::element_type::range_type> >
@@ -1246,7 +1246,7 @@ namespace Dune
     std::shared_ptr<Dune::Preconditioner<typename Dune::TypeListElement<1, TL>::type,
                                          typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL tl, const std::shared_ptr<OP>& op, const Dune::ParameterTree& config,
-                std::enable_if_t<isValidBlockType<typename OP::matrix_type::block_type>::value,int> = 0) const
+                std::enable_if_t<isValidBlockType<typename OP::matrix_type::block_type>::value,long long> = 0) const
     {
       using field_type = typename OP::matrix_type::field_type;
       using real_type = typename FieldTraits<field_type>::real_type;
@@ -1267,7 +1267,7 @@ namespace Dune
     std::shared_ptr<Dune::Preconditioner<typename Dune::TypeListElement<1, TL>::type,
                                          typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const std::shared_ptr<OP>& /*mat*/, const Dune::ParameterTree& /*config*/,
-                std::enable_if_t<!isValidBlockType<typename OP::matrix_type::block_type>::value,int> = 0) const
+                std::enable_if_t<!isValidBlockType<typename OP::matrix_type::block_type>::value,long long> = 0) const
     {
       DUNE_THROW(UnsupportedType, "AMG needs a FieldMatrix as Matrix block_type");
     }

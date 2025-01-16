@@ -463,7 +463,7 @@ namespace Dune {
       using reference = SizeProxy;
 
       //! constructor
-      CreateIterator (VariableBlockVector& _v, int _i, bool _isEnd) :
+      CreateIterator (VariableBlockVector& _v, long long _i, bool _isEnd) :
         v(_v),
         i(_i),
         isEnd(_isEnd) {}

@@ -260,14 +260,14 @@ namespace Dune
       /**
        * @brief Set the maximum number of levels allowed in the hierarchy.
        */
-      void setMaxLevel(int l)
+      void setMaxLevel(long long l)
       {
         maxLevel_ = l;
       }
       /**
        * @brief Get the maximum number of levels allowed in the hierarchy.
        */
-      int maxLevel() const
+      long long maxLevel() const
       {
         return maxLevel_;
       }
@@ -275,7 +275,7 @@ namespace Dune
       /**
        * @brief Set the maximum number of unknowns allowed on the coarsest level.
        */
-      void setCoarsenTarget(int nodes)
+      void setCoarsenTarget(long long nodes)
       {
         coarsenTarget_ = nodes;
       }
@@ -283,7 +283,7 @@ namespace Dune
       /**
        * @brief Get the maximum number of unknowns allowed on the coarsest level.
        */
-      int coarsenTarget() const
+      long long coarsenTarget() const
       {
         return coarsenTarget_;
       }
@@ -353,7 +353,7 @@ namespace Dune
        * @param prolongDamp The damping factor to apply to the prolongated update (default: 1.6)
        * @param accumulate Whether to accumulate the data onto fewer processors on coarser levels.
        */
-      CoarseningParameters(int maxLevel=100, int coarsenTarget=1000, double minCoarsenRate=1.2,
+      CoarseningParameters(long long maxLevel=100, long long coarsenTarget=1000, double minCoarsenRate=1.2,
                            double prolongDamp=1.6, AccumulationMode accumulate=successiveAccu)
         : maxLevel_(maxLevel), coarsenTarget_(coarsenTarget), minCoarsenRate_(minCoarsenRate),
           dampingFactor_(prolongDamp), accumulate_( accumulate)
@@ -363,11 +363,11 @@ namespace Dune
       /**
        * @brief The maximum number of levels allowed in the hierarchy.
        */
-      int maxLevel_;
+      long long maxLevel_;
       /**
        * @brief The maximum number of unknowns allowed on the coarsest level.
        */
-      int coarsenTarget_;
+      long long coarsenTarget_;
       /**
        * @brief The minimum coarsening rate to be achieved.
        */
@@ -398,7 +398,7 @@ namespace Dune
        * @param level If 0 no debugging output will be generated.
        * @warning In parallel the level has to be consistent over all procceses.
        */
-      void setDebugLevel(int level)
+      void setDebugLevel(long long level)
       {
         debugLevel_ = level;
       }
@@ -408,7 +408,7 @@ namespace Dune
        *
        * @return 0 if no debugging output will be generated.
        */
-      int debugLevel() const
+      long long debugLevel() const
       {
         return debugLevel_;
       }
@@ -490,14 +490,14 @@ namespace Dune
        * @param prolongDamp The damping factor to apply to the prolongated update (default: 1.6)
        * @param accumulate Whether to accumulate the data onto fewer processors on coarser levels.
        */
-      Parameters(int maxLevel=100, int coarsenTarget=1000, double minCoarsenRate=1.2,
+      Parameters(long long maxLevel=100, long long coarsenTarget=1000, double minCoarsenRate=1.2,
                  double prolongDamp=1.6, AccumulationMode accumulate=successiveAccu)
         : CoarseningParameters(maxLevel, coarsenTarget, minCoarsenRate, prolongDamp, accumulate)
           , debugLevel_(2), preSmoothSteps_(2), postSmoothSteps_(2), gamma_(1),
           additive_(false)
       {}
     private:
-      int debugLevel_;
+      long long debugLevel_;
       std::size_t preSmoothSteps_;
       std::size_t postSmoothSteps_;
       std::size_t gamma_;

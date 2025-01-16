@@ -25,7 +25,7 @@ namespace Dune {
   /**
       @brief A multiple of the identity matrix of static size
    */
-  template<class K, int n>
+  template<class K, long long n>
   class ScaledIdentityMatrix
   {
     typedef DiagonalMatrixWrapper< ScaledIdentityMatrix<K,n> > WrapperType;
@@ -203,7 +203,7 @@ namespace Dune {
 
     //! vector space multiplication with scalar
     template <class Scalar,
-              std::enable_if_t<IsNumber<Scalar>::value, int> = 0>
+              std::enable_if_t<IsNumber<Scalar>::value, long long> = 0>
     friend auto operator* ( const ScaledIdentityMatrix& matrix, Scalar scalar)
     {
       return ScaledIdentityMatrix<typename PromotionTraits<K,Scalar>::PromotedType, n>{matrix.scalar()*scalar};
@@ -211,7 +211,7 @@ namespace Dune {
 
     //! vector space multiplication with scalar
     template <class Scalar,
-              std::enable_if_t<IsNumber<Scalar>::value, int> = 0>
+              std::enable_if_t<IsNumber<Scalar>::value, long long> = 0>
     friend auto operator* (Scalar scalar, const ScaledIdentityMatrix& matrix)
     {
       return ScaledIdentityMatrix<typename PromotionTraits<Scalar,K>::PromotedType, n>{scalar*matrix.scalar()};
@@ -393,7 +393,7 @@ namespace Dune {
     template<class V>
     void solve (V& x, const V& b) const
     {
-      for (int i=0; i<n; i++)
+      for (long long i=0; i<n; i++)
         x[i] = b[i]/p_;
     }
 
@@ -492,19 +492,19 @@ namespace Dune {
 
   };
 
-  template <class DenseMatrix, class field, int N>
+  template <class DenseMatrix, class field, long long N>
   struct DenseMatrixAssigner<DenseMatrix, ScaledIdentityMatrix<field, N>> {
     static void apply(DenseMatrix& denseMatrix,
                       ScaledIdentityMatrix<field, N> const& rhs) {
       assert(denseMatrix.M() == N);
       assert(denseMatrix.N() == N);
       denseMatrix = field(0);
-      for (int i = 0; i < N; ++i)
+      for (long long i = 0; i < N; ++i)
         denseMatrix[i][i] = rhs.scalar();
     }
   };
 
-  template<class K, int n>
+  template<class K, long long n>
   struct FieldTraits< ScaledIdentityMatrix<K, n> >
   {
     using field_type = typename ScaledIdentityMatrix<K, n>::field_type;

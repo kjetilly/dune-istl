@@ -24,7 +24,7 @@ public:
   }
 };
 
-int main()
+long long main()
 {
   using namespace Dune;
 

@@ -10,7 +10,7 @@
 #include <dune/istl/io.hh>
 #include <dune/istl/matrixmatrix.hh>
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   typedef Dune::BCRSMatrix<Dune::FieldMatrix<double, 1, 1> > MatrixType;
   MatrixType m1(2,2,MatrixType::random) ,

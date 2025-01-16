@@ -37,7 +37,7 @@ void assign(VectorBlock& b, const V& i)
 
 
 template<class VectorBlock, class A=std::allocator<void> >
-int testVector()
+long long testVector()
 {
   using Alloc = typename std::allocator_traits<A>::template rebind_alloc<VectorBlock>;
   typedef Dune::BlockVector<VectorBlock, Alloc> Vector;
@@ -106,13 +106,13 @@ void testCapacity()
   ThreeLevelVector vec;
   vec.reserve(10);
   vec.resize(10);
-  for(int i=0; i<10; ++i)
+  for(long long i=0; i<10; ++i)
     vec[i]=Dune::BlockVector<SmallVector>(10);
   ThreeLevelVector vec1=vec;
 }
 
 template <class V>
-void checkNormNAN(V const &v, int line) {
+void checkNormNAN(V const &v, long long line) {
   if (!std::isnan(v.one_norm())) {
     std::cerr << "error: norm not NaN: one_norm() on line "
               << line << " (type: " << Dune::className(v[0][0]) << ")"
@@ -179,7 +179,7 @@ test_nan(T const &mynan)
   }
 }
 
-int main()
+long long main()
 {
   typedef std::complex<double> value_type;
   //typedef double value_type;
@@ -216,7 +216,7 @@ int main()
     test_nan(nan);
   }
 
-  int ret = 0;
+  long long ret = 0;
 
   ret += testVector<Dune::FieldVector<double,1> >();
   //  ret += testVector<1, Dune::PoolAllocator<void,1000000> >();

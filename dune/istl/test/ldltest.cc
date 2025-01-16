@@ -13,14 +13,14 @@
 
 #include "laplacian.hh"
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
 #if HAVE_SUITESPARSE_LDL
   try
   {
     typedef double FIELD_TYPE;
 
-    const int BS=1;
+    const long long BS=1;
     std::size_t N=100;
 
     if (argc > 1)

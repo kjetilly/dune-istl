@@ -58,7 +58,7 @@ namespace Dune
 #elif HAVE_PARMETIS && defined(HAVE_SCOTCH_NUM_TYPE)
     using idx_t = SCOTCH_Num;
 #elif HAVE_PARMETIS
-    using idx_t = int;
+    using idx_t = long long;
 #else
     using idx_t = std::size_t;
 #endif
@@ -92,7 +92,7 @@ namespace Dune
     std::vector<std::size_t> neededall(oocomm.communicator().size(), 0);
 
     MPI_Allgather(&needed, 1, MPITraits<std::size_t>::getType() , &(neededall[0]), 1, MPITraits<std::size_t>::getType(), oocomm.communicator());
-    for(int i=0; i<oocomm.communicator().size(); ++i)
+    for(long long i=0; i<oocomm.communicator().size(); ++i)
       sum=sum+neededall[i];   // MAke this for generic
 
     if(sum==0)
@@ -111,11 +111,11 @@ namespace Dune
     maxgi=oocomm.communicator().max(maxgi);
     ++maxgi;  //Sart with the next free index.
 
-    for(int i=0; i<oocomm.communicator().rank(); ++i)
+    for(long long i=0; i<oocomm.communicator().rank(); ++i)
       maxgi=maxgi+neededall[i];   // TODO: make this more generic
 
     // Store the global index information for repairing the remote index information
-    std::map<int,SLList<std::pair<T1,Attribute> > > globalIndices;
+    std::map<long long,SLList<std::pair<T1,Attribute> > > globalIndices;
     storeGlobalIndicesOfRemoteIndices(globalIndices, oocomm.remoteIndices());
     indexSet.beginResize();
 
@@ -148,23 +148,23 @@ namespace Dune
     public:
       template<class Graph, class OOComm>
       ParmetisDuneIndexMap(const Graph& graph, const OOComm& com);
-      int toParmetis(int i) const
+      long long toParmetis(long long i) const
       {
         return duneToParmetis[i];
       }
-      int toLocalParmetis(int i) const
+      long long toLocalParmetis(long long i) const
       {
         return duneToParmetis[i]-base_;
       }
-      int operator[](int i) const
+      long long operator[](long long i) const
       {
         return duneToParmetis[i];
       }
-      int toDune(int i) const
+      long long toDune(long long i) const
       {
         return parmetisToDune[i];
       }
-      std::vector<int>::size_type numOfOwnVtx() const
+      std::vector<long long>::size_type numOfOwnVtx() const
       {
         return parmetisToDune.size();
       }
@@ -172,11 +172,11 @@ namespace Dune
       {
         return &vtxDist_[0];
       }
-      int globalOwnerVertices;
+      long long globalOwnerVertices;
     private:
-      int base_;
-      std::vector<int> duneToParmetis;
-      std::vector<int> parmetisToDune;
+      long long base_;
+      std::vector<long long> duneToParmetis;
+      std::vector<long long> parmetisToDune;
       // range of vertices for processor i: vtxdist[i] to vtxdist[i+1] (parmetis global)
       std::vector<Metis::idx_t> vtxDist_;
     };
@@ -185,11 +185,11 @@ namespace Dune
     ParmetisDuneIndexMap::ParmetisDuneIndexMap(const G& graph, const OOComm& oocomm)
       : duneToParmetis(graph.noVertices(), -1), vtxDist_(oocomm.communicator().size()+1)
     {
-      int npes=oocomm.communicator().size(), mype=oocomm.communicator().rank();
+      long long npes=oocomm.communicator().size(), mype=oocomm.communicator().rank();
 
       typedef typename OOComm::OwnerSet OwnerSet;
 
-      int numOfOwnVtx=0;
+      long long numOfOwnVtx=0;
       auto end = oocomm.indexSet().end();
       for(auto index = oocomm.indexSet().begin(); index != end; ++index) {
         if (OwnerSet::contains(index->local().attribute())) {
@@ -197,13 +197,13 @@ namespace Dune
         }
       }
       parmetisToDune.resize(numOfOwnVtx);
-      std::vector<int> globalNumOfVtx(npes);
+      std::vector<long long> globalNumOfVtx(npes);
       // make this number available to all processes
       MPI_Allgather(&numOfOwnVtx, 1, MPI_INT, &(globalNumOfVtx[0]), 1, MPI_INT, oocomm.communicator());
 
-      int base=0;
+      long long base=0;
       vtxDist_[0] = 0;
-      for(int i=0; i<npes; i++) {
+      for(long long i=0; i<npes; i++) {
         if (i<mype) {
           base += globalNumOfVtx[i];
         }
@@ -214,7 +214,7 @@ namespace Dune
 
 #ifdef DEBUG_REPART
       std::cout << oocomm.communicator().rank()<<" vtxDist: ";
-      for(int i=0; i<= npes; ++i)
+      for(long long i=0; i<= npes; ++i)
         std::cout << vtxDist_[i]<<" ";
       std::cout<<std::endl;
 #endif
@@ -263,9 +263,9 @@ namespace Dune
       communicator_=comm;
     }
     template<class Flags,class IS>
-    void buildSendInterface(const std::vector<int>& toPart, const IS& idxset)
+    void buildSendInterface(const std::vector<long long>& toPart, const IS& idxset)
     {
-      std::map<int,int> sizes;
+      std::map<long long,long long> sizes;
 
       for(auto i=idxset.begin(), end=idxset.end(); i!=end; ++i)
         if(Flags::contains(i->local().attribute()))
@@ -281,16 +281,16 @@ namespace Dune
           interfaces()[toPart[i->local()]].first.add(i->local());
     }
 
-    void reserveSpaceForReceiveInterface(int proc, int size)
+    void reserveSpaceForReceiveInterface(long long proc, long long size)
     {
       interfaces()[proc].second.reserve(size);
     }
-    void addReceiveIndex(int proc, std::size_t idx)
+    void addReceiveIndex(long long proc, std::size_t idx)
     {
       interfaces()[proc].second.add(idx);
     }
     template<typename TG>
-    void buildReceiveInterface(std::vector<std::pair<TG,int> >& indices)
+    void buildReceiveInterface(std::vector<std::pair<TG,long long> >& indices)
     {
       std::size_t i=0;
       for(auto idx=indices.begin(); idx!= indices.end(); ++idx) {
@@ -315,10 +315,10 @@ namespace Dune
      * @param comm Communicator for the send.
      */
     template<class GI>
-    void createSendBuf(std::vector<GI>& ownerVec, std::set<GI>& overlapVec, std::set<int>& neighbors, char *sendBuf, int buffersize, MPI_Comm comm) {
+    void createSendBuf(std::vector<GI>& ownerVec, std::set<GI>& overlapVec, std::set<long long>& neighbors, char *sendBuf, long long buffersize, MPI_Comm comm) {
       // Pack owner vertices
       std::size_t s=ownerVec.size();
-      int pos=0;
+      long long pos=0;
       if(s==0)
         ownerVec.resize(1); // otherwise would read beyond the memory bound
       MPI_Pack(&s, 1, MPITraits<std::size_t>::getType(), sendBuf, buffersize, &pos, comm);
@@ -332,7 +332,7 @@ namespace Dune
       MPI_Pack(&s, 1, MPITraits<std::size_t>::getType(), sendBuf, buffersize, &pos, comm);
 
       for(auto i=neighbors.begin(), end= neighbors.end(); i != end; ++i)
-        MPI_Pack(const_cast<int*>(&(*i)), 1, MPI_INT, sendBuf, buffersize, &pos, comm);
+        MPI_Pack(const_cast<long long*>(&(*i)), 1, MPI_INT, sendBuf, buffersize, &pos, comm);
     }
     /**
      * @brief save the values of the received MPI buffer to the owner/overlap vectors
@@ -343,10 +343,10 @@ namespace Dune
      * @param comm The communicator used in the receive.
      */
     template<class GI>
-    void saveRecvBuf(char *recvBuf, int bufferSize, std::vector<std::pair<GI,int> >& ownerVec,
-                     std::set<GI>& overlapVec, std::set<int>& neighbors, RedistributeInterface& inf, int from, MPI_Comm comm) {
+    void saveRecvBuf(char *recvBuf, long long bufferSize, std::vector<std::pair<GI,long long> >& ownerVec,
+                     std::set<GI>& overlapVec, std::set<long long>& neighbors, RedistributeInterface& inf, long long from, MPI_Comm comm) {
       std::size_t size;
-      int pos=0;
+      long long pos=0;
       // unpack owner vertices
       MPI_Unpack(recvBuf, bufferSize, &pos, &size, 1, MPITraits<std::size_t>::getType(), comm);
       inf.reserveSpaceForReceiveInterface(from, size);
@@ -368,9 +368,9 @@ namespace Dune
       //unpack neighbors
       MPI_Unpack(recvBuf, bufferSize, &pos, &size, 1,  MPITraits<std::size_t>::getType(), comm);
       Dune::dverb << "unpacking "<<size<<" neighbors"<<std::endl;
-      typename std::set<int>::iterator npos = neighbors.begin();
+      typename std::set<long long>::iterator npos = neighbors.begin();
       for(; size!=0; --size) {
-        int n;
+        long long n;
         MPI_Unpack(recvBuf, bufferSize, &pos, &n, 1, MPI_INT, comm);
         npos=neighbors.insert(npos, n);
       }
@@ -390,18 +390,18 @@ namespace Dune
      * @param domainMapping[] the array of output domain mapping
      */
     template<typename T>
-    void getDomain(const MPI_Comm& comm, T *part, int numOfOwnVtx, int nparts, int *myDomain, std::vector<int> &domainMapping) {
-      int npes, mype;
+    void getDomain(const MPI_Comm& comm, T *part, long long numOfOwnVtx, long long nparts, long long *myDomain, std::vector<long long> &domainMapping) {
+      long long npes, mype;
       MPI_Comm_size(comm, &npes);
       MPI_Comm_rank(comm, &mype);
       MPI_Status status;
 
       *myDomain = -1;
-      int i=0;
-      int j=0;
+      long long i=0;
+      long long j=0;
 
-      std::vector<int> domain(nparts, 0);
-      std::vector<int> assigned(npes, 0);
+      std::vector<long long> domain(nparts, 0);
+      std::vector<long long> assigned(npes, 0);
       // init domain Mapping
       domainMapping.assign(domainMapping.size(), -1);
 
@@ -410,17 +410,17 @@ namespace Dune
         domain[part[i]]++;
       }
 
-      std::vector<int> domainMatrix(npes * nparts, -1);
+      std::vector<long long> domainMatrix(npes * nparts, -1);
 
       // init buffer with the own domain
-      int *buf = new int[nparts];
+      long long *buf = new long long[nparts];
       for (i=0; i<nparts; i++) {
         buf[i] = domain[i];
         domainMatrix[mype*nparts+i] = domain[i];
       }
-      int pe=0;
-      int src = (mype-1+npes)%npes;
-      int dest = (mype+1)%npes;
+      long long pe=0;
+      long long src = (mype-1+npes)%npes;
+      long long dest = (mype+1)%npes;
       // ring communication, we need n-1 communications for n processors
       for (i=0; i<npes-1; i++) {
         MPI_Sendrecv_replace(buf, nparts, MPI_INT, dest, 0, src, 0, comm, &status);
@@ -436,7 +436,7 @@ namespace Dune
       // Start the domain calculation.
       // The process which contains the maximum number of vertices of a
       // particular domain is selected to choose it's favorate domain
-      int maxOccurance = 0;
+      long long maxOccurance = 0;
       pe = -1;
       std::set<std::size_t> unassigned;
 
@@ -468,12 +468,12 @@ namespace Dune
         maxOccurance = 0;
       }
 
-      typename std::vector<int>::iterator next_free = assigned.begin();
+      typename std::vector<long long>::iterator next_free = assigned.begin();
 
       for(auto udomain = unassigned.begin(),
             end = unassigned.end(); udomain != end; ++udomain)
       {
-        next_free = std::find_if(next_free, assigned.end(), std::bind(std::less<int>(), std::placeholders::_1, 1));
+        next_free = std::find_if(next_free, assigned.end(), std::bind(std::less<long long>(), std::placeholders::_1, 1));
         assert(next_free !=  assigned.end());
         domainMapping[*udomain] = next_free-assigned.begin();
         *next_free = 1;
@@ -501,7 +501,7 @@ namespace Dune
      * @param &overlapSet a global index set contains the overlap vertices to merge/add
      */
     template<class GI>
-    void mergeVec(std::vector<std::pair<GI, int> >& ownerVec, std::set<GI>& overlapSet) {
+    void mergeVec(std::vector<std::pair<GI, long long> >& ownerVec, std::set<GI>& overlapSet) {
 
 #ifdef DEBUG_REPART
       // Safety check for duplicates.
@@ -552,9 +552,9 @@ namespace Dune
      * @param neighbor the output set to store the neighbor indices in.
      */
     template<class OwnerSet, class Graph, class IS, class GI>
-    void getNeighbor(const Graph& g, std::vector<int>& part,
+    void getNeighbor(const Graph& g, std::vector<long long>& part,
                      typename Graph::VertexDescriptor vtx, const IS& indexSet,
-                     int toPe, std::set<GI>& neighbor, std::set<int>& neighborProcs) {
+                     long long toPe, std::set<GI>& neighbor, std::set<long long>& neighborProcs) {
       for(auto edge=g.beginEdges(vtx), end=g.endEdges(vtx); edge!=end; ++edge)
       {
         const typename IS::IndexPair* pindex = indexSet.pair(edge.target());
@@ -569,21 +569,21 @@ namespace Dune
     }
 
     template<class T, class I>
-    void my_push_back(std::vector<T>& ownerVec, const I& index, [[maybe_unused]] int proc)
+    void my_push_back(std::vector<T>& ownerVec, const I& index, [[maybe_unused]] long long proc)
     {
       ownerVec.push_back(index);
     }
 
     template<class T, class I>
-    void my_push_back(std::vector<std::pair<T,int> >& ownerVec, const I& index, int proc)
+    void my_push_back(std::vector<std::pair<T,long long> >& ownerVec, const I& index, long long proc)
     {
       ownerVec.push_back(std::make_pair(index,proc));
     }
     template<class T>
-    void reserve(std::vector<T>&, RedistributeInterface&, int)
+    void reserve(std::vector<T>&, RedistributeInterface&, long long)
     {}
     template<class T>
-    void reserve(std::vector<std::pair<T,int> >& ownerVec, RedistributeInterface& redist, int proc)
+    void reserve(std::vector<std::pair<T,long long> >& ownerVec, RedistributeInterface& redist, long long proc)
     {
       redist.reserveSpaceForReceiveInterface(proc, ownerVec.size());
     }
@@ -607,9 +607,9 @@ namespace Dune
      * @param overlapSet The output vector containing all overlap vertices.
      */
     template<class OwnerSet, class G, class IS, class T, class GI>
-    void getOwnerOverlapVec(const G& graph, std::vector<int>& part, IS& indexSet,
-                            [[maybe_unused]] int myPe, int toPe, std::vector<T>& ownerVec, std::set<GI>& overlapSet,
-                            RedistributeInterface& redist, std::set<int>& neighborProcs) {
+    void getOwnerOverlapVec(const G& graph, std::vector<long long>& part, IS& indexSet,
+                            [[maybe_unused]] long long myPe, long long toPe, std::vector<T>& ownerVec, std::set<GI>& overlapSet,
+                            RedistributeInterface& redist, std::set<long long>& neighborProcs) {
       for(auto index = indexSet.begin(); index != indexSet.end(); ++index) {
         // Only Process owner vertices, the others are not in the parmetis graph.
         if(OwnerSet::contains(index->local().attribute()))
@@ -634,7 +634,7 @@ namespace Dune
      * @param index the given vertex index
      */
     template<class F, class IS>
-    inline bool isOwner(IS& indexSet, int index) {
+    inline bool isOwner(IS& indexSet, long long index) {
 
       const typename IS::IndexPair* pindex=indexSet.pair(index);
 
@@ -732,7 +732,7 @@ namespace Dune
     void getAdjArrays(G& graph, IS& indexSet, Metis::idx_t *xadj,
                       EW& ew)
     {
-      int j=0;
+      long long j=0;
       auto vend = graph.end();
 
       for(auto vertex = graph.begin(); vertex != vend; ++vertex) {
@@ -751,7 +751,7 @@ namespace Dune
   } // end anonymous namespace
 
   template<class G, class T1, class T2>
-  bool buildCommunication(const G& graph, std::vector<int>& realparts,
+  bool buildCommunication(const G& graph, std::vector<long long>& realparts,
                           Dune::OwnerOverlapCopyCommunication<T1,T2>& oocomm,
                           std::shared_ptr<Dune::OwnerOverlapCopyCommunication<T1,T2>>& outcomm,
                           RedistributeInterface& redistInf,
@@ -761,13 +761,13 @@ namespace Dune
   extern "C"
   {
     // backwards compatibility to parmetis < 4.0.0
-    void METIS_PartGraphKway(int *nvtxs, Metis::idx_t *xadj, Metis::idx_t *adjncy, Metis::idx_t *vwgt,
-                             Metis::idx_t *adjwgt, int *wgtflag, int *numflag, int *nparts,
-                             int *options, int *edgecut, Metis::idx_t *part);
+    void METIS_PartGraphKway(long long *nvtxs, Metis::idx_t *xadj, Metis::idx_t *adjncy, Metis::idx_t *vwgt,
+                             Metis::idx_t *adjwgt, long long *wgtflag, long long *numflag, long long *nparts,
+                             long long *options, long long *edgecut, Metis::idx_t *part);
 
-    void METIS_PartGraphRecursive(int *nvtxs, Metis::idx_t *xadj, Metis::idx_t *adjncy, Metis::idx_t *vwgt,
-                                  Metis::idx_t *adjwgt, int *wgtflag, int *numflag, int *nparts,
-                                  int *options, int *edgecut, Metis::idx_t *part);
+    void METIS_PartGraphRecursive(long long *nvtxs, Metis::idx_t *xadj, Metis::idx_t *adjncy, Metis::idx_t *vwgt,
+                                  Metis::idx_t *adjwgt, long long *wgtflag, long long *numflag, long long *nparts,
+                                  long long *options, long long *edgecut, Metis::idx_t *part);
   }
 #endif
 #endif // HAVE_PARMETIS
@@ -809,7 +809,7 @@ namespace Dune
         for(Metis::idx_t i=xadj[vtx]; i< xadj[vtx+1]; ++i) {
           Metis::idx_t target=adjncy[i];
           // search for symmetric edge
-          int found=0;
+          long long found=0;
           for(Metis::idx_t j=xadj[target]; j< xadj[target+1]; ++j)
             if(adjncy[j]==vtx)
               found++;
@@ -834,9 +834,9 @@ namespace Dune
       std::cout<<"Repartitioning from "<<oocomm.communicator().size()
                <<" to "<<nparts<<" parts"<<std::endl;
     Timer time;
-    int rank = oocomm.communicator().rank();
+    long long rank = oocomm.communicator().rank();
 #if !HAVE_PARMETIS
-    int* part = new int[1];
+    long long* part = new long long[1];
     part[0]=0;
 #else
     Metis::idx_t* part = new Metis::idx_t[1]; // where all our data moves to
@@ -849,7 +849,7 @@ namespace Dune
 
         // Build the graph of the communication scheme and create an appropriate indexset.
         // calculate the neighbour vertices
-        int noNeighbours = oocomm.remoteIndices().neighbours();
+        long long noNeighbours = oocomm.remoteIndices().neighbours();
 
         for(auto n= oocomm.remoteIndices().begin(); n !=  oocomm.remoteIndices().end();
             ++n)
@@ -872,7 +872,7 @@ namespace Dune
 #endif
 
         // each process has exactly one vertex!
-        for(int i=0; i<oocomm.communicator().size(); ++i)
+        for(long long i=0; i<oocomm.communicator().size(); ++i)
           vtxdist[i]=i;
         vtxdist[oocomm.communicator().size()]=oocomm.communicator().size();
 
@@ -881,7 +881,7 @@ namespace Dune
 
         // count edges to other processor
         // a vector mapping the index to the owner
-        // std::vector<int> owner(mat.N(), oocomm.communicator().rank());
+        // std::vector<long long> owner(mat.N(), oocomm.communicator().rank());
         // for(NeighbourIterator n= oocomm.remoteIndices().begin(); n !=  oocomm.remoteIndices().end();
         //     ++n)
         //   {
@@ -896,7 +896,7 @@ namespace Dune
         //     }
         //   }
 
-        // std::map<int,Metis::idx_t> edgecount; // edges to other processors
+        // std::map<long long,Metis::idx_t> edgecount; // edges to other processors
         // typedef typename M::ConstRowIterator RIter;
         // typedef typename M::ConstColIterator CIter;
 
@@ -939,7 +939,7 @@ namespace Dune
         wgtflag=3;
 #endif
         Metis::real_t *tpwgts = new Metis::real_t[nparts];
-        for(int i=0; i<nparts; ++i)
+        for(long long i=0; i<nparts; ++i)
           tpwgts[i]=1.0/nparts;
         MPI_Comm comm=oocomm.communicator();
 
@@ -964,8 +964,8 @@ namespace Dune
 
 #ifdef PARALLEL_PARTITION
         Metis::real_t ubvec = 1.15;
-        int ncon=1;
-        int options[5] ={ 0,1,15,0,0};
+        long long ncon=1;
+        long long options[5] ={ 0,1,15,0,0};
 
         //=======================================================
         // ParMETIS_V3_PartKway
@@ -980,8 +980,8 @@ namespace Dune
 #else
         Timer time1;
         std::size_t gnoedges=0;
-        int* noedges = 0;
-        noedges = new int[oocomm.communicator().size()];
+        long long* noedges = 0;
+        noedges = new long long[oocomm.communicator().size()];
         Dune::dverb<<"noNeighbours: "<<noNeighbours<<std::endl;
         // gather number of edges for each vertex.
         MPI_Allgather(&noNeighbours,1,MPI_INT,noedges,1, MPI_INT,oocomm.communicator());
@@ -996,11 +996,11 @@ namespace Dune
         Metis::idx_t *gadjncy = 0;
         Metis::idx_t *gadjwgt = 0;
         Metis::idx_t *gpart = 0;
-        int* displ = 0;
-        int* noxs = 0;
-        int* xdispl = 0;  // displacement for xadj
-        int* novs = 0;
-        int* vdispl=0; // real vertex displacement
+        long long* displ = 0;
+        long long* noxs = 0;
+        long long* xdispl = 0;  // displacement for xadj
+        long long* novs = 0;
+        long long* vdispl=0; // real vertex displacement
 #ifdef USE_WEIGHTS
         std::size_t localNoVtx=vtxdist[rank+1]-vtxdist[rank];
 #endif
@@ -1010,29 +1010,29 @@ namespace Dune
           Dune::dinfo<<"noedges: ";
           print_carray(Dune::dinfo, noedges, oocomm.communicator().size());
           Dune::dinfo<<std::endl;
-          displ = new int[oocomm.communicator().size()];
-          xdispl = new int[oocomm.communicator().size()];
-          noxs = new int[oocomm.communicator().size()];
-          vdispl = new int[oocomm.communicator().size()];
-          novs = new int[oocomm.communicator().size()];
+          displ = new long long[oocomm.communicator().size()];
+          xdispl = new long long[oocomm.communicator().size()];
+          noxs = new long long[oocomm.communicator().size()];
+          vdispl = new long long[oocomm.communicator().size()];
+          novs = new long long[oocomm.communicator().size()];
 
-          for(int i=0; i < oocomm.communicator().size(); ++i) {
+          for(long long i=0; i < oocomm.communicator().size(); ++i) {
             noxs[i]=vtxdist[i+1]-vtxdist[i]+1;
             novs[i]=vtxdist[i+1]-vtxdist[i];
           }
 
           Metis::idx_t *so= vtxdist;
-          int offset = 0;
-          for(int *xcurr = xdispl, *vcurr = vdispl, *end=vdispl+oocomm.communicator().size();
+          long long offset = 0;
+          for(long long *xcurr = xdispl, *vcurr = vdispl, *end=vdispl+oocomm.communicator().size();
               vcurr!=end; ++vcurr, ++xcurr, ++so, ++offset) {
             *vcurr = *so;
             *xcurr = offset + *so;
           }
 
-          int *pdispl =displ;
-          int cdispl = 0;
+          long long *pdispl =displ;
+          long long cdispl = 0;
           *pdispl = 0;
-          for(int *curr=noedges, *end=noedges+oocomm.communicator().size()-1;
+          for(long long *curr=noedges, *end=noedges+oocomm.communicator().size()-1;
               curr!=end; ++curr) {
             ++pdispl; // next displacement
             cdispl += *curr; // next value
@@ -1044,7 +1044,7 @@ namespace Dune
 
           // calculate global number of edges
           // It is bigger than the actual one as we habe size-1 additional end entries
-          for(int *curr=noedges, *end=noedges+oocomm.communicator().size();
+          for(long long *curr=noedges, *end=noedges+oocomm.communicator().size();
               curr!=end; ++curr)
             gnoedges += *curr;
 
@@ -1089,13 +1089,13 @@ namespace Dune
 
           print_carray(Dune::dinfo, gxadj, gxadjlen);
 
-          int offset = 0;
+          long long offset = 0;
           Metis::idx_t increment = vtxdist[1];
           Metis::idx_t *start=gxadj+1;
-          for(int i=1; i<oocomm.communicator().size(); ++i) {
+          for(long long i=1; i<oocomm.communicator().size(); ++i) {
             offset+=1;
-            int lprev = vtxdist[i]-vtxdist[i-1];
-            int l = vtxdist[i+1]-vtxdist[i];
+            long long lprev = vtxdist[i]-vtxdist[i-1];
+            long long l = vtxdist[i+1]-vtxdist[i];
             start+=lprev;
             assert((start+l+offset)-gxadj<=static_cast<Metis::idx_t>(gxadjlen));
             increment = *(start-1);
@@ -1132,7 +1132,7 @@ namespace Dune
           METIS_PartGraphRecursive(&noVertices, &ncon, gxadj, gadjncy, gvwgt, NULL, gadjwgt,
                          &nparts, NULL, NULL, moptions, &edgecut, gpart);
 #else
-          int options[5] = {0, 1, 1, 3, 3};
+          long long options[5] = {0, 1, 1, 3, 3};
           // Call metis
           METIS_PartGraphRecursive(&noVertices, gxadj, gadjncy, gvwgt, gadjwgt, &wgtflag,
                                    &numflag, &nparts, options, &edgecut, gpart);
@@ -1180,7 +1180,7 @@ namespace Dune
 #endif
     Dune::dinfo<<" repart "<<rank <<" -> "<< part[0]<<std::endl;
 
-    std::vector<int> realpart(mat.N(), part[0]);
+    std::vector<long long> realpart(mat.N(), part[0]);
     delete[] part;
 
     oocomm.copyOwnerToAll(realpart, realpart);
@@ -1198,7 +1198,7 @@ namespace Dune
     time.reset();
 
     if(verbose) {
-      int noNeighbours=oocomm.remoteIndices().neighbours();
+      long long noNeighbours=oocomm.remoteIndices().neighbours();
       noNeighbours = oocomm.communicator().sum(noNeighbours)
                      / oocomm.communicator().size();
       if(oocomm.communicator().rank()==0)
@@ -1254,11 +1254,11 @@ namespace Dune
 
 
     // MPI variables
-    int mype = oocomm.communicator().rank();
+    long long mype = oocomm.communicator().rank();
 
     assert(nparts<=static_cast<Metis::idx_t>(oocomm.communicator().size()));
 
-    int myDomain = -1;
+    long long myDomain = -1;
 
     //
     // 1) Prepare the required parameters for using ParMETIS
@@ -1309,7 +1309,7 @@ namespace Dune
       Metis::idx_t numflag=0, wgtflag=0, options[3], edgecut=0, ncon=1;
       //float *tpwgts = NULL;
       Metis::real_t *tpwgts = new Metis::real_t[nparts];
-      for(int i=0; i<nparts; ++i)
+      for(long long i=0; i<nparts; ++i)
         tpwgts[i]=1.0/nparts;
       Metis::real_t ubvec[1];
       options[0] = 0; // 0=default, 1=options are defined in [1]+[2]
@@ -1368,7 +1368,7 @@ namespace Dune
         std::cout<<std::endl;
       }
       std::cout<<mype<<": PARMETIS-Result: ";
-      for(int i=0; i < indexMap.vtxDist()[mype+1]-indexMap.vtxDist()[mype]; ++i) {
+      for(long long i=0; i < indexMap.vtxDist()[mype+1]-indexMap.vtxDist()[mype]; ++i) {
         std::cout<<part[i]<<" ";
       }
       std::cout<<std::endl;
@@ -1404,7 +1404,7 @@ namespace Dune
     //    result
     //
 
-    std::vector<int> domainMapping(nparts);
+    std::vector<long long> domainMapping(nparts);
     if(nparts>1)
       getDomain(comm, part, indexMap.numOfOwnVtx(), nparts, &myDomain, domainMapping);
     else
@@ -1423,7 +1423,7 @@ namespace Dune
     //domain number to real process number
     // domainMapping is the one of parmetis, that is without
     // the overlap/copy vertices
-    std::vector<int> setPartition(oocomm.indexSet().size(), -1);
+    std::vector<long long> setPartition(oocomm.indexSet().size(), -1);
 
     std::size_t i=0; // parmetis index
     for(auto index = oocomm.indexSet().begin(); index != oocomm.indexSet().end(); ++index)
@@ -1436,7 +1436,7 @@ namespace Dune
     // communication only needed for ALU
     // (ghosts with same global id as owners on the same process)
     if (SolverCategory::category(oocomm) ==
-        static_cast<int>(SolverCategory::nonoverlapping))
+        static_cast<long long>(SolverCategory::nonoverlapping))
       oocomm.copyCopyToAll(setPartition, setPartition);
     bool ret = buildCommunication(graph, setPartition, oocomm, outcomm, redistInf,
                                   verbose);
@@ -1452,7 +1452,7 @@ namespace Dune
 
   template<class G, class T1, class T2>
   bool buildCommunication(const G& graph,
-                          std::vector<int>& setPartition, Dune::OwnerOverlapCopyCommunication<T1,T2>& oocomm,
+                          std::vector<long long>& setPartition, Dune::OwnerOverlapCopyCommunication<T1,T2>& oocomm,
                           std::shared_ptr<Dune::OwnerOverlapCopyCommunication<T1,T2>>& outcomm,
                           RedistributeInterface& redistInf,
                           bool verbose)
@@ -1489,46 +1489,46 @@ namespace Dune
     //
     // 4.1) Let's start...
     //
-    int npes = oocomm.communicator().size();
-    int *sendTo = 0;
-    int noSendTo = 0;
-    std::set<int> recvFrom;
+    long long npes = oocomm.communicator().size();
+    long long *sendTo = 0;
+    long long noSendTo = 0;
+    std::set<long long> recvFrom;
 
     // the max number of vertices is stored in the sendTo buffer,
     // not the number of vertices to send! Because the max number of Vtx
     // is used as the fixed buffer size by the MPI send/receive calls
 
-    int mype = oocomm.communicator().rank();
+    long long mype = oocomm.communicator().rank();
 
     {
-      std::set<int> tsendTo;
+      std::set<long long> tsendTo;
       for(auto i=setPartition.begin(), iend = setPartition.end(); i!=iend; ++i)
         tsendTo.insert(*i);
 
       noSendTo = tsendTo.size();
-      sendTo = new int[noSendTo];
-      int idx=0;
+      sendTo = new long long[noSendTo];
+      long long idx=0;
       for(auto i=tsendTo.begin(); i != tsendTo.end(); ++i, ++idx)
         sendTo[idx]=*i;
     }
 
     //
-    int* gnoSend= new int[oocomm.communicator().size()];
-    int* gsendToDispl =  new int[oocomm.communicator().size()+1];
+    long long* gnoSend= new long long[oocomm.communicator().size()];
+    long long* gsendToDispl =  new long long[oocomm.communicator().size()+1];
 
     MPI_Allgather(&noSendTo, 1, MPI_INT, gnoSend, 1,
                   MPI_INT, oocomm.communicator());
 
     // calculate total receive message size
-    int totalNoRecv = 0;
-    for(int i=0; i<npes; ++i)
+    long long totalNoRecv = 0;
+    for(long long i=0; i<npes; ++i)
       totalNoRecv += gnoSend[i];
 
-    int *gsendTo = new int[totalNoRecv];
+    long long *gsendTo = new long long[totalNoRecv];
 
     // calculate displacement for allgatherv
     gsendToDispl[0]=0;
-    for(int i=0; i<npes; ++i)
+    for(long long i=0; i<npes; ++i)
       gsendToDispl[i+1]=gsendToDispl[i]+gnoSend[i];
 
     // gather the data
@@ -1536,8 +1536,8 @@ namespace Dune
                    MPI_INT, oocomm.communicator());
 
     // Extract from which processes we will receive data
-    for(int proc=0; proc < npes; ++proc)
-      for(int i=gsendToDispl[proc]; i < gsendToDispl[proc+1]; ++i)
+    for(long long proc=0; proc < npes; ++proc)
+      for(long long i=gsendToDispl[proc]; i < gsendToDispl[proc+1]; ++i)
         if(gsendTo[i]==mype)
           recvFrom.insert(proc);
 
@@ -1559,7 +1559,7 @@ namespace Dune
 
     std::cout<<std::endl<<std::endl;
     std::cout<<mype<<": sendTo: ";
-    for(int i=0; i<noSendTo; i++) {
+    for(long long i=0; i<noSendTo; i++) {
       std::cout<<sendTo[i]<<" ";
     }
     std::cout<<std::endl<<std::endl;
@@ -1584,11 +1584,11 @@ namespace Dune
 
     typedef typename OOComm::ParallelIndexSet::GlobalIndex GI;
     typedef std::vector<GI> GlobalVector;
-    std::vector<std::pair<GI,int> > myOwnerVec;
+    std::vector<std::pair<GI,long long> > myOwnerVec;
     std::set<GI> myOverlapSet;
     GlobalVector sendOwnerVec;
     std::set<GI> sendOverlapSet;
-    std::set<int> myNeighbors;
+    std::set<long long> myNeighbors;
 
     //    getOwnerOverlapVec<OwnerSet>(graph, setPartition, oocomm.globalLookup(),
     //				 mype, mype, myOwnerVec, myOverlapSet, redistInf, myNeighbors);
@@ -1597,20 +1597,20 @@ namespace Dune
     MPI_Request *requests = new MPI_Request[noSendTo];
 
     // Create all messages to be sent
-    for(int i=0; i < noSendTo; ++i) {
+    for(long long i=0; i < noSendTo; ++i) {
       // clear the vector for sending
       sendOwnerVec.clear();
       sendOverlapSet.clear();
       // get all owner and overlap vertices for process j and save these
       // in the vectors sendOwnerVec and sendOverlapSet
-      std::set<int> neighbors;
+      std::set<long long> neighbors;
       getOwnerOverlapVec<OwnerSet>(graph, setPartition, oocomm.globalLookup(),
                                    mype, sendTo[i], sendOwnerVec, sendOverlapSet, redistInf,
                                    neighbors);
       // +2, we need 2 integer more for the length of each part
       // (owner/overlap) of the array
-      int buffersize=0;
-      int tsize;
+      long long buffersize=0;
+      long long tsize;
       MPI_Pack_size(1, MPITraits<std::size_t>::getType(), oocomm.communicator(), &buffersize);
       MPI_Pack_size(sendOwnerVec.size(), MPITraits<GI>::getType(), oocomm.communicator(), &tsize);
       buffersize +=tsize;
@@ -1642,14 +1642,14 @@ namespace Dune
     time.reset();
 
     // Receive Messages
-    int noRecv = recvFrom.size();
-    int oldbuffersize=0;
+    long long noRecv = recvFrom.size();
+    long long oldbuffersize=0;
     char* recvBuf = 0;
     while(noRecv>0) {
       // probe for an incoming message
       MPI_Status stat;
       MPI_Probe(MPI_ANY_SOURCE, 99,  oocomm.communicator(), &stat);
-      int buffersize;
+      long long buffersize;
       MPI_Get_count(&stat, MPI_PACKED, &buffersize);
 
       if(oldbuffersize<buffersize) {
@@ -1670,19 +1670,19 @@ namespace Dune
     time.reset();
     // Wait for sending messages to complete
     MPI_Status *statuses = new MPI_Status[noSendTo];
-    int send = MPI_Waitall(noSendTo, requests, statuses);
+    long long send = MPI_Waitall(noSendTo, requests, statuses);
 
     // check for errors
     if(send==MPI_ERR_IN_STATUS) {
       std::cerr<<mype<<": Error in sending :"<<std::endl;
       // Search for the error
-      for(int i=0; i< noSendTo; i++)
+      for(long long i=0; i< noSendTo; i++)
         if(statuses[i].MPI_ERROR!=MPI_SUCCESS) {
           char message[300];
-          int messageLength;
+          long long messageLength;
           MPI_Error_string(statuses[i].MPI_ERROR, message, &messageLength);
           std::cerr<<" source="<<statuses[i].MPI_SOURCE<<" message: ";
-          for(int j = 0; j < messageLength; j++)
+          for(long long j = 0; j < messageLength; j++)
             std::cout<<message[j];
         }
       std::cerr<<std::endl;
@@ -1696,7 +1696,7 @@ namespace Dune
     }
     time.reset();
 
-    for(int i=0; i < noSendTo; ++i)
+    for(long long i=0; i < noSendTo; ++i)
       delete[] sendBuffers[i];
 
     delete[] sendBuffers;
@@ -1712,7 +1712,7 @@ namespace Dune
     // build the new outputIndexSet
 
 
-    int color=0;
+    long long color=0;
 
     if (!existentOnNextLevel) {
       // this process is not used anymore
@@ -1724,9 +1724,9 @@ namespace Dune
     outcomm = std::make_shared<OOComm>(outputComm,SolverCategory::category(oocomm),true);
 
     // translate neighbor ranks.
-    int newrank=outcomm->communicator().rank();
-    int *newranks=new int[oocomm.communicator().size()];
-    std::vector<int> tneighbors;
+    long long newrank=outcomm->communicator().rank();
+    long long *newranks=new long long[oocomm.communicator().size()];
+    std::vector<long long> tneighbors;
     tneighbors.reserve(myNeighbors.size());
 
     typename OOComm::ParallelIndexSet& outputIndexSet = outcomm->indexSet();
@@ -1768,7 +1768,7 @@ namespace Dune
     // The owners are sorted according to there global index
     // Therefore the entries of ownerVec are the same as the
     // ones in the resulting index set.
-    int i=0;
+    long long i=0;
     using LocalIndexT = typename OOComm::ParallelIndexSet::LocalIndex;
     for(auto g=myOwnerVec.begin(), end =myOwnerVec.end(); g!=end; ++g, ++i ) {
       outputIndexSet.add(g->first,LocalIndexT(i, OwnerOverlapCopyAttributeSet::owner, true));
@@ -1811,7 +1811,7 @@ namespace Dune
     outputIndexSet.endResize();
 
 #ifdef DUNE_ISTL_WITH_CHECKING
-    int numOfOwnVtx =0;
+    long long numOfOwnVtx =0;
     auto end = outputIndexSet.end();
     for(auto index = outputIndexSet.begin(); index != end; ++index) {
       if (OwnerSet::contains(index->local().attribute())) {
@@ -1871,7 +1871,7 @@ namespace Dune
   }
 #else
   template<class G, class P,class T1, class T2, class R>
-  bool graphRepartition(const G& graph, P& oocomm, int nparts,
+  bool graphRepartition(const G& graph, P& oocomm, long long nparts,
                         std::shared_ptr<P>& outcomm,
                         R& redistInf,
                         bool v=false)
@@ -1882,7 +1882,7 @@ namespace Dune
 
 
   template<class G, class P,class T1, class T2, class R>
-  bool commGraphRepartition(const G& graph, P& oocomm, int nparts,
+  bool commGraphRepartition(const G& graph, P& oocomm, long long nparts,
                             std::shared_ptr<P>& outcomm,
                             R& redistInf,
                             bool v=false)

@@ -1108,7 +1108,7 @@ namespace Dune
     static constexpr size_t n = std::decay_t<decltype(Impl::asMatrix(std::declval<T>()))>::rows;
     static constexpr size_t m = std::decay_t<decltype(Impl::asMatrix(std::declval<T>()))>::cols;
     template<class Domain>
-    static int size(const Domain & d)
+    static long long size(const Domain & d)
     {
       assert(n==m);
       return m*d.size();

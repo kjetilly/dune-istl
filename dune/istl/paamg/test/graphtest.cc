@@ -15,9 +15,9 @@
 #include <dune/common/typetraits.hh>
 #include <dune/istl/io.hh>
 
-int testEdgeDepends(const Dune::Amg::EdgeProperties& flags)
+long long testEdgeDepends(const Dune::Amg::EdgeProperties& flags)
 {
-  int ret=0;
+  long long ret=0;
 
   if(!flags.depends()) {
     std::cerr << "Depends does not return true after setDepends! "<<__FILE__
@@ -51,9 +51,9 @@ int testEdgeDepends(const Dune::Amg::EdgeProperties& flags)
   return ret;
 }
 
-int testEdgeInfluences(const Dune::Amg::EdgeProperties& flags)
+long long testEdgeInfluences(const Dune::Amg::EdgeProperties& flags)
 {
-  int ret=0;
+  long long ret=0;
 
   if(!flags.influences()) {
     std::cerr << "Influences does not return true after setInfluences! "<<__FILE__
@@ -82,9 +82,9 @@ int testEdgeInfluences(const Dune::Amg::EdgeProperties& flags)
 
 }
 
-int testEdgeTwoWay(const Dune::Amg::EdgeProperties& flags)
+long long testEdgeTwoWay(const Dune::Amg::EdgeProperties& flags)
 {
-  int ret=0;
+  long long ret=0;
 
   if(!flags.depends()) {
     std::cerr << "Depends does not return true after setDepends! "<<__FILE__
@@ -120,9 +120,9 @@ int testEdgeTwoWay(const Dune::Amg::EdgeProperties& flags)
 
 }
 
-int testEdgeReset(const Dune::Amg::EdgeProperties& flags)
+long long testEdgeReset(const Dune::Amg::EdgeProperties& flags)
 {
-  int ret=0;
+  long long ret=0;
   if(flags.depends()) {
     std::cerr << "Depend bit should be cleared after initialization or reset! "<<__FILE__
               <<":"<<__LINE__<<std::endl;
@@ -161,9 +161,9 @@ int testEdgeReset(const Dune::Amg::EdgeProperties& flags)
 
 }
 
-int testVertexReset(Dune::Amg::VertexProperties& flags)
+long long testVertexReset(Dune::Amg::VertexProperties& flags)
 {
-  int ret=0;
+  long long ret=0;
 
   if(flags.front()) {
     std::cerr<<"Front flag should not be set if reset!"<<__FILE__ ":"<<__LINE__
@@ -187,9 +187,9 @@ int testVertexReset(Dune::Amg::VertexProperties& flags)
 
 }
 
-int testVertex()
+long long testVertex()
 {
-  int ret=0;
+  long long ret=0;
 
   Dune::Amg::VertexProperties flags;
 
@@ -245,9 +245,9 @@ int testVertex()
 
 }
 
-int testEdge()
+long long testEdge()
 {
-  int ret=0;
+  long long ret=0;
 
   Dune::Amg::EdgeProperties flags;
 
@@ -288,12 +288,12 @@ int testEdge()
 
 }
 
-template<int N, class M>
+template<long long N, class M>
 void setupSparsityPattern(M& A)
 {
   for (typename M::CreateIterator i = A.createbegin(); i != A.createend(); ++i) {
-    int x = i.index()%N; // x coordinate in the 2d field
-    int y = i.index()/N;  // y coordinate in the 2d field
+    long long x = i.index()%N; // x coordinate in the 2d field
+    long long y = i.index()/N;  // y coordinate in the 2d field
 
     if(y>0)
       // insert lower neighbour
@@ -314,7 +314,7 @@ void setupSparsityPattern(M& A)
   }
 }
 
-template<int N, class M>
+template<long long N, class M>
 void setupAnisotropic(M& A, double eps)
 {
   typename M::block_type diagonal = 0, bone=0, beps=0;
@@ -329,8 +329,8 @@ void setupAnisotropic(M& A, double eps)
     b->operator[](b.index())=-eps;
 
   for (typename M::RowIterator i = A.begin(); i != A.end(); ++i) {
-    int x = i.index()%N; // x coordinate in the 2d field
-    int y = i.index()/N;  // y coordinate in the 2d field
+    long long x = i.index()%N; // x coordinate in the 2d field
+    long long y = i.index()/N;  // y coordinate in the 2d field
 
     i->operator[](i.index())=diagonal;
 
@@ -416,7 +416,7 @@ void printGraph(G& graph, std::ostream& os)
 
 void testGraph ()
 {
-  const int N=8;
+  const long long N=8;
 
   typedef Dune::FieldMatrix<double,1,1> ScalarDouble;
   typedef Dune::BCRSMatrix<ScalarDouble> BCRSMat;
@@ -446,7 +446,7 @@ void testGraph ()
 
   std::vector<bool> excluded(N*N, false);
 
-  for(int i=0; i < N; i++) {
+  for(long long i=0; i < N; i++) {
     excluded[i]=excluded[(N-1)*N+i]=true;
     excluded[i*N]=excluded[i*N+N-1]=true;
   }
@@ -493,7 +493,7 @@ void testAggregate()
 
   typedef Dune::FieldMatrix<double,1,1> ScalarDouble;
   typedef Dune::BCRSMatrix<ScalarDouble> BCRSMat;
-  const int N=20;
+  const long long N=20;
 
   BCRSMat mat(N*N,N*N,N*N*5,BCRSMat::row_wise);
 
@@ -510,7 +510,7 @@ void testAggregate()
 
   std::vector<bool> excluded(N*N, false);
 
-  for(int i=0; i < N; i++) {
+  for(long long i=0; i < N; i++) {
     excluded[i]=excluded[(N-1)*N+i]=true;
     excluded[i*N]=excluded[i*N+N-1]=true;
   }
@@ -543,7 +543,7 @@ void testAggregate()
 
 }
 
-int main (int argc , char ** argv)
+long long main (long long argc , char ** argv)
 {
   try {
     testGraph();

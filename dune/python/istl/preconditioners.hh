@@ -94,7 +94,7 @@ namespace Dune
       pybind11::options opts;
       opts.disable_function_signatures();
 
-      module.def( "SeqSSOR", [] ( const M &A, int n, field_type w ) {
+      module.def( "SeqSSOR", [] ( const M &A, long long n, field_type w ) {
           return static_cast< Preconditioner * >( new SeqSSOR< M, X, Y >( A, n, w ) );
         }, "matrix"_a, "iterations"_a = 1, "relaxation"_a = field_type( 1 ),
         R"doc(
@@ -112,7 +112,7 @@ namespace Dune
               The symmetric successive over-relaxation iteration can only be applied if the matrix is symmetric and the diagonal entries are all non-zero.
         )doc" );
 
-      module.def( "SeqSOR", [] ( const M &A, int n, field_type w ) {
+      module.def( "SeqSOR", [] ( const M &A, long long n, field_type w ) {
           return static_cast< Preconditioner * >( new SeqSOR< M, X, Y >( A, n, w ) );
         }, "matrix"_a, "iterations"_a = 1, "relaxation"_a = field_type( 1 ),
         R"doc(
@@ -130,7 +130,7 @@ namespace Dune
             The successive over-relaxation iteration can only be applied if the matrix diagonal entries are all non-zero.
         )doc" );
 
-      module.def( "SeqGaussSeidel", [] ( const M &A, int n, field_type w ) {
+      module.def( "SeqGaussSeidel", [] ( const M &A, long long n, field_type w ) {
           return static_cast< Preconditioner * >( new SeqGS< M, X, Y >( A, n, w ) );
         }, "matrix"_a, "iterations"_a = 1, "relaxation"_a = field_type( 1 ),
         R"doc(
@@ -148,7 +148,7 @@ namespace Dune
               The Gauss-Seidel iteration can only be applied if the matrix diagonal entries are all non-zeros.
         )doc" );
 
-      module.def( "SeqJacobi", [] ( const M &A, int n, field_type w ) {
+      module.def( "SeqJacobi", [] ( const M &A, long long n, field_type w ) {
           return static_cast< Preconditioner * >( new SeqJac< M, X, Y >( A, n, w ) );
         }, "matrix"_a, "iterations"_a = 1, "relaxation"_a = field_type( 1 ),
         R"doc(
@@ -166,7 +166,7 @@ namespace Dune
               The Jacobi iteration can only be applied if the matrix diagonal entries are all non-zeros.
         )doc" );
 
-      module.def( "SeqILU", [] ( const M &A, int n, field_type w ) {
+      module.def( "SeqILU", [] ( const M &A, long long n, field_type w ) {
           return static_cast< Preconditioner * >( new SeqILU< M, X, Y >( A, n, w ) );
         }, "matrix"_a, "iterations"_a = 1, "relaxation"_a = field_type( 1 ),
         R"doc(Incomplete LU factorization (with fill-in) preconditioner

@@ -9,7 +9,7 @@
 
 
 template< class B >
-void setupSP (Dune::BCRSMatrix< B >& A, int n )
+void setupSP (Dune::BCRSMatrix< B >& A, long long n )
 {
   using matrix_type = Dune::BCRSMatrix< B >;
 
@@ -22,7 +22,7 @@ void setupSP (Dune::BCRSMatrix< B >& A, int n )
 }
 
 template < class B >
-void setupHilbertMatrix ( Dune::BCRSMatrix< B >& A, B block, int n  )
+void setupHilbertMatrix ( Dune::BCRSMatrix< B >& A, B block, long long n  )
 {
   using matrix_type = Dune::BCRSMatrix< B >;
   using field_type  = typename matrix_type::field_type;
@@ -39,13 +39,13 @@ void setupHilbertMatrix ( Dune::BCRSMatrix< B >& A, B block, int n  )
 }
 
 template< class T >
-void setupHilbertMatrix ( Dune::BCRSMatrix< Dune::FieldMatrix< T, 1, 1 > >& A, int n  )
+void setupHilbertMatrix ( Dune::BCRSMatrix< Dune::FieldMatrix< T, 1, 1 > >& A, long long n  )
 {
   setupHilbertMatrix( A, Dune::FieldMatrix< T, 1, 1 >{ 1.0 }, n );
 }
 
 template< class T >
-void setupHilbertMatrix ( Dune::BCRSMatrix< T >& A, int n  )
+void setupHilbertMatrix ( Dune::BCRSMatrix< T >& A, long long n  )
 {
   setupHilbertMatrix( A, T{ 1.0 }, n );
 }

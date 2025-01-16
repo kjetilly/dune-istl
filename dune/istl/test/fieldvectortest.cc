@@ -22,7 +22,7 @@
 
 using namespace Dune;
 
-int main() try
+long long main() try
 {
   // Test a double vector
   FieldVector<double,3> vDouble = {1.0, 2.0, 3.0};

@@ -65,7 +65,7 @@ TestSuite scalarProductTest(const ScalarProduct& scalarProduct,
 }
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   MPIHelper::instance(argc, argv);
 

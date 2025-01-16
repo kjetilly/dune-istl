@@ -204,8 +204,8 @@ namespace Dune
      *                                  the approximated eigenvector.
      */
     PowerIteration_Algorithms (const BCRSMatrix& m,
-                               const unsigned int nIterationsMax = 1000,
-                               const unsigned int verbosity_level = 0)
+                               const size_t nIterationsMax = 1000,
+                               const size_t verbosity_level = 0)
       : m_(m), nIterationsMax_(nIterationsMax),
         verbosity_level_(verbosity_level),
         mu_(0.0),
@@ -227,8 +227,8 @@ namespace Dune
          "Only BCRSMatrices with square blocks are supported.");
 
       // assert that m_ is square
-      const int nrows = m_.M() * BCRSMatrix::block_type::rows;
-      const int ncols = m_.N() * BCRSMatrix::block_type::cols;
+      const long long nrows = m_.M() * BCRSMatrix::block_type::rows;
+      const long long ncols = m_.N() * BCRSMatrix::block_type::cols;
       if (nrows != ncols)
         DUNE_THROW(Dune::ISTLError,"Matrix is not square ("
                    << nrows << "x" << ncols << ").");
@@ -956,7 +956,7 @@ namespace Dune
      * \brief Return the number of iterations in last application
      *        of an algorithm.
      */
-    inline unsigned int getIterationCount () const
+    inline size_t getIterationCount () const
     {
       if (nIterations_ == 0)
         DUNE_THROW(Dune::ISTLError,"No algorithm applied, yet.");
@@ -993,8 +993,8 @@ namespace Dune
       if (itMatrix_)
       {
         // iterate over entries in iteration matrix diagonal
-        constexpr int rowBlockSize = BCRSMatrix::block_type::rows;
-        constexpr int colBlockSize = BCRSMatrix::block_type::cols;
+        constexpr long long rowBlockSize = BCRSMatrix::block_type::rows;
+        constexpr long long colBlockSize = BCRSMatrix::block_type::cols;
         for (typename BCRSMatrix::size_type i = 0;
              i < itMatrix_->M()*rowBlockSize; ++i)
         {
@@ -1016,10 +1016,10 @@ namespace Dune
   protected:
     // parameters related to iterative eigenvalue algorithms
     const BCRSMatrix& m_;
-    const unsigned int nIterationsMax_;
+    const size_t nIterationsMax_;
 
     // verbosity setting
-    const unsigned int verbosity_level_;
+    const size_t verbosity_level_;
 
     // shift mu_ used by iteration operator/matrix (m_ - mu_*I)
     mutable Real mu_;
@@ -1036,7 +1036,7 @@ namespace Dune
     // memory for storing temporary variables (mutable as they shall
     // just be effectless auxiliary variables of the const apply*(...)
     // methods)
-    mutable unsigned int nIterations_;
+    mutable size_t nIterations_;
 
     // constants for printing verbosity information
     const std::string title_;

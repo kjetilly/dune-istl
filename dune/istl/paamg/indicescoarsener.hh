@@ -329,7 +329,7 @@ namespace Dune
 
       for(Iterator neighbour = fineRemote.begin();
           neighbour != end; ++neighbour) {
-        int process = neighbour->first;
+        long long process = neighbour->first;
 
         assert(neighbour->second.first==neighbour->second.second);
 

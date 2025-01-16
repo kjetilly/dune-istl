@@ -71,7 +71,7 @@ namespace Dune {
       umfpack_dl_free_symbolic(args...);
     }
     template<typename... A>
-    static int load_numeric(A... args)
+    static long long load_numeric(A... args)
     {
       return umfpack_dl_load_numeric(args...);
     }
@@ -91,7 +91,7 @@ namespace Dune {
       umfpack_dl_report_status(args...);
     }
     template<typename... A>
-    static int save_numeric(A... args)
+    static long long save_numeric(A... args)
     {
       return umfpack_dl_save_numeric(args...);
     }
@@ -129,7 +129,7 @@ namespace Dune {
       umfpack_zl_free_symbolic(args...);
     }
     template<typename... A>
-    static int load_numeric(A... args)
+    static long long load_numeric(A... args)
     {
       return umfpack_zl_load_numeric(args...);
     }
@@ -149,7 +149,7 @@ namespace Dune {
       umfpack_zl_report_status(args...);
     }
     template<typename... A>
-    static int save_numeric(A... args)
+    static long long save_numeric(A... args)
     {
       return umfpack_zl_save_numeric(args...);
     }
@@ -172,7 +172,7 @@ namespace Dune {
     struct UMFPackVectorChooser
     {};
 
-    template<typename T, typename A, int n, int m>
+    template<typename T, typename A, long long n, long long m>
     struct UMFPackVectorChooser<BCRSMatrix<FieldMatrix<T,n,m>,A > >
     {
       /** @brief The type of the domain of the solver */
@@ -246,7 +246,7 @@ namespace Dune {
      *  @param matrix the matrix to solve for
      *  @param verbose [0..2] set the verbosity level, defaults to 0
      */
-    UMFPack(const Matrix& matrix, int verbose=0) : matrixIsLoaded_(false)
+    UMFPack(const Matrix& matrix, long long verbose=0) : matrixIsLoaded_(false)
     {
       //check whether T is a supported type
       static_assert((std::is_same<T,double>::value) || (std::is_same<T,std::complex<double> >::value),
@@ -264,7 +264,7 @@ namespace Dune {
      * @param matrix the matrix to solve for
      * @param verbose [0..2] set the verbosity level, defaults to 0
      */
-    UMFPack(const Matrix& matrix, int verbose, bool) : matrixIsLoaded_(false)
+    UMFPack(const Matrix& matrix, long long verbose, bool) : matrixIsLoaded_(false)
     {
       //check whether T is a supported type
       static_assert((std::is_same<T,double>::value) || (std::is_same<T,std::complex<double> >::value),
@@ -284,7 +284,7 @@ namespace Dune {
      * verbose           | The verbosity level. default=0
     */
     UMFPack(const Matrix& mat_, const ParameterTree& config)
-      : UMFPack(mat_, config.get<int>("verbose", 0))
+      : UMFPack(mat_, config.get<long long>("verbose", 0))
     {}
 
     /** @brief default constructor
@@ -307,14 +307,14 @@ namespace Dune {
      * Thus, if you always use this you will only compute the decomposition once (and when you manually
      * deleted the decomposition file).
      */
-    UMFPack(const Matrix& mat_, const char* file, int verbose=0)
+    UMFPack(const Matrix& mat_, const char* file, long long verbose=0)
     {
       //check whether T is a supported type
       static_assert((std::is_same<T,double>::value) || (std::is_same<T,std::complex<double> >::value),
                     "Unsupported Type in UMFPack (only double and std::complex<double> supported)");
       Caller::defaults(UMF_Control);
       setVerbosity(verbose);
-      int errcode = Caller::load_numeric(&UMF_Numeric, const_cast<char*>(file));
+      long long errcode = Caller::load_numeric(&UMF_Numeric, const_cast<char*>(file));
       if ((errcode == UMFPACK_ERROR_out_of_memory) || (errcode == UMFPACK_ERROR_file_IO))
       {
         matrixIsLoaded_ = false;
@@ -334,13 +334,13 @@ namespace Dune {
      * @throws Dune::Exception When not being able to load the file. Does not need knowledge of the
      * actual matrix!
      */
-    UMFPack(const char* file, int verbose=0)
+    UMFPack(const char* file, long long verbose=0)
     {
       //check whether T is a supported type
       static_assert((std::is_same<T,double>::value) || (std::is_same<T,std::complex<double> >::value),
                     "Unsupported Type in UMFPack (only double and std::complex<double> supported)");
       Caller::defaults(UMF_Control);
-      int errcode = Caller::load_numeric(&UMF_Numeric, const_cast<char*>(file));
+      long long errcode = Caller::load_numeric(&UMF_Numeric, const_cast<char*>(file));
       if (errcode == UMFPACK_ERROR_out_of_memory)
         DUNE_THROW(Dune::Exception, "ran out of memory while loading UMFPack decomposition");
       if (errcode == UMFPACK_ERROR_file_IO)
@@ -426,7 +426,7 @@ namespace Dune {
      *
      * \throws RangeError If nonexisting option was requested
      */
-    void setOption(unsigned int option, double value)
+    void setOption(size_t option, double value)
     {
       if (option >= UMFPACK_CONTROL)
         DUNE_THROW(RangeError, "Requested non-existing UMFPack option");
@@ -439,7 +439,7 @@ namespace Dune {
      */
     void saveDecomposition(const char* file)
     {
-      int errcode = Caller::save_numeric(UMF_Numeric, const_cast<char*>(file));
+      long long errcode = Caller::save_numeric(UMF_Numeric, const_cast<char*>(file));
       if (errcode != UMFPACK_OK)
         DUNE_THROW(Dune::Exception,"IO ERROR while trying to save UMFPack decomposition");
     }
@@ -488,7 +488,7 @@ namespace Dune {
      * 1 - a bit of statistics on decomposition and solution
      * 2 - lots of statistics on decomposition and solution
      */
-    void setVerbosity(int v)
+    void setVerbosity(long long v)
     {
       verbosity_ = v;
       // set the verbosity level in UMFPack
@@ -592,13 +592,13 @@ namespace Dune {
 
     UMFPackMatrix umfpackMatrix_;
     bool matrixIsLoaded_;
-    int verbosity_;
+    long long verbosity_;
     void *UMF_Symbolic;
     void *UMF_Numeric;
     double UMF_Control[UMFPACK_CONTROL];
   };
 
-  template<typename T, typename A, int n, int m>
+  template<typename T, typename A, long long n, long long m>
   struct IsDirectSolver<UMFPack<BCRSMatrix<FieldMatrix<T,n,m>,A> > >
   {
     enum { value=true};
@@ -619,9 +619,9 @@ namespace Dune {
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& mat, const Dune::ParameterTree& config,
       std::enable_if_t<
-                isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
-      int verbose = config.get("verbose", 0);
+      long long verbose = config.get("verbose", 0);
       return std::make_shared<Dune::UMFPack<M>>(mat,verbose);
     }
 
@@ -631,7 +631,7 @@ namespace Dune {
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& /*mat*/, const Dune::ParameterTree& /*config*/,
       std::enable_if_t<
-                !isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                !isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
       DUNE_THROW(UnsupportedType,
         "Unsupported Type in UMFPack (only double and std::complex<double> supported)");

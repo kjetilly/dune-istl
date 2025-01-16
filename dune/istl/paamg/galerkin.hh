@@ -137,7 +137,7 @@ namespace Dune
     private:
 
       /**
-       * @brief Builds the data structure needed for rebuilding the aggregates int the overlap.
+       * @brief Builds the data structure needed for rebuilding the aggregates long long the overlap.
        * @param graph The graph of the matrix.
        * @param pinfo The parallel information.
        * @param aggregates The mapping onto the aggregates.
@@ -454,7 +454,7 @@ namespace Dune
 
             // only needed for ALU
             // (ghosts with same global id as owners on the same process)
-            if (SolverCategory::category(pinfo) == static_cast<int>(SolverCategory::nonoverlapping)) {
+            if (SolverCategory::category(pinfo) == static_cast<long long>(SolverCategory::nonoverlapping)) {
               if(overlapVertices != overlapEnd) {
                 if(*overlapVertices->aggregate!=AggregatesMap<Vertex>::ISOLATED) {
                   constructOverlapConnectivity(row, graph, visitedMap, aggregates, overlapVertices, overlapEnd);

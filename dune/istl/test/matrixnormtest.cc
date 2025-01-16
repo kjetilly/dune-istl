@@ -8,7 +8,7 @@
 #include <dune/istl/matrix.hh>
 
 template <class V>
-void checkNormNANVector(V const &v, int line) {
+void checkNormNANVector(V const &v, long long line) {
   if (!std::isnan(v.infinity_norm())) {
     std::cerr << "error: norm not NaN: infinity_norm() on line " << line
               << " (type: " << Dune::className(v[0]) << ")" << std::endl;
@@ -17,7 +17,7 @@ void checkNormNANVector(V const &v, int line) {
 }
 
 template <class M>
-void checkNormNANMatrix(M const &v, int line) {
+void checkNormNANMatrix(M const &v, long long line) {
   if (!std::isnan(v.frobenius_norm())) {
     std::cerr << "error: norm not NaN: frobenius_norm() on line " << line
               << " (type: " << Dune::className(v[0][0]) << ")" << std::endl;
@@ -65,7 +65,7 @@ void test_nan(T const &mynan) {
   }
 }
 
-int main() {
+long long main() {
   {
     double nan = std::nan("");
     test_nan(nan);

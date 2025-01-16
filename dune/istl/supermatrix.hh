@@ -33,8 +33,8 @@ namespace Dune
   template<>
   struct SuperMatrixCreateSparseChooser<float>
   {
-    static void create(SuperMatrix *mat, int n, int m, int offset,
-                       float *values, int *rowindex, int* colindex,
+    static void create(SuperMatrix *mat, long long n, long long m, long long offset,
+                       float *values, long long *rowindex, long long* colindex,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       sCreate_CompCol_Matrix(mat, n, m, offset, values, rowindex, colindex,
@@ -56,8 +56,8 @@ namespace Dune
   template<>
   struct SuperMatrixCreateSparseChooser<double>
   {
-    static void create(SuperMatrix *mat, int n, int m, int offset,
-                       double *values, int *rowindex, int* colindex,
+    static void create(SuperMatrix *mat, long long n, long long m, long long offset,
+                       double *values, long long *rowindex, long long* colindex,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       dCreate_CompCol_Matrix(mat, n, m, offset, values, rowindex, colindex,
@@ -79,8 +79,8 @@ namespace Dune
   template<>
   struct SuperMatrixCreateSparseChooser<std::complex<float> >
   {
-    static void create(SuperMatrix *mat, int n, int m, int offset,
-                       std::complex<float> *values, int *rowindex, int* colindex,
+    static void create(SuperMatrix *mat, long long n, long long m, long long offset,
+                       std::complex<float> *values, long long *rowindex, long long* colindex,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       cCreate_CompCol_Matrix(mat, n, m, offset, reinterpret_cast< ::complex*>(values),
@@ -102,8 +102,8 @@ namespace Dune
   template<>
   struct SuperMatrixCreateSparseChooser<std::complex<double> >
   {
-    static void create(SuperMatrix *mat, int n, int m, int offset,
-                       std::complex<double> *values, int *rowindex, int* colindex,
+    static void create(SuperMatrix *mat, long long n, long long m, long long offset,
+                       std::complex<double> *values, long long *rowindex, long long* colindex,
                        Stype_t stype, Dtype_t dtype, Mtype_t mtype)
     {
       zCreate_CompCol_Matrix(mat, n, m, offset, reinterpret_cast<doublecomplex*>(values),
@@ -192,7 +192,7 @@ namespace Dune
    */
   template<class B, class TA>
   class SuperLUMatrix<BCRSMatrix<B,TA> >
-    : public ISTL::Impl::BCCSMatrix<typename BCRSMatrix<B,TA>::field_type, int>
+    : public ISTL::Impl::BCCSMatrix<typename BCRSMatrix<B,TA>::field_type, long long>
   {
     template<class M, class X, class TM, class TD, class T1>
     friend class SeqOverlappingSchwarz;
@@ -209,10 +209,10 @@ namespace Dune
      * @brief Constructor that initializes the data.
      * @param mat The matrix to convert.
      */
-    explicit SuperLUMatrix(const Matrix& mat) : ISTL::Impl::BCCSMatrix<BCRSMatrix<B,TA>, int>(mat)
+    explicit SuperLUMatrix(const Matrix& mat) : ISTL::Impl::BCCSMatrix<BCRSMatrix<B,TA>, long long>(mat)
     {}
 
-    SuperLUMatrix() : ISTL::Impl::BCCSMatrix<typename BCRSMatrix<B,TA>::field_type, int>()
+    SuperLUMatrix() : ISTL::Impl::BCCSMatrix<typename BCRSMatrix<B,TA>::field_type, long long>()
     {}
 
     /** @brief Destructor */
@@ -242,7 +242,7 @@ namespace Dune
       using Matrix = BCRSMatrix<B,TA>;
       this->N_ = MatrixDimension<Matrix>::rowdim(mat);
       this->M_ = MatrixDimension<Matrix>::coldim(mat);
-      ISTL::Impl::BCCSMatrixInitializer<Matrix, int> initializer(*this);
+      ISTL::Impl::BCCSMatrixInitializer<Matrix, long long> initializer(*this);
 
       copyToBCCSMatrix(initializer, mat);
 
@@ -261,7 +261,7 @@ namespace Dune
       using Matrix = BCRSMatrix<B,TA>;
       this->N_ = MatrixDimension<Matrix>::rowdim(mat);
       this->M_ = MatrixDimension<Matrix>::coldim(mat);
-      ISTL::Impl::BCCSMatrixInitializer<Matrix, int> initializer(*this);
+      ISTL::Impl::BCCSMatrixInitializer<Matrix, long long> initializer(*this);
 
       copyToBCCSMatrix(initializer, mat);
 
@@ -302,7 +302,7 @@ namespace Dune
     /** @brief free allocated space. */
     virtual void free()
     {
-      ISTL::Impl::BCCSMatrix<typename BCRSMatrix<B,TA>::field_type, int>::free();
+      ISTL::Impl::BCCSMatrix<typename BCRSMatrix<B,TA>::field_type, long long>::free();
       SUPERLU_FREE(A.Store);
     }
   private:
@@ -311,7 +311,7 @@ namespace Dune
 
   template<class B, class A>
   class SuperMatrixInitializer<BCRSMatrix<B,A> >
-    : public ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, int>
+    : public ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, long long>
   {
     template<class I, class S, class D>
     friend class OverlappingSchwarzInitializer;
@@ -319,16 +319,16 @@ namespace Dune
     typedef BCRSMatrix<B,A> Matrix;
     typedef Dune::SuperLUMatrix<Matrix> SuperLUMatrix;
 
-    SuperMatrixInitializer(SuperLUMatrix& lum) : ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, int>(lum)
+    SuperMatrixInitializer(SuperLUMatrix& lum) : ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, long long>(lum)
       ,slumat(&lum)
     {}
 
-    SuperMatrixInitializer() : ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, int>()
+    SuperMatrixInitializer() : ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, long long>()
     {}
 
     virtual void createMatrix() const
     {
-      ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, int>::createMatrix();
+      ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<B,A>, long long>::createMatrix();
       SuperMatrixCreateSparseChooser<typename Matrix::field_type>
            ::create(&slumat->A, slumat->N_, slumat->M_, slumat->colstart[this->cols],
              slumat->values,slumat->rowindex, slumat->colstart, SLU_NC,

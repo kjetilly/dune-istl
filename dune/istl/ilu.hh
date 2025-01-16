@@ -151,7 +151,7 @@ namespace Dune {
       return A;
     }
 
-    template<class K, int n, int m>
+    template<class K, long long n, long long m>
     K& firstMatrixElement (FieldMatrix<K,n,m>& A)
     {
       return A[0][0];
@@ -164,7 +164,7 @@ namespace Dune {
             determine it automatically at run-time.
      */
     template<class M>
-    void blockILUDecomposition (const M& A, int n, M& ILU)
+    void blockILUDecomposition (const M& A, long long n, M& ILU)
     {
       // iterator types
       typedef typename M::ColIterator coliterator;
@@ -172,7 +172,7 @@ namespace Dune {
       typedef typename M::ConstColIterator ccoliterator;
       typedef typename M::CreateIterator createiterator;
       typedef typename M::field_type K;
-      typedef std::map<size_t, int> map;
+      typedef std::map<size_t, long long> map;
       typedef typename map::iterator mapiterator;
 
       // symbolic factorization phase, store generation number in first matrix element
@@ -195,10 +195,10 @@ namespace Dune {
             coliterator kj = ILU[(*ik).first].find((*ik).first);                       // diagonal in k
             for (++kj; kj!=endk; ++kj)                       // row k eliminates in row i
             {
-              // we misuse the storage to store an int. If the field_type is std::complex, we have to access the real/abs part
+              // we misuse the storage to store an long long. If the field_type is std::complex, we have to access the real/abs part
               // starting from C++11, we can use std::abs to always return a real value, even if it is double/float
               using std::abs;
-              int generation = (int) Simd::lane(0, abs( firstMatrixElement(*kj) ));
+              long long generation = (long long) Simd::lane(0, abs( firstMatrixElement(*kj) ));
               if (generation<n)
               {
                 mapiterator ij = rowpattern.find(kj.index());

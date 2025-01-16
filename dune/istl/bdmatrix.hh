@@ -52,20 +52,20 @@ namespace Dune {
 
     //! increment block level counter
     [[deprecated("Use free function blockLevel(). Will be removed after 2.8.")]]
-    static constexpr unsigned int blocklevel = blockLevel<B>()+1;
+    static constexpr size_t blocklevel = blockLevel<B>()+1;
 
     /** \brief Default constructor */
     BDMatrix() : BCRSMatrix<B,A>() {}
 
-    explicit BDMatrix(int size)
+    explicit BDMatrix(long long size)
       : BCRSMatrix<B,A>(size, size, BCRSMatrix<B,A>::random) {
 
-      for (int i=0; i<size; i++)
+      for (long long i=0; i<size; i++)
         this->BCRSMatrix<B,A>::setrowsize(i, 1);
 
       this->BCRSMatrix<B,A>::endrowsizes();
 
-      for (int i=0; i<size; i++)
+      for (long long i=0; i<size; i++)
         this->BCRSMatrix<B,A>::addindex(i, i);
 
       this->BCRSMatrix<B,A>::endindices();

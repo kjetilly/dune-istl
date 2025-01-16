@@ -33,7 +33,7 @@ namespace Dune
     namespace detail
     {
 
-      template< class K, int n >
+      template< class K, long long n >
       inline static void copy ( const char *ptr, const ssize_t *shape, const ssize_t *strides, Dune::FieldVector< K, n > &v )
       {
         if( *shape != static_cast< ssize_t >( n ) )
@@ -220,7 +220,7 @@ namespace Dune
 
       using pybind11::operator""_a;
 
-      int rows = BlockVector::block_type::dimension;
+      long long rows = BlockVector::block_type::dimension;
       std::string vectorTypename = "Dune::BlockVector< Dune::FieldVector< double, "+ std::to_string(rows) + " > >";
       auto cls = Dune::Python::insertClass< BlockVector >( scope, clsName, Dune::Python::GenerateTypeName(vectorTypename), Dune::Python::IncludeFiles{"dune/istl/bvector.hh","dune/python/istl/bvector.hh"});
 

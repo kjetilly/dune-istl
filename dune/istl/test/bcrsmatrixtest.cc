@@ -15,7 +15,7 @@
 using namespace Dune;
 
 template <class Matrix, class Vector>
-int testBCRSMatrix(int size)
+long long testBCRSMatrix(long long size)
 {
   // Set up a test matrix
   Matrix mat;
@@ -40,10 +40,10 @@ int testBCRSMatrix(int size)
   return 0;
 }
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   // Test scalar matrices and vectors
-  int ret = testBCRSMatrix<BCRSMatrix<double>, BlockVector<double> >(10);
+  long long ret = testBCRSMatrix<BCRSMatrix<double>, BlockVector<double> >(10);
 
   // Test block matrices and vectors with trivial blocks
   ret = testBCRSMatrix<BCRSMatrix<FieldMatrix<double,1,1> >, BlockVector<FieldVector<double,1> > >(10);

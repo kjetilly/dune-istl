@@ -19,7 +19,7 @@ namespace Dune
   template<typename FirstRow, typename... Args>
   class MultiTypeBlockMatrix;
 
-  template<int I, int crow, int remain_row>
+  template<long long I, long long crow, long long remain_row>
   class MultiTypeBlockMatrix_Solver;
 }
 
@@ -436,7 +436,7 @@ namespace Dune {
   }
 
   //make algmeta_itsteps known
-  template<int I, typename M>
+  template<long long I, typename M>
   struct algmeta_itsteps;
 
   /**
@@ -445,7 +445,7 @@ namespace Dune {
      For the given row (index "crow") each element is used to
      calculate the equation's right side.
    */
-  template<int I, int crow, int ccol, int remain_col>                             //MultiTypeBlockMatrix_Solver_Col: iterating over one row
+  template<long long I, long long crow, long long ccol, long long remain_col>                             //MultiTypeBlockMatrix_Solver_Col: iterating over one row
   class MultiTypeBlockMatrix_Solver_Col {                                                      //calculating b- A[i][j]*x[j]
   public:
     /**
@@ -458,7 +458,7 @@ namespace Dune {
     }
 
   };
-  template<int I, int crow, int ccol>                                             //MultiTypeBlockMatrix_Solver_Col recursion end
+  template<long long I, long long crow, long long ccol>                                             //MultiTypeBlockMatrix_Solver_Col recursion end
   class MultiTypeBlockMatrix_Solver_Col<I,crow,ccol,0> {
   public:
     template <typename Trhs, typename TVector, typename TMatrix, typename K>
@@ -473,7 +473,7 @@ namespace Dune {
      The methods of this class are called by the solver specializations
      for MultiTypeBlockVector & MultiTypeBlockMatrix types (dbgs, bsorf, bsorb, dbjac).
    */
-  template<int I, int crow, int remain_row>
+  template<long long I, long long crow, long long remain_row>
   class MultiTypeBlockMatrix_Solver {
   public:
 
@@ -591,7 +591,7 @@ namespace Dune {
 
 
   };
-  template<int I, int crow>                                                       //recursion end for remain_row = 0
+  template<long long I, long long crow>                                                       //recursion end for remain_row = 0
   class MultiTypeBlockMatrix_Solver<I,crow,0> {
   public:
     template <typename TVector, typename TMatrix, typename K>

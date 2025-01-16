@@ -58,7 +58,7 @@ namespace Dune {
       template arguments.
     */
     template<class V, class Type, class Tag, class... Args>
-    int addRegistryToFactory(Dune::ParameterizedObjectFactory<Type(Args...), std::string>& factory,
+    long long addRegistryToFactory(Dune::ParameterizedObjectFactory<Type(Args...), std::string>& factory,
                               Tag){
       constexpr auto count = DUNE_GET_COUNTER(Tag);
       Dune::Hybrid::forEach(std::make_index_sequence<count>{},

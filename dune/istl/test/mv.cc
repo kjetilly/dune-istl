@@ -10,11 +10,11 @@
 #include <dune/common/timer.hh>
 #include "laplacian.hh"
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
 
-  const int BS=1;
-  int N=100;
+  const long long BS=1;
+  long long N=100;
 
   if(argc>1)
     N = atoi(argv[1]);
@@ -39,15 +39,15 @@ int main(int argc, char** argv)
 
   watch.reset();
 
-  int iter=1000;
+  long long iter=1000;
 
-  for(int i=0; i< iter; ++i)
+  for(long long i=0; i< iter; ++i)
     fop.apply(x,b);
 
   std::cout<<iter<<" MV took "<<watch.elapsed()<<" seconds"<<std::endl;
   watch.reset();
 
-  for(int i=0; i< iter; ++i) {
+  for(long long i=0; i< iter; ++i) {
     x=0;
     mat.umv(b,x);
   }

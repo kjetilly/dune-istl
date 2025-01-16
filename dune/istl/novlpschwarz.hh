@@ -78,8 +78,8 @@ namespace Dune {
     typedef typename RIL::const_iterator RILIterator;
     typedef typename M::ConstColIterator ColIterator;
     typedef typename M::ConstRowIterator RowIterator;
-    typedef std::multimap<int,int> MM;
-    typedef std::multimap<int,std::pair<int,RILIterator> > RIMap;
+    typedef std::multimap<long long,long long> MM;
+    typedef std::multimap<long long,std::pair<long long,RILIterator> > RIMap;
     typedef typename RIMap::iterator RIMapit;
 
     /**
@@ -149,7 +149,7 @@ namespace Dune {
         for (MM::iterator iter = bordercontribution.begin();
              iter != bordercontribution.end(); ++iter)
           bordercontribution.erase(iter);
-        std::map<int,int> owner; //key: local index i, value: process, that owns i
+        std::map<long long,long long> owner; //key: local index i, value: process, that owns i
         RIMap rimap;
 
         // for each local index make multimap rimap:
@@ -163,16 +163,16 @@ namespace Dune {
                   if (rindex->localIndexPair().local().local() == i.index()) {
                     rimap.insert
                       (std::make_pair(i.index(),
-                                      std::pair<int,RILIterator>(remote->first, rindex)));
+                                      std::pair<long long,RILIterator>(remote->first, rindex)));
                     if(rindex->attribute()==OwnerOverlapCopyAttributeSet::owner)
                       owner.insert(std::make_pair(i.index(),remote->first));
                   }
             }
 
-        int iowner = 0;
+        long long iowner = 0;
         for (RowIterator i = _A_->begin(); i != _A_->end(); ++i) {
           if (mask[i.index()] == 0) {
-            std::map<int,int>::iterator it = owner.find(i.index());
+            std::map<long long,long long>::iterator it = owner.find(i.index());
             iowner = it->second;
             std::pair<RIMapit, RIMapit> foundiit = rimap.equal_range(i.index());
             for (ColIterator j = (*_A_)[i.index()].begin(); j != (*_A_)[i.index()].end(); ++j) {
@@ -199,7 +199,7 @@ namespace Dune {
                 // if the owner of j does not have i as interior/border dof,
                 // it will not be taken into account
                 if (flag==true)
-                  bordercontribution.insert(std::pair<int,int>(i.index(),j.index()));
+                  bordercontribution.insert(std::pair<long long,long long>(i.index(),j.index()));
               }
             }
           }
@@ -218,7 +218,7 @@ namespace Dune {
               std::pair<MM::iterator, MM::iterator> itp =
                 bordercontribution.equal_range(i.index());
               for (MM::iterator it = itp.first; it != itp.second; ++it)
-                if ((*it).second == (int)j.index())
+                if ((*it).second == (long long)j.index())
                   Impl::asMatrix(*j).usmv(alpha,x[j.index()],y[i.index()]);
             }
           }
@@ -247,7 +247,7 @@ namespace Dune {
     const communication_type& communication;
     mutable bool buildcomm;
     mutable std::vector<double> mask;
-    mutable std::multimap<int,int>  bordercontribution;
+    mutable std::multimap<long long,long long>  bordercontribution;
   };
 
   /** @} */

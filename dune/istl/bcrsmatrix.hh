@@ -504,7 +504,7 @@ namespace Dune {
 
     //! increment block level counter
     [[deprecated("Use free function blockLevel(). Will be removed after 2.8.")]]
-    static constexpr unsigned int blocklevel = blockLevel<B>()+1;
+    static constexpr size_t blocklevel = blockLevel<B>()+1;
 
     //! we support two modes
     enum BuildMode {
@@ -1881,7 +1881,7 @@ namespace Dune {
 
     //! infinity norm (row sum norm, how to generalize for blocks?)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1901,7 +1901,7 @@ namespace Dune {
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1921,7 +1921,7 @@ namespace Dune {
 
     //! infinity norm (row sum norm, how to generalize for blocks?)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1944,7 +1944,7 @@ namespace Dune {
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");

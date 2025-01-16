@@ -21,13 +21,13 @@
 #include <dune/istl/multitypeblockmatrix.hh>
 #include <dune/istl/blocklevel.hh>
 
-template<int i, int j>
+template<long long i, long long j>
 using FMBlock = Dune::FieldMatrix<double,i,j>;
 
-template<int i>
+template<long long i>
 using FVBlock = Dune::FieldVector<double,i>;
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   using namespace Dune;
 

@@ -333,7 +333,7 @@ namespace Dune
       static_assert(std::is_same<PI,SequentialInformation>::value,
                     "Currently only sequential runs are supported");
       // TODO: reestablish compile time checks.
-      //static_assert(static_cast<int>(PI::category)==static_cast<int>(S::category),
+      //static_assert(static_cast<long long>(PI::category)==static_cast<long long>(S::category),
       //             "Matrix and Solver must match in terms of category!");
       auto matrixptr = stackobject_to_shared_ptr(matrix);
       createHierarchies(criterion, matrixptr, pinfo);

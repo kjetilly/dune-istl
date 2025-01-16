@@ -48,7 +48,7 @@ using namespace Dune;
 template <class Matrix, class Vector>
 void setupProblem(Matrix& matrix, Vector& b)
 {
-  int n=100;
+  long long n=100;
 
   setupLaplacian(matrix,n);
 
@@ -107,7 +107,7 @@ void testAllPreconditioners(const Matrix& matrix, const Vector& b)
   testPreconditioner(matrix, b, x, seqILDL);
 }
 
-int main() try
+long long main() try
 {
   {
     using Matrix = BCRSMatrix<double>;

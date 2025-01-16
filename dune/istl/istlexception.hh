@@ -51,7 +51,7 @@ namespace Dune {
    */
   class MatrixBlockError : public virtual Dune::FMatrixError {
   public:
-    int r, c; // row and column index of the entry from which the error resulted
+    long long r, c; // row and column index of the entry from which the error resulted
   };
 
   /** @} end documentation */

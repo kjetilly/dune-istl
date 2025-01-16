@@ -136,15 +136,15 @@ Dune::TestSuite DotProductTest(const size_t numBlocks,const size_t blockSizeOrCa
 }
 
 
-int main()
+long long main()
 {
   Dune::TestSuite t;
   const size_t BlockSize = 5;
   const size_t numBlocks = 10;
   const size_t capacity = BlockSize * numBlocks * 2; // use capacity here, that we can use the a constructor taking two integers  for both BlockVector and VariableBlockVector
 
-  t.subTest(DotProductTest<Dune::BlockVector<Dune::FieldVector<int,BlockSize> >, Dune::BlockVector<Dune::FieldVector<int,BlockSize> > >  (numBlocks,capacity));
-  t.subTest(DotProductTest<Dune::VariableBlockVector<Dune::FieldVector<int,1> >, Dune::VariableBlockVector<Dune::FieldVector<int,1> > >  (numBlocks,1));
+  t.subTest(DotProductTest<Dune::BlockVector<Dune::FieldVector<long long,BlockSize> >, Dune::BlockVector<Dune::FieldVector<long long,BlockSize> > >  (numBlocks,capacity));
+  t.subTest(DotProductTest<Dune::VariableBlockVector<Dune::FieldVector<long long,1> >, Dune::VariableBlockVector<Dune::FieldVector<long long,1> > >  (numBlocks,1));
 
   t.subTest(DotProductTest<Dune::BlockVector<Dune::FieldVector<float,BlockSize> >, Dune::BlockVector<Dune::FieldVector<std::complex<float>,BlockSize> > >  (numBlocks,capacity));
   t.subTest(DotProductTest<Dune::VariableBlockVector<Dune::FieldVector<float,1> >, Dune::VariableBlockVector<Dune::FieldVector<std::complex<float>,1> > >  (numBlocks,BlockSize));

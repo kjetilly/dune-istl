@@ -85,7 +85,7 @@ template class Dune::SuperLU<Dune::BCRSMatrix<Dune::FieldMatrix<std::complex<dou
 #endif
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 try
 {
 #if HAVE_SUPERLU

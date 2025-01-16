@@ -33,7 +33,7 @@ template <class VectorType>
 void testWriteVectorToMatlab()
 {
   VectorType v;
-  for (unsigned int i = 0; i < v.size(); ++i)
+  for (size_t i = 0; i < v.size(); ++i)
   {
     v[i] = i;
   }
@@ -41,7 +41,7 @@ void testWriteVectorToMatlab()
   Dune::writeVectorToMatlabHelper(v, std::cout);
 }
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   /* testing the writeMatrixToMatlabHelper method for BlockType=FieldMatrix with different field_types */
   testWriteMatrix<Dune::FieldMatrix<double,1,1> >();

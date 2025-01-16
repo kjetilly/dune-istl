@@ -155,7 +155,7 @@ namespace Dune
 
       void init(const Matrix* matrix);
 
-      void initRow(const Row& row, int index);
+      void initRow(const Row& row, long long index);
 
       void examine(const ColIter& col);
 
@@ -182,7 +182,7 @@ namespace Dune
       /** @brief The functor for calculating the norm. */
       Norm norm_;
       /** @brief index of the currently evaluated row. */
-      int row_;
+      long long row_;
       /** @brief The norm of the current diagonal. */
       real_type diagonal_;
       std::vector<real_type> vals_;
@@ -198,7 +198,7 @@ namespace Dune
     }
 
     template<class M, class N>
-    inline void SymmetricMatrixDependency<M,N>::initRow(const Row& row, int index)
+    inline void SymmetricMatrixDependency<M,N>::initRow(const Row& row, long long index)
     {
       using std::min;
       vals_.assign(row.size(), 0.0);
@@ -274,7 +274,7 @@ namespace Dune
 
       void init(const Matrix* matrix);
 
-      void initRow(const Row& row, int index);
+      void initRow(const Row& row, long long index);
 
       void examine(const ColIter& col);
 
@@ -301,7 +301,7 @@ namespace Dune
       /** @brief The functor for calculating the norm. */
       Norm norm_;
       /** @brief index of the currently evaluated row. */
-      int row_;
+      long long row_;
       /** @brief The norm of the current diagonal. */
       real_type diagonal_;
     };
@@ -335,7 +335,7 @@ namespace Dune
 
       void init(const Matrix* matrix);
 
-      void initRow(const Row& row, int index);
+      void initRow(const Row& row, long long index);
 
       void examine(const ColIter& col);
 
@@ -362,19 +362,19 @@ namespace Dune
       /** @brief The functor for calculating the norm. */
       Norm norm_;
       /** @brief index of the currently evaluated row. */
-      int row_;
+      long long row_;
       /** @brief The norm of the current diagonal. */
       real_type diagonal_;
     private:
-      void initRow(const Row& row, int index, const std::true_type&);
-      void initRow(const Row& row, int index, const std::false_type&);
+      void initRow(const Row& row, long long index, const std::true_type&);
+      void initRow(const Row& row, long long index, const std::false_type&);
     };
 
     /**
      * @brief Norm that uses only the [N][N] entry of the block to determine couplings.
      *
      */
-    template<int N>
+    template<long long N>
     class Diagonal
     {
     public:
@@ -632,7 +632,7 @@ namespace Dune
        *         the number of skipped aggregates built.
        */
       template<class M, class G, class C>
-      std::tuple<int,int,int,int> buildAggregates(const M& matrix, G& graph, const C& criterion,
+      std::tuple<long long,long long,long long,long long> buildAggregates(const M& matrix, G& graph, const C& criterion,
                                                   bool finestLevel);
 
       /**
@@ -860,7 +860,7 @@ namespace Dune
       /**
        * @brief Get the id identifying the aggregate.
        */
-      int id();
+      long long id();
 
       /** @brief get an iterator over the vertices of the aggregate. */
       const_iterator begin() const;
@@ -878,7 +878,7 @@ namespace Dune
        * @brief The number of the currently referenced
        * aggregate.
        */
-      int id_;
+      long long id_;
 
       /**
        * @brief The matrix graph the aggregates live on.
@@ -949,7 +949,7 @@ namespace Dune
        *         the number of skipped aggregates built.
        */
       template<class M, class C>
-      std::tuple<int,int,int,int> build(const M& m, G& graph,
+      std::tuple<long long,long long,long long,long long> build(const M& m, G& graph,
                                         AggregatesMap<Vertex>& aggregates, const C& c,
                                         bool finestLevel);
     private:
@@ -997,7 +997,7 @@ namespace Dune
       /**
        * @brief Number of vertices mapped.
        */
-      int size_;
+      long long size_;
 
       /**
        * @brief Stack.
@@ -1022,7 +1022,7 @@ namespace Dune
         /** @brief The aggregates information. */
         const AggregatesMap<Vertex>& aggregates_;
         /** @brief The current size. */
-        int size_;
+        long long size_;
         Vertex maxSize_;
         /** @brief The index of the top element. */
         typename MatrixGraph::ConstVertexIterator begin_;
@@ -1098,7 +1098,7 @@ namespace Dune
         /** @brief Constructor */
         Counter();
         /** @brief Access the current count. */
-        int value();
+        long long value();
 
       protected:
         /** @brief Increment counter */
@@ -1107,7 +1107,7 @@ namespace Dune
         void decrement();
 
       private:
-        int count_;
+        long long count_;
       };
 
 
@@ -1134,7 +1134,7 @@ namespace Dune
        * @brief Count the number of neighbours of a vertex that belong
        * to the aggregate front.
        */
-      int noFrontNeighbours(const Vertex& vertex) const;
+      long long noFrontNeighbours(const Vertex& vertex) const;
 
       /**
        * @brief Counter of TwoWayConnections.
@@ -1156,7 +1156,7 @@ namespace Dune
        * @return The number of one way connections from the vertex to
        * the aggregate.
        */
-      int twoWayConnections(const Vertex&, const AggregateDescriptor& aggregate,
+      long long twoWayConnections(const Vertex&, const AggregateDescriptor& aggregate,
                             const AggregatesMap<Vertex>& aggregates) const;
 
       /**
@@ -1179,7 +1179,7 @@ namespace Dune
        * @return The number of one way connections from the vertex to
        * the aggregate.
        */
-      int oneWayConnections(const Vertex&, const AggregateDescriptor& aggregate,
+      long long oneWayConnections(const Vertex&, const AggregateDescriptor& aggregate,
                             const AggregatesMap<Vertex>& aggregates) const;
 
       /**
@@ -1304,7 +1304,7 @@ namespace Dune
        * neighbours the vertex depends on and the number of unaggregated
        * neighbours the vertex influences.
        */
-      int unusedNeighbours(const Vertex& vertex, const AggregatesMap<Vertex>& aggregates) const;
+      long long unusedNeighbours(const Vertex& vertex, const AggregatesMap<Vertex>& aggregates) const;
 
       /**
        * @brief Count connections to neighbours.
@@ -1319,7 +1319,7 @@ namespace Dune
        * @return The pair of number of connections to unaggregate vertices
        * and number of connections to vertices of the specific aggregate.
        */
-      std::pair<int,int> neighbours(const Vertex& vertex,
+      std::pair<long long,long long> neighbours(const Vertex& vertex,
                                     const AggregateDescriptor& aggregate,
                                     const AggregatesMap<Vertex>& aggregates) const;
       /**
@@ -1338,7 +1338,7 @@ namespace Dune
        * the vertex depends on and the number of
        * neighbours of the aggregate the vertex influences.
        */
-      int aggregateNeighbours(const Vertex& vertex, const AggregateDescriptor& aggregate, const AggregatesMap<Vertex>& aggregates) const;
+      long long aggregateNeighbours(const Vertex& vertex, const AggregateDescriptor& aggregate, const AggregatesMap<Vertex>& aggregates) const;
 
       /**
        * @brief Checks wether a vertex is admisible to be added to an aggregate.
@@ -1402,19 +1402,19 @@ namespace Dune
     }
 
     template<class M, class N>
-    inline void SymmetricDependency<M,N>::initRow(const Row& row, int index)
+    inline void SymmetricDependency<M,N>::initRow(const Row& row, long long index)
     {
       initRow(row, index, std::is_convertible<field_type, real_type>());
     }
 
     template<class M, class N>
-    inline void SymmetricDependency<M,N>::initRow(const Row& row, int index, const std::false_type&)
+    inline void SymmetricDependency<M,N>::initRow(const Row& row, long long index, const std::false_type&)
     {
       DUNE_THROW(InvalidStateException, "field_type needs to convertible to real_type");
     }
 
     template<class M, class N>
-    inline void SymmetricDependency<M,N>::initRow([[maybe_unused]] const Row& row, int index, const std::true_type&)
+    inline void SymmetricDependency<M,N>::initRow([[maybe_unused]] const Row& row, long long index, const std::true_type&)
     {
       using std::min;
       maxValue_ = min(- std::numeric_limits<typename Matrix::field_type>::max(), std::numeric_limits<typename Matrix::field_type>::min());
@@ -1483,7 +1483,7 @@ namespace Dune
     }
 
     template<class M, class N>
-    inline void Dependency<M,N>::initRow([[maybe_unused]] const Row& row, int index)
+    inline void Dependency<M,N>::initRow([[maybe_unused]] const Row& row, long long index)
     {
       using std::min;
       maxValue_ = min(- std::numeric_limits<real_type>::max(), std::numeric_limits<real_type>::min());
@@ -1648,7 +1648,7 @@ namespace Dune
     }
 
     template<class G,class S>
-    inline int Aggregate<G,S>::id()
+    inline long long Aggregate<G,S>::id()
     {
       return id_;
     }
@@ -1752,7 +1752,7 @@ namespace Dune
                                                      VM& visitedMap) const
     {
       typedef typename L::const_iterator ListIterator;
-      int visitedSpheres = 0;
+      long long visitedSpheres = 0;
 
       visited.push_back(start);
       put(visitedMap, start, true);
@@ -1922,7 +1922,7 @@ namespace Dune
       --count_;
     }
     template<class G>
-    inline int Aggregator<G>::Counter::value()
+    inline long long Aggregator<G>::Counter::value()
     {
       return count_;
     }
@@ -1935,7 +1935,7 @@ namespace Dune
     }
 
     template<class G>
-    int Aggregator<G>::twoWayConnections(const Vertex& vertex, const AggregateDescriptor& aggregate,
+    long long Aggregator<G>::twoWayConnections(const Vertex& vertex, const AggregateDescriptor& aggregate,
                                          const AggregatesMap<Vertex>& aggregates) const
     {
       TwoWayCounter counter;
@@ -1944,7 +1944,7 @@ namespace Dune
     }
 
     template<class G>
-    int Aggregator<G>::oneWayConnections(const Vertex& vertex, const AggregateDescriptor& aggregate,
+    long long Aggregator<G>::oneWayConnections(const Vertex& vertex, const AggregateDescriptor& aggregate,
                                          const AggregatesMap<Vertex>& aggregates) const
     {
       OneWayCounter counter;
@@ -2001,13 +2001,13 @@ namespace Dune
     }
 
     template<class G>
-    int Aggregator<G>::unusedNeighbours(const Vertex& vertex, const AggregatesMap<Vertex>& aggregates) const
+    long long Aggregator<G>::unusedNeighbours(const Vertex& vertex, const AggregatesMap<Vertex>& aggregates) const
     {
       return aggregateNeighbours(vertex, AggregatesMap<Vertex>::UNAGGREGATED, aggregates);
     }
 
     template<class G>
-    std::pair<int,int> Aggregator<G>::neighbours(const Vertex& vertex,
+    std::pair<long long,long long> Aggregator<G>::neighbours(const Vertex& vertex,
                                                  const AggregateDescriptor& aggregate,
                                                  const AggregatesMap<Vertex>& aggregates) const
     {
@@ -2021,7 +2021,7 @@ namespace Dune
 
 
     template<class G>
-    int Aggregator<G>::aggregateNeighbours(const Vertex& vertex, const AggregateDescriptor& aggregate, const AggregatesMap<Vertex>& aggregates) const
+    long long Aggregator<G>::aggregateNeighbours(const Vertex& vertex, const AggregateDescriptor& aggregate, const AggregatesMap<Vertex>& aggregates) const
     {
       DependencyCounter counter;
       visitAggregateNeighbours(vertex, aggregate, aggregates, counter);
@@ -2196,7 +2196,7 @@ namespace Dune
     }
 
     template<class G>
-    int Aggregator<G>::noFrontNeighbours(const Vertex& vertex) const
+    long long Aggregator<G>::noFrontNeighbours(const Vertex& vertex) const
     {
       FrontNeighbourCounter counter(*graph_);
       visitNeighbours(*graph_, vertex, counter);
@@ -2284,7 +2284,7 @@ namespace Dune
 
       std::size_t distance_ =0;
       while(aggregate_->size() < c.minAggregateSize()&& distance_<c.maxDistance()) {
-        int maxTwoCons=0, maxOneCons=0, maxNeighbours=-1;
+        long long maxTwoCons=0, maxOneCons=0, maxNeighbours=-1;
         double maxCon=-1;
 
         std::vector<Vertex> candidates;
@@ -2297,14 +2297,14 @@ namespace Dune
           if(graph_->getVertexProperties(*vertex).isolated())
             continue;
 
-          int twoWayCons = twoWayConnections(*vertex, aggregate_->id(), aggregates);
+          long long twoWayCons = twoWayConnections(*vertex, aggregate_->id(), aggregates);
 
           /* The case of two way connections. */
           if( maxTwoCons == twoWayCons && twoWayCons > 0) {
             double con = connectivity(*vertex, aggregates);
 
             if(con == maxCon) {
-              int neighbours = noFrontNeighbours(*vertex);
+              long long neighbours = noFrontNeighbours(*vertex);
 
               if(neighbours > maxNeighbours) {
                 maxNeighbours = neighbours;
@@ -2327,7 +2327,7 @@ namespace Dune
             candidates.push_back(*vertex);
 
             // two way connections precede
-            maxOneCons = std::numeric_limits<int>::max();
+            maxOneCons = std::numeric_limits<long long>::max();
           }
 
           if(twoWayCons > 0)
@@ -2336,7 +2336,7 @@ namespace Dune
           }
 
           /* The one way case */
-          int oneWayCons = oneWayConnections(*vertex, aggregate_->id(), aggregates);
+          long long oneWayCons = oneWayConnections(*vertex, aggregate_->id(), aggregates);
 
           if(oneWayCons==0)
             continue; // No strong connections, skip the tests.
@@ -2348,7 +2348,7 @@ namespace Dune
             double con = connectivity(*vertex, aggregates);
 
             if(con == maxCon) {
-              int neighbours = noFrontNeighbours(*vertex);
+              long long neighbours = noFrontNeighbours(*vertex);
 
               if(neighbours > maxNeighbours) {
                 maxNeighbours = neighbours;
@@ -2387,7 +2387,7 @@ namespace Dune
 
     template<typename V>
     template<typename M, typename G, typename C>
-    std::tuple<int,int,int,int> AggregatesMap<V>::buildAggregates(const M& matrix, G& graph, const C& criterion,
+    std::tuple<long long,long long,long long,long long> AggregatesMap<V>::buildAggregates(const M& matrix, G& graph, const C& criterion,
                                                                   bool finestLevel)
     {
       Aggregator<G> aggregator;
@@ -2396,7 +2396,7 @@ namespace Dune
 
     template<class G>
     template<class M, class C>
-    std::tuple<int,int,int,int> Aggregator<G>::build(const M& m, G& graph, AggregatesMap<Vertex>& aggregates, const C& c,
+    std::tuple<long long,long long,long long,long long> Aggregator<G>::build(const M& m, G& graph, AggregatesMap<Vertex>& aggregates, const C& c,
                                                      bool finestLevel)
     {
       using std::max;
@@ -2414,9 +2414,9 @@ namespace Dune
       buildDependency(graph, m, c, finestLevel);
 
       dverb<<"Build dependency took "<< watch.elapsed()<<" seconds."<<std::endl;
-      int noAggregates, conAggregates, isoAggregates, oneAggregates;
+      long long noAggregates, conAggregates, isoAggregates, oneAggregates;
       std::size_t maxA=0, minA=1000000, avg=0;
-      int skippedAggregates;
+      long long skippedAggregates;
       noAggregates = conAggregates = isoAggregates = oneAggregates =
                                                        skippedAggregates = 0;
 
@@ -2472,7 +2472,7 @@ namespace Dune
                 !admissible( *vertex, aggregate_->id(), aggregates) ))
               continue;
 
-            std::pair<int,int> neighbourPair=neighbours(*vertex, aggregate_->id(),
+            std::pair<long long,long long> neighbourPair=neighbours(*vertex, aggregate_->id(),
                                                         aggregates);
 
             //if(aggregateNeighbours(*vertex, aggregate_->id(), aggregates) <= unusedNeighbours(*vertex, aggregates))
@@ -2580,7 +2580,7 @@ namespace Dune
 #endif // DOXYGEN
 
     template<class V>
-    void printAggregates2d(const AggregatesMap<V>& aggregates, int n, int m,  std::ostream& os)
+    void printAggregates2d(const AggregatesMap<V>& aggregates, long long n, long long m,  std::ostream& os)
     {
       using std::max;
 
@@ -2589,19 +2589,19 @@ namespace Dune
       os.setf(std::ios_base::right, std::ios_base::adjustfield);
 
       V maxVal=0;
-      int width=1;
+      long long width=1;
 
-      for(int i=0; i< n*m; i++)
+      for(long long i=0; i< n*m; i++)
         maxVal=max(maxVal, aggregates[i]);
 
-      for(int i=10; i < 1000000; i*=10)
+      for(long long i=10; i < 1000000; i*=10)
         if(maxVal/i>0)
           width++;
         else
           break;
 
-      for(int j=0, entry=0; j < m; j++) {
-        for(int i=0; i<n; i++, entry++) {
+      for(long long j=0, entry=0; j < m; j++) {
+        for(long long i=0; i<n; i++, entry++) {
           os.width(width);
           os<<aggregates[entry]<<" ";
         }

@@ -36,7 +36,7 @@ namespace Dune {
    * together with matching ScalarProducts.
    *
    * Some of the available preconditioners (e.g. SeqJacobi, SeqSOR, SeqSSOR))
-   * may be given an aditional int as a template parameter, the block recursion level.
+   * may be given an aditional long long as a template parameter, the block recursion level.
    * These preconditioners
    * can be used on block-recursive matrices with an arbitrary hierarchy depth
    * (eg. BCRSMatrix<BCRSMatrix<FieldMatrix,n,m> > >. Given a block recursion level
@@ -69,7 +69,7 @@ namespace Dune {
    * @brief Turns an InverseOperator into a Preconditioner.
    * @tparam O The type of the inverse operator to wrap.
    */
-  template<class O, int c = -1>
+  template<class O, long long c = -1>
   class InverseOperator2Preconditioner :
     public Preconditioner<typename O::domain_type, typename O::range_type>
   {
@@ -137,7 +137,7 @@ namespace Dune {
      \tparam Y Type of the defect
      \tparam l The block level to invert. Default is 1
    */
-  template<class M, class X, class Y, int l=1>
+  template<class M, class X, class Y, long long l=1>
   class SeqSSOR : public Preconditioner<X,Y> {
   public:
     //! \brief The matrix type the preconditioner is for.
@@ -160,7 +160,7 @@ namespace Dune {
        \param n The number of iterations to perform.
        \param w The relaxation factor.
      */
-    SeqSSOR (const M& A, int n, real_field_type w)
+    SeqSSOR (const M& A, long long n, real_field_type w)
       : _A_(A), _n(n), _w(w)
     {
       CheckIfDiagonalPresent<M,l>::check(_A_);
@@ -197,7 +197,7 @@ namespace Dune {
        See \ref ISTL_Factory for the ParameterTree layout and examples.
      */
     SeqSSOR (const M& A, const ParameterTree& configuration)
-      : SeqSSOR(A, configuration.get<int>("iterations",1), configuration.get<real_field_type>("relaxation",1.0))
+      : SeqSSOR(A, configuration.get<long long>("iterations",1), configuration.get<real_field_type>("relaxation",1.0))
     {}
 
     /*!
@@ -215,7 +215,7 @@ namespace Dune {
      */
     virtual void apply (X& v, const Y& d)
     {
-      for (int i=0; i<_n; i++) {
+      for (long long i=0; i<_n; i++) {
         bsorf(_A_,v,d,_w,BL<l>());
         bsorb(_A_,v,d,_w,BL<l>());
       }
@@ -239,7 +239,7 @@ namespace Dune {
     //! \brief The matrix we operate on.
     const M& _A_;
     //! \brief The number of steps to do in apply
-    int _n;
+    long long _n;
     //! \brief The relaxation factor to use
     real_field_type _w;
   };
@@ -257,7 +257,7 @@ namespace Dune {
      \tparam Y Type of the defect
      \tparam l The block level to invert. Default is 1
    */
-  template<class M, class X, class Y, int l=1>
+  template<class M, class X, class Y, long long l=1>
   class SeqSOR : public Preconditioner<X,Y> {
   public:
     //! \brief The matrix type the preconditioner is for.
@@ -280,7 +280,7 @@ namespace Dune {
        \param n The number of iterations to perform.
        \param w The relaxation factor.
      */
-    SeqSOR (const M& A, int n, real_field_type w)
+    SeqSOR (const M& A, long long n, real_field_type w)
       : _A_(A), _n(n), _w(w)
     {
       CheckIfDiagonalPresent<M,l>::check(_A_);
@@ -317,7 +317,7 @@ namespace Dune {
        See \ref ISTL_Factory for the ParameterTree layout and examples.
      */
     SeqSOR (const M& A, const ParameterTree& configuration)
-      : SeqSOR(A, configuration.get<int>("iterations",1), configuration.get<real_field_type>("relaxation",1.0))
+      : SeqSOR(A, configuration.get<long long>("iterations",1), configuration.get<real_field_type>("relaxation",1.0))
     {}
 
     /*!
@@ -350,11 +350,11 @@ namespace Dune {
     void apply(X& v, const Y& d)
     {
       if(forward)
-        for (int i=0; i<_n; i++) {
+        for (long long i=0; i<_n; i++) {
           bsorf(_A_,v,d,_w,BL<l>());
         }
       else
-        for (int i=0; i<_n; i++) {
+        for (long long i=0; i<_n; i++) {
           bsorb(_A_,v,d,_w,BL<l>());
         }
     }
@@ -377,7 +377,7 @@ namespace Dune {
     //! \brief the matrix we operate on.
     const M& _A_;
     //! \brief The number of steps to perform in apply.
-    int _n;
+    long long _n;
     //! \brief The relaxation factor to use.
     real_field_type _w;
   };
@@ -394,7 +394,7 @@ namespace Dune {
      \tparam Y Type of the defect
      \tparam l The block level to invert. Default is 1
    */
-  template<class M, class X, class Y, int l=1>
+  template<class M, class X, class Y, long long l=1>
   using SeqGS = SeqSOR<M,X,Y,l>;
   DUNE_REGISTER_PRECONDITIONER("gs", defaultPreconditionerBlockLevelCreator<Dune::SeqGS>());
 
@@ -408,7 +408,7 @@ namespace Dune {
      \tparam Y Type of the defect
      \tparam l The block level to invert. Default is 1
    */
-  template<class M, class X, class Y, int l=1>
+  template<class M, class X, class Y, long long l=1>
   class SeqJac : public Preconditioner<X,Y> {
   public:
     //! \brief The matrix type the preconditioner is for.
@@ -431,7 +431,7 @@ namespace Dune {
        \param n The number of iterations to perform.
        \param w The relaxation factor.
      */
-    SeqJac (const M& A, int n, real_field_type w)
+    SeqJac (const M& A, long long n, real_field_type w)
       : _A_(A), _n(n), _w(w)
     {
       CheckIfDiagonalPresent<M,l>::check(_A_);
@@ -468,7 +468,7 @@ namespace Dune {
        See \ref ISTL_Factory for the ParameterTree layout and examples.
      */
     SeqJac (const M& A, const ParameterTree& configuration)
-      : SeqJac(A, configuration.get<int>("iterations",1), configuration.get<real_field_type>("relaxation",1.0))
+      : SeqJac(A, configuration.get<long long>("iterations",1), configuration.get<real_field_type>("relaxation",1.0))
     {}
 
     /*!
@@ -486,7 +486,7 @@ namespace Dune {
      */
     virtual void apply (X& v, const Y& d)
     {
-      for (int i=0; i<_n; i++) {
+      for (long long i=0; i<_n; i++) {
         dbjac(_A_,v,d,_w,BL<l>());
       }
     }
@@ -509,7 +509,7 @@ namespace Dune {
     //! \brief The matrix we operate on.
     const M& _A_;
     //! \brief The number of steps to perform during apply.
-    int _n;
+    long long _n;
     //! \brief The relaxation parameter to use.
     real_field_type _w;
   };
@@ -528,7 +528,7 @@ namespace Dune {
      \tparam l Ignored. Just there to have the same number of template arguments
      as other preconditioners.
    */
-  template<class M, class X, class Y, int l=1>
+  template<class M, class X, class Y, long long l=1>
   class SeqILU : public Preconditioner<X,Y> {
   public:
     //! \brief The matrix type the preconditioner is for.
@@ -609,7 +609,7 @@ namespace Dune {
        \param w The relaxation factor.
        \param resort true if a resort of the computed ILU for improved performance should be done.
      */
-    SeqILU (const M& A, int n, real_field_type w, const bool resort = false )
+    SeqILU (const M& A, long long n, real_field_type w, const bool resort = false )
       : ILU_(),
         lower_(),
         upper_(),

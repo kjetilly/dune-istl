@@ -24,13 +24,13 @@
 typedef std::complex<double> FIELD_TYPE;
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
 
   try {
 
     std::size_t N = 3;
-    const int maxIter = int(N*N*N*N);
+    const long long maxIter = (long long)(N*N*N*N);
     const double reduction = 1e-16;
 
     std::cout << "============================================" << '\n'
@@ -44,8 +44,8 @@ int main(int argc, char** argv)
               << std::endl;
 
     Dune::FieldMatrix<std::complex<double>,10,10> hilbertmatrix;
-    for(int i=0; i<10; i++) {
-      for(int j=0; j<10; j++) {
+    for(long long i=0; i<10; i++) {
+      for(long long j=0; j<10; j++) {
         std::complex<double> temp(0.0,1./(i+j+1));
         hilbertmatrix[i][j] = temp;
       }

@@ -22,11 +22,11 @@ void testIndices(MPI_Comm comm)
   //using namespace Dune;
 
   // The global grid size
-  const int Nx = 20;
-  const int Ny = 2;
+  const long long Nx = 20;
+  const long long Ny = 2;
 
   // Process configuration
-  int procs, rank, master=0;
+  long long procs, rank, master=0;
   MPI_Comm_size(comm, &procs);
   MPI_Comm_rank(comm, &rank);
 
@@ -35,34 +35,34 @@ void testIndices(MPI_Comm comm)
   //master= (master+1) %procs;
 
   // The local grid
-  int nx = Nx/procs;
+  long long nx = Nx/procs;
   // distributed indexset
   //  typedef ParallelLocalIndex<GridFlags> LocalIndexType;
 
-  typedef Dune::ParallelIndexSet<int,Dune::ParallelLocalIndex<GridFlags>,45> ParallelIndexSet;
+  typedef Dune::ParallelIndexSet<long long,Dune::ParallelLocalIndex<GridFlags>,45> ParallelIndexSet;
 
   ParallelIndexSet distIndexSet;
   // global indexset
   ParallelIndexSet globalIndexSet;
 
   // Set up the indexsets.
-  int start = std::max(rank*nx-1,0);
-  int end = std::min((rank + 1) * nx+1, Nx);
+  long long start = std::max(rank*nx-1,0);
+  long long end = std::min((rank + 1) * nx+1, Nx);
 
   distIndexSet.beginResize();
 
-  int localIndex=0;
-  int size = Ny*(end-start);
+  long long localIndex=0;
+  long long size = Ny*(end-start);
 
-  typedef Dune::FieldVector<int,5> Vector;
+  typedef Dune::FieldVector<long long,5> Vector;
   typedef std::vector<Vector> Array;
 
   Array distArray(size);
   Array* globalArray;
-  int index=0;
+  long long index=0;
 
-  for(int j=0; j<Ny; j++)
-    for(int i=start; i<end; i++) {
+  for(long long j=0; j<Ny; j++)
+    for(long long i=start; i<end; i++) {
       bool isPublic = (i<=start+1)||(i>=end-2);
       GridFlags flag = owner;
       if((i==start && i!=0)||(i==end-1 && i!=Nx-1)) {
@@ -80,9 +80,9 @@ void testIndices(MPI_Comm comm)
     // build global indexset on first process
     globalIndexSet.beginResize();
     globalArray=new Array(Nx*Ny);
-    int k=0;
-    for(int j=0; j<Ny; j++)
-      for(int i=0; i<Nx; i++) {
+    long long k=0;
+    for(long long j=0; j<Ny; j++)
+      for(long long i=0; i<Nx; i++) {
         globalIndexSet.add(i+j*Nx, Dune::ParallelLocalIndex<GridFlags> (i+j*Nx,owner,false));
         globalArray->operator[](i+j*Nx)=-(i+j*Nx);
         k++;
@@ -160,7 +160,7 @@ void testIndices(MPI_Comm comm)
     delete globalArray;
 }
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   MPI_Init(&argc, &argv);
   testIndices(MPI_COMM_WORLD);

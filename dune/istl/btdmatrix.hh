@@ -152,7 +152,7 @@ namespace Dune {
       auto&& d_0 = Impl::asVector(d[0]);
       Impl::asMatrix(a_00_inv).mv(Impl::asVector(d_0_tmp),d_0);
 
-      for (unsigned int i = 1; i < this->N(); i++) {
+      for (size_t i = 1; i < this->N(); i++) {
 
         // id = ( a_ii - c_{i-1} a_{i, i-1} ) ^{-1}
         block_type tmp;
@@ -176,7 +176,7 @@ namespace Dune {
 
       /* Now back substitute. */
       x[this->N() - 1] = d[this->N() - 1];
-      for (int i = this->N() - 2; i >= 0; i--) {
+      for (long long i = this->N() - 2; i >= 0; i--) {
         //x[i] = d[i] - c[i] * x[i + 1];
         x[i] = d[i];
         auto&& x_i = Impl::asVector(x[i]);

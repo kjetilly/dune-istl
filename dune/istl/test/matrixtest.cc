@@ -296,7 +296,7 @@ void testTranspose(const MatrixType& matrix)
         DUNE_THROW(ISTLError, "transpose() method produces wrong result!");
 }
 
-int main()
+long long main()
 {
 
   // feenableexcept does not exist on OS X or windows
@@ -311,8 +311,8 @@ int main()
 
   {
     Matrix<double> matrixScalar(10,10);
-    for (int i=0; i<10; i++)
-      for (int j=0; j<10; j++)
+    for (long long i=0; i<10; i++)
+      for (long long j=0; j<10; j++)
         matrixScalar[i][j] = (i+j)/((double)(i*j+1));        // just anything
 
     BlockVector<double> x(10), y(10);
@@ -324,10 +324,10 @@ int main()
   // ////////////////////////////////////////////////////////////
 
   Matrix<FieldMatrix<double,3,3> > matrix(10,10);
-  for (int i=0; i<10; i++)
-    for (int j=0; j<10; j++)
-      for (int k=0; k<3; k++)
-        for (int l=0; l<3; l++)
+  for (long long i=0; i<10; i++)
+    for (long long j=0; j<10; j++)
+      for (long long k=0; k<3; k++)
+        for (long long l=0; l<3; l++)
           matrix[i][j][k][l] = (i+j)/((double)(k*l+1));            // just anything
 
   testSuperMatrix(matrix);
@@ -385,20 +385,20 @@ int main()
     testMatrix(bcrsMatrix, x, y);
 
     // Test whether matrix resizing works
-    int size = 3;
+    long long size = 3;
     bcrsMatrix.setSize(size,size,size);
 
-    for (int i=0; i<size; i++)
+    for (long long i=0; i<size; i++)
       bcrsMatrix.setrowsize(i, 1);
 
     bcrsMatrix.endrowsizes();
 
-    for (int i=0; i<size; i++)
+    for (long long i=0; i<size; i++)
       bcrsMatrix.addindex(i, i);
 
     bcrsMatrix.endindices();
 
-    for (int i=0; i<size; i++)
+    for (long long i=0; i<size; i++)
       bcrsMatrix[i][i] = 1.0;
 
     x.resize(size);
@@ -445,20 +445,20 @@ int main()
   testSuperMatrix(bcrsMatrix);
 
   // Test whether matrix resizing works
-  int size = 3;
+  long long size = 3;
   bcrsMatrix.setSize(size,size,size);
 
-  for (int i=0; i<size; i++)
+  for (long long i=0; i<size; i++)
     bcrsMatrix.setrowsize(i, 1);
 
   bcrsMatrix.endrowsizes();
 
-  for (int i=0; i<size; i++)
+  for (long long i=0; i<size; i++)
     bcrsMatrix.addindex(i, i);
 
   bcrsMatrix.endindices();
 
-  for (int i=0; i<size; i++)
+  for (long long i=0; i<size; i++)
     bcrsMatrix[i][i] = 1.0;
 
   testSuperMatrix(bcrsMatrix);

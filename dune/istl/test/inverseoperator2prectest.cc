@@ -12,10 +12,10 @@
 #include <dune/common/fvector.hh>
 #include "laplacian.hh"
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
-  const int BS=1;
-  int N=100;
+  const long long BS=1;
+  long long N=100;
 
   if(argc>1)
     N = atoi(argv[1]);

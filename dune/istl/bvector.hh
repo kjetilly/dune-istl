@@ -251,7 +251,7 @@ namespace Imp {
 
     //! infinity norm (maximum of absolute values of entries)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -266,7 +266,7 @@ namespace Imp {
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -281,7 +281,7 @@ namespace Imp {
 
     //! infinity norm (maximum of absolute values of entries)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -300,7 +300,7 @@ namespace Imp {
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -411,7 +411,7 @@ namespace Imp {
 
     //! increment block level counter
     [[deprecated("Use free function blockLevel(). Will be removed after 2.8.")]]
-    static constexpr unsigned int blocklevel = blockLevel<B>()+1;
+    static constexpr size_t blocklevel = blockLevel<B>()+1;
 
     //! make iterators available as types
     typedef typename Imp::block_vector_unmanaged<B,A>::Iterator Iterator;
@@ -643,7 +643,7 @@ namespace Imp {
 
     //! increment block level counter
     [[deprecated("Use free function blockLevel(). Will be removed after 2.8.")]]
-    static constexpr unsigned int blocklevel = blockLevel<B>()+1;
+    static constexpr size_t blocklevel = blockLevel<B>()+1;
 
     //! make iterators available as types
     typedef typename Imp::block_vector_unmanaged<B,A>::Iterator Iterator;
@@ -888,7 +888,7 @@ namespace Imp {
 
     //! infinity norm (maximum of absolute values of entries)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -903,7 +903,7 @@ namespace Imp {
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -918,7 +918,7 @@ namespace Imp {
 
     //! infinity norm (maximum of absolute values of entries)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -935,7 +935,7 @@ namespace Imp {
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -1024,7 +1024,7 @@ namespace Imp {
 
     //! increment block level counter
     [[deprecated("Use free function blockLevel(). Will be removed after 2.8.")]]
-    static constexpr unsigned int blocklevel = blockLevel<B>()+1;
+    static constexpr size_t blocklevel = blockLevel<B>()+1;
 
     //! make iterators available as types
     typedef typename compressed_block_vector_unmanaged<B,A>::Iterator Iterator;

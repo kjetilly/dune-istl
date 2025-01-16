@@ -988,7 +988,7 @@ namespace MatrixImp
 
     //! infinity norm (row sum norm, how to generalize for blocks?)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -1007,7 +1007,7 @@ namespace MatrixImp
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<!HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<!HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -1024,7 +1024,7 @@ namespace MatrixImp
 
     //! infinity norm (row sum norm, how to generalize for blocks?)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;
@@ -1044,7 +1044,7 @@ namespace MatrixImp
 
     //! simplified infinity norm (uses Manhattan norm for complex values)
     template <typename ft = field_type,
-              typename std::enable_if<HasNaN<ft>::value, int>::type = 0>
+              typename std::enable_if<HasNaN<ft>::value, long long>::type = 0>
     typename FieldTraits<ft>::real_type infinity_norm_real() const {
       using real_type = typename FieldTraits<ft>::real_type;
       using std::max;

@@ -34,7 +34,7 @@ namespace Dune
      * <dt>1</dt><dd>\f$A^T\cdot B\f$</dd>
      * <dt>2</dt><dd>\f$A\cdot B^T\f$</dd>
      */
-    template<int b>
+    template<long long b>
     struct NonzeroPatternTraverser
     {};
 
@@ -42,7 +42,7 @@ namespace Dune
     template<>
     struct NonzeroPatternTraverser<0>
     {
-      template<class T,class A1, class A2, class F, int n, int m, int k>
+      template<class T,class A1, class A2, class F, long long n, long long m, long long k>
       static void traverse(const Dune::BCRSMatrix<Dune::FieldMatrix<T,n,k>,A1>& A,
                            const Dune::BCRSMatrix<Dune::FieldMatrix<T,k,m>,A2>& B,
                            F& func)
@@ -70,7 +70,7 @@ namespace Dune
     template<>
     struct NonzeroPatternTraverser<1>
     {
-      template<class T, class A1, class A2, class F, int n, int m, int k>
+      template<class T, class A1, class A2, class F, long long n, long long m, long long k>
       static void traverse(const Dune::BCRSMatrix<Dune::FieldMatrix<T,k,n>,A1>& A,
                            const Dune::BCRSMatrix<Dune::FieldMatrix<T,k,m>,A2>& B,
                            F& func)
@@ -96,7 +96,7 @@ namespace Dune
     template<>
     struct NonzeroPatternTraverser<2>
     {
-      template<class T, class A1, class A2, class F, int n, int m, int k>
+      template<class T, class A1, class A2, class F, long long n, long long m, long long k>
       static void traverse(const BCRSMatrix<FieldMatrix<T,n,m>,A1>& mat,
                            const BCRSMatrix<FieldMatrix<T,k,m>,A2>& matt,
                            F& func)
@@ -148,7 +148,7 @@ namespace Dune
 
 
 
-    template<class T, class A, int n, int m>
+    template<class T, class A, long long n, long long m>
     class SparsityPatternInitializer
     {
     public:
@@ -178,7 +178,7 @@ namespace Dune
     };
 
 
-    template<int transpose, class T, class TA, int n, int m>
+    template<long long transpose, class T, class TA, long long n, long long m>
     class MatrixInitializer
     {
     public:
@@ -191,7 +191,7 @@ namespace Dune
         : count(0), A(A_)
       {}
       template<class T1, class T2>
-      void operator()(const T1&, const T2&, int)
+      void operator()(const T1&, const T2&, long long)
       {
         ++count;
       }
@@ -207,7 +207,7 @@ namespace Dune
         return count;
       }
 
-      template<class A1, class A2, int n2, int m2, int n3, int m3>
+      template<class A1, class A2, long long n2, long long m2, long long n3, long long m3>
       void initPattern(const BCRSMatrix<FieldMatrix<T,n2,m2>,A1>& mat1,
                        const BCRSMatrix<FieldMatrix<T,n3,m3>,A2>& mat2)
       {
@@ -220,7 +220,7 @@ namespace Dune
       Matrix& A;
     };
 
-    template<class T, class TA, int n, int m>
+    template<class T, class TA, long long n, long long m>
     class MatrixInitializer<1,T,TA,n,m>
     {
     public:
@@ -250,7 +250,7 @@ namespace Dune
           nnz+=(*iter).size();
         return nnz;
       }
-      template<class A1, class A2, int n2, int m2, int n3, int m3>
+      template<class A1, class A2, long long n2, long long m2, long long n3, long long m3>
       void initPattern(const BCRSMatrix<FieldMatrix<T,n2,m2>,A1>&,
                        const BCRSMatrix<FieldMatrix<T,n3,m3>,A2>&)
       {
@@ -268,7 +268,7 @@ namespace Dune
       std::vector<std::set<size_t> > entries;
     };
 
-    template<class T, class TA, int n, int m>
+    template<class T, class TA, long long n, long long m>
     struct MatrixInitializer<0,T,TA,n,m>
       : public MatrixInitializer<1,T,TA,n,m>
     {
@@ -279,7 +279,7 @@ namespace Dune
     };
 
 
-    template<class T, class T1, class T2, int n, int m, int k>
+    template<class T, class T1, class T2, long long n, long long m, long long k>
     void addMatMultTransposeMat(FieldMatrix<T,n,k>& res, const FieldMatrix<T1,n,m>& mat,
                                 const FieldMatrix<T2,k,m>& matt)
     {
@@ -292,7 +292,7 @@ namespace Dune
         }
     }
 
-    template<class T, class T1, class T2, int n, int m, int k>
+    template<class T, class T1, class T2, long long n, long long m, long long k>
     void addTransposeMatMultMat(FieldMatrix<T,n,k>& res, const FieldMatrix<T1,m,n>& mat,
                                 const FieldMatrix<T2,m,k>& matt)
     {
@@ -304,7 +304,7 @@ namespace Dune
         }
     }
 
-    template<class T, class T1, class T2, int n, int m, int k>
+    template<class T, class T1, class T2, long long n, long long m, long long k>
     void addMatMultMat(FieldMatrix<T,n,m>& res, const FieldMatrix<T1,n,k>& mat,
                        const FieldMatrix<T2,k,m>& matt)
     {
@@ -317,7 +317,7 @@ namespace Dune
     }
 
 
-    template<class T, class A, int n, int m>
+    template<class T, class A, long long n, long long m>
     class EntryAccumulatorFather
     {
     public:
@@ -351,7 +351,7 @@ namespace Dune
       Col col;
     };
 
-    template<class T, class A, int n, int m, int transpose>
+    template<class T, class A, long long n, long long m, long long transpose>
     class EntryAccumulator
       : public EntryAccumulatorFather<T,A,n,m>
     {
@@ -371,7 +371,7 @@ namespace Dune
       }
     };
 
-    template<class T, class A, int n, int m>
+    template<class T, class A, long long n, long long m>
     class EntryAccumulator<T,A,n,m,0>
       : public EntryAccumulatorFather<T,A,n,m>
     {
@@ -390,7 +390,7 @@ namespace Dune
       }
     };
 
-    template<class T, class A, int n, int m>
+    template<class T, class A, long long n, long long m>
     class EntryAccumulator<T,A,n,m,1>
       : public EntryAccumulatorFather<T,A,n,m>
     {
@@ -409,7 +409,7 @@ namespace Dune
       }
     };
 
-    template<class T, class A, int n, int m>
+    template<class T, class A, long long n, long long m>
     class EntryAccumulator<T,A,n,m,2>
       : public EntryAccumulatorFather<T,A,n,m>
     {
@@ -430,7 +430,7 @@ namespace Dune
     };
 
 
-    template<int transpose>
+    template<long long transpose>
     struct SizeSelector
     {};
 
@@ -468,7 +468,7 @@ namespace Dune
       }
     };
 
-    template<int transpose, class T, class A, class A1, class A2, int n1, int m1, int n2, int m2, int n3, int m3>
+    template<long long transpose, class T, class A, class A1, class A2, long long n1, long long m1, long long n2, long long m2, long long n3, long long m3>
     void matMultMat(BCRSMatrix<FieldMatrix<T,n1,m1>,A>& res, const BCRSMatrix<FieldMatrix<T,n2,m2>,A1>& mat1,
                     const BCRSMatrix<FieldMatrix<T,n3,m3>,A2>& mat2)
     {
@@ -509,13 +509,13 @@ namespace Dune
   struct MatMultMatResult
   {};
 
-  template<typename T, int n, int k, int m>
+  template<typename T, long long n, long long k, long long m>
   struct MatMultMatResult<FieldMatrix<T,n,k>,FieldMatrix<T,k,m> >
   {
     typedef FieldMatrix<T,n,m> type;
   };
 
-  template<typename T, typename A, typename A1, int n, int k, int m>
+  template<typename T, typename A, typename A1, long long n, long long k, long long m>
   struct MatMultMatResult<BCRSMatrix<FieldMatrix<T,n,k>,A >,BCRSMatrix<FieldMatrix<T,k,m>,A1 > >
   {
     typedef BCRSMatrix<typename MatMultMatResult<FieldMatrix<T,n,k>,FieldMatrix<T,k,m> >::type,
@@ -534,13 +534,13 @@ namespace Dune
   struct TransposedMatMultMatResult
   {};
 
-  template<typename T, int n, int k, int m>
+  template<typename T, long long n, long long k, long long m>
   struct TransposedMatMultMatResult<FieldMatrix<T,k,n>,FieldMatrix<T,k,m> >
   {
     typedef FieldMatrix<T,n,m> type;
   };
 
-  template<typename T, typename A, typename A1, int n, int k, int m>
+  template<typename T, typename A, typename A1, long long n, long long k, long long m>
   struct TransposedMatMultMatResult<BCRSMatrix<FieldMatrix<T,k,n>,A >,BCRSMatrix<FieldMatrix<T,k,m>,A1 > >
   {
     typedef BCRSMatrix<typename MatMultMatResult<FieldMatrix<T,n,k>,FieldMatrix<T,k,m> >::type,
@@ -556,7 +556,7 @@ namespace Dune
    * @param matt Matrix B, which will be transposed before the multiplication.
    * @param tryHard <i>ignored</i>
    */
-  template<class T, class A, class A1, class A2, int n, int m, int k>
+  template<class T, class A, class A1, class A2, long long n, long long m, long long k>
   void matMultTransposeMat(BCRSMatrix<FieldMatrix<T,n,k>,A>& res, const BCRSMatrix<FieldMatrix<T,n,m>,A1>& mat,
                            const BCRSMatrix<FieldMatrix<T,k,m>,A2>& matt, [[maybe_unused]] bool tryHard=false)
   {
@@ -571,7 +571,7 @@ namespace Dune
    * @param matt Matrix B.
    * @param tryHard <i>ignored</i>
    */
-  template<class T, class A, class A1, class A2, int n, int m, int k>
+  template<class T, class A, class A1, class A2, long long n, long long m, long long k>
   void matMultMat(BCRSMatrix<FieldMatrix<T,n,m>,A>& res, const BCRSMatrix<FieldMatrix<T,n,k>,A1>& mat,
                   const BCRSMatrix<FieldMatrix<T,k,m>,A2>& matt, bool tryHard=false)
   {
@@ -586,7 +586,7 @@ namespace Dune
    * @param matt Matrix B.
    * @param tryHard <i>ignored</i>
    */
-  template<class T, class A, class A1, class A2, int n, int m, int k>
+  template<class T, class A, class A1, class A2, long long n, long long m, long long k>
   void transposeMatMultMat(BCRSMatrix<FieldMatrix<T,n,m>,A>& res, const BCRSMatrix<FieldMatrix<T,k,n>,A1>& mat,
                            const BCRSMatrix<FieldMatrix<T,k,m>,A2>& matt, [[maybe_unused]] bool tryHard=false)
   {

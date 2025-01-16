@@ -12,7 +12,7 @@ typedef Dune::BlockVector<Dune::FieldVector<double,1> > VEC;
 
 void condition_test (MAT& T) {
 
-  int N = T.N();
+  long long N = T.N();
 
   // CG run (noop preconditioner) with condition estimate
 
@@ -26,7 +26,7 @@ void condition_test (MAT& T) {
   v = 1.0;
   d = 1.0;
 
-  int verbosity = 2;
+  long long verbosity = 2;
 
   Dune::InverseOperatorResult result;
   auto solver = std::make_shared<Dune::CGSolver<VEC> >(*op,*prec,1E-6,1000,verbosity,true);
@@ -50,12 +50,12 @@ void condition_test (MAT& T) {
 
 
 
-int main(int argc, char **argv)
+long long main(long long argc, char **argv)
 {
 
   // Simple stencil
   {
-    int N = 142;
+    long long N = 142;
 
     MAT T(N, N, MAT::row_wise);
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
       if (row.index() < T.N() - 1)
         row.insert(row.index()+1);
     }
-    for (int row = 0; row < N; ++row) {
+    for (long long row = 0; row < N; ++row) {
       T[row][row] = 2.0;
       if (row > 0)
         T[row][row-1] = -1.0;
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 
   // Ill-conditioned stencil
   {
-    int N = 142;
+    long long N = 142;
 
     MAT T(N, N, MAT::row_wise);
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
       if (row.index() < T.N() - 1)
         row.insert(row.index()+1);
     }
-    for (int row = 0; row < N; ++row) {
+    for (long long row = 0; row < N; ++row) {
       double factor = 0.8 + 0.2 * ((double)row / N);
       T[row][row] = 2.0 * factor;
       if (row > 0)
@@ -106,20 +106,20 @@ int main(int argc, char **argv)
 
   // Very ill-conditioned stencil
   {
-    int N = 40;
+    long long N = 40;
 
     MAT T(N, N, MAT::row_wise);
 
     for (auto row = T.createbegin(); row != T.createend(); ++row) {
-      for (int i = -10; i <= 10; i++) {
+      for (long long i = -10; i <= 10; i++) {
         if (row.index()+i >= 0 && row.index()+i < T.N())
           row.insert(row.index()+i);
       }
     }
-    for (int row = 0; row < N; ++row) {
+    for (long long row = 0; row < N; ++row) {
       double factor = 0.8 + 0.2 * ((double)row / N);
-      for (int i = -10; i <= 10; i++) {
-        if (row+i >= 0 && row+i < int(T.N()))
+      for (long long i = -10; i <= 10; i++) {
+        if (row+i >= 0 && row+i < (long long)(T.N()))
           T[row][row+i] = -1.0 * factor;
       }
       T[row][row] = 20.0 * factor;

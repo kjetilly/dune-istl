@@ -13,13 +13,13 @@
 #include "matrixinfo.hh"
 
 
-int main (int argc, char** argv)
+long long main (long long argc, char** argv)
 {
   try
   {
     typedef double FIELD_TYPE;
 
-    static const int BS = 1;
+    static const long long BS = 1;
     std::size_t N = 60;
 
     if (argc > 1)
@@ -35,8 +35,8 @@ int main (int argc, char** argv)
     Dune::Timer watch;
 
     const bool verbose = true;
-    const unsigned int arppp_a_verbosity_level = 2;
-    const unsigned int pia_verbosity_level = 1;
+    const size_t arppp_a_verbosity_level = 2;
+    const size_t pia_verbosity_level = 1;
     MatrixInfo<BCRSMat> matrixInfo
       (mat,verbose,arppp_a_verbosity_level,pia_verbosity_level);
 

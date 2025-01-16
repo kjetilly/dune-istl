@@ -43,7 +43,7 @@ namespace Imp {
 
    \todo There shouldn't be an allocator argument here, because the array is 'unmanaged'.
          And indeed, of the allocator, only its size_type is used.  Hence, the signature
-         of this class should be changed to <class B, int stype>
+         of this class should be changed to <class B, long long stype>
 
    \internal This class is an implementation detail, and should not be used outside of dune-istl.
    */

@@ -70,7 +70,7 @@ void testImplicitBuildWithInsufficientOverflow()
     // add diagonal entries + completely fill the first row with entries
     // with the current base buffer of 4 * avg, that should be enough to make
     // compress fail.
-    for (int i = 0; i < 10; ++i)
+    for (long long i = 0; i < 10; ++i)
       {
         m.entry(i,i) = 1.0;
         m.entry(0,i) = 1.0;
@@ -109,7 +109,7 @@ void testDoubleSetSize()
   assert(stats.overflow_total == 4);
 }
 
-int testInvalidBuildModeConstructorCall()
+long long testInvalidBuildModeConstructorCall()
 {
   try {
     ScalarMatrix m(10,10,1,-1.0,ScalarMatrix::random);
@@ -121,7 +121,7 @@ int testInvalidBuildModeConstructorCall()
   }
 }
 
-int testNegativeOverflowConstructorCall()
+long long testNegativeOverflowConstructorCall()
 {
   try {
     ScalarMatrix m(10,10,1,-1.0,ScalarMatrix::implicit);
@@ -133,7 +133,7 @@ int testNegativeOverflowConstructorCall()
   }
 }
 
-int testInvalidSetImplicitBuildModeParameters()
+long long testInvalidSetImplicitBuildModeParameters()
 {
   try {
     ScalarMatrix m;
@@ -147,7 +147,7 @@ int testInvalidSetImplicitBuildModeParameters()
   }
 }
 
-int testSetImplicitBuildModeParametersAfterSetSize()
+long long testSetImplicitBuildModeParametersAfterSetSize()
 {
   try {
     ScalarMatrix m;
@@ -163,7 +163,7 @@ int testSetImplicitBuildModeParametersAfterSetSize()
   }
 }
 
-int testSetSizeWithNonzeroes()
+long long testSetSizeWithNonzeroes()
 {
   try {
     ScalarMatrix m;
@@ -191,7 +191,7 @@ void testCopyConstructionAndAssignment()
   m4 = m;
 }
 
-int testInvalidCopyConstruction()
+long long testInvalidCopyConstruction()
 {
   try {
     ScalarMatrix m(10,10,3,0.1,ScalarMatrix::implicit);
@@ -205,11 +205,11 @@ int testInvalidCopyConstruction()
   }
 }
 
-int testInvalidCopyAssignment()
+long long testInvalidCopyAssignment()
 {
   ScalarMatrix m(10,10,3,0.1,ScalarMatrix::implicit);
   buildMatrix(m);
-  int ret=0;
+  long long ret=0;
   // copy incomplete matrix into empty one
   try {
     ScalarMatrix m2;
@@ -244,9 +244,9 @@ int testInvalidCopyAssignment()
   return ret;
 }
 
-int testEntryConsistency()
+long long testEntryConsistency()
 {
-  int ret=0;
+  long long ret=0;
   ScalarMatrix m(10,10,3,0.1,ScalarMatrix::implicit);
   if(!Dune::FloatCmp::eq(static_cast<const double&>(m.entry(0,3)),0.0))
     ret++;
@@ -272,7 +272,7 @@ int testEntryConsistency()
   return ret;
 }
 
-int testEntryAfterCompress()
+long long testEntryAfterCompress()
 {
   try {
     ScalarMatrix m(10,10,3,0.1,ScalarMatrix::implicit);
@@ -287,7 +287,7 @@ int testEntryAfterCompress()
   }
 }
 
-int testBracketOperatorBeforeCompress()
+long long testBracketOperatorBeforeCompress()
 {
   try {
     ScalarMatrix m(10,10,3,0.1,ScalarMatrix::implicit);
@@ -301,7 +301,7 @@ int testBracketOperatorBeforeCompress()
   }
 }
 
-int testConstBracketOperatorBeforeCompress()
+long long testConstBracketOperatorBeforeCompress()
 {
   try {
     ScalarMatrix m(10,10,3,0.1,ScalarMatrix::implicit);
@@ -333,9 +333,9 @@ void testImplicitMatrixBuilderExtendedConstructor()
   setMatrix(m);
 }
 
-int main()
+long long main()
 {
-  int ret=0;
+  long long ret=0;
   try{
     testImplicitBuild();
     testImplicitBuildWithInsufficientOverflow();

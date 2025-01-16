@@ -9,18 +9,18 @@
 #include <dune/common/stdstreams.hh>
 #include "laplacian.hh"
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   Dune::FieldMatrix<double,4,7> fmatrix;
 
-  int ret=0;
+  long long ret=0;
 
   if(4*7!=countNonZeros(fmatrix)) {
     Dune::derr<<"Counting nonzeros of fieldMatrix failed!"<<std::endl;
     ret++;
   }
 
-  const int N=4;
+  const long long N=4;
 
   // Test sparse matrix with scalar entries
   Dune::BCRSMatrix<double> slaplace;

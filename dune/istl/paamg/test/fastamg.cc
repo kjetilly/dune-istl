@@ -39,12 +39,12 @@ void randomize(const M& mat, V& b)
   mat.mv(static_cast<const V&>(x), b);
 }
 
-template <int BS>
-void testAMG(int N, int coarsenTarget, int ml)
+template <long long BS>
+void testAMG(long long N, long long coarsenTarget, long long ml)
 {
   std::cout<<"N="<<N<<" coarsenTarget="<<coarsenTarget<<" maxlevel="<<ml<<std::endl;
 
-  typedef Dune::ParallelIndexSet<int,LocalIndex,512> ParallelIndexSet;
+  typedef Dune::ParallelIndexSet<long long,LocalIndex,512> ParallelIndexSet;
 
   ParallelIndexSet indices;
   typedef Dune::FieldMatrix<double,BS,BS> MatrixBlock;
@@ -53,7 +53,7 @@ void testAMG(int N, int coarsenTarget, int ml)
   typedef Dune::BlockVector<VectorBlock> Vector;
   typedef Dune::MatrixAdapter<BCRSMat,Vector,Vector> Operator;
   typedef Dune::Communication<void*> Comm;
-  int n;
+  long long n;
 
   Comm c;
   BCRSMat mat = setupAnisotropic2d<MatrixBlock>(N, indices, c, &n, 1);
@@ -123,12 +123,12 @@ void testAMG(int N, int coarsenTarget, int ml)
 }
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 try
 {
-  int N=100;
-  int coarsenTarget=1200;
-  int ml=10;
+  long long N=100;
+  long long coarsenTarget=1200;
+  long long ml=10;
 
   if(argc>1)
     N = atoi(argv[1]);

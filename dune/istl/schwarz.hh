@@ -194,7 +194,7 @@ namespace Dune {
        \param c The communication object for syncing overlap and copy
      * data points. (E.~g. OwnerOverlapCopyCommunication )
      */
-    ParSSOR (const matrix_type& A, int n, field_type w, const communication_type& c)
+    ParSSOR (const matrix_type& A, long long n, field_type w, const communication_type& c)
       : _A_(A), _n(n), _w(w), communication(c)
     {   }
 
@@ -215,7 +215,7 @@ namespace Dune {
      */
     virtual void apply (X& v, const Y& d)
     {
-      for (int i=0; i<_n; i++) {
+      for (long long i=0; i<_n; i++) {
         bsorf(_A_,v,d,_w);
         bsorb(_A_,v,d,_w);
       }
@@ -239,7 +239,7 @@ namespace Dune {
     //! \brief The matrix we operate on.
     const matrix_type& _A_;
     //! \brief The number of steps to do in apply
-    int _n;
+    long long _n;
     //! \brief The relaxation factor to use
     field_type _w;
     //! \brief the communication object

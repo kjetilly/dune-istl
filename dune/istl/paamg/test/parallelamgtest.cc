@@ -54,17 +54,17 @@ private:
 class MPIError {
 public:
   /** @brief Constructor. */
-  MPIError(std::string s, int e) : errorstring(s), errorcode(e){}
+  MPIError(std::string s, long long e) : errorstring(s), errorcode(e){}
   /** @brief The error string. */
   std::string errorstring;
   /** @brief The mpi error code. */
-  int errorcode;
+  long long errorcode;
 };
 
-void MPI_err_handler([[maybe_unused]] MPI_Comm *comm, int *err_code, ...)
+void MPI_err_handler([[maybe_unused]] MPI_Comm *comm, long long *err_code, ...)
 {
   char *err_string=new char[MPI_MAX_ERROR_STRING];
-  int err_length;
+  long long err_length;
   MPI_Error_string(*err_code, err_string, &err_length);
   std::string s(err_string, err_length);
   std::cerr << "An MPI Error occurred:"<<std::endl<<s<<std::endl;
@@ -72,13 +72,13 @@ void MPI_err_handler([[maybe_unused]] MPI_Comm *comm, int *err_code, ...)
   throw MPIError(s, *err_code);
 }
 
-template<int BS>
-void testAmg(int N, int coarsenTarget)
+template<long long BS>
+void testAmg(long long N, long long coarsenTarget)
 {
   std::cout<<"==================================================="<<std::endl;
   std::cout<<"BS="<<BS<<" N="<<N<<" coarsenTarget="<<coarsenTarget<<std::endl;
 
-  int procs, rank;
+  long long procs, rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &procs);
 
@@ -86,10 +86,10 @@ void testAmg(int N, int coarsenTarget)
   typedef Dune::BCRSMatrix<MatrixBlock> BCRSMat;
   typedef Dune::FieldVector<double,BS> VectorBlock;
   typedef Dune::BlockVector<VectorBlock> Vector;
-  typedef int GlobalId;
+  typedef long long GlobalId;
   typedef Dune::OwnerOverlapCopyCommunication<GlobalId> Communication;
   typedef Dune::OverlappingSchwarzOperator<BCRSMat,Vector,Vector,Communication> Operator;
-  int n;
+  long long n;
 
   N/=BS;
 
@@ -189,38 +189,38 @@ void testAmg(int N, int coarsenTarget)
 
 }
 
-template<int BSStart, int BSEnd, int BSStep=1>
+template<long long BSStart, long long BSEnd, long long BSStep=1>
 struct AMGTester
 {
-  static void test(int N, int coarsenTarget)
+  static void test(long long N, long long coarsenTarget)
   {
     testAmg<BSStart>(N, coarsenTarget);
-    const int next = (BSStart+BSStep>BSEnd) ? BSEnd : BSStart+BSStep;
+    const long long next = (BSStart+BSStep>BSEnd) ? BSEnd : BSStart+BSStep;
     AMGTester<next,BSEnd,BSStep>::test(N, coarsenTarget);
   }
 }
 ;
 
-template<int BSStart,int BSStep>
+template<long long BSStart,long long BSStep>
 struct AMGTester<BSStart,BSStart,BSStep>
 {
-  static void test(int N, int coarsenTarget)
+  static void test(long long N, long long coarsenTarget)
   {
     testAmg<BSStart>(N, coarsenTarget);
   }
 };
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   MPI_Init(&argc, &argv);
   MPI_Errhandler handler;
   MPI_Comm_create_errhandler(MPI_err_handler, &handler);
   MPI_Comm_set_errhandler(MPI_COMM_WORLD, handler);
 
-  int N=100;
+  long long N=100;
 
-  int coarsenTarget=200;
+  long long coarsenTarget=200;
 
   if(argc>1)
     N = atoi(argv[1]);

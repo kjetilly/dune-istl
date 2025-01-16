@@ -23,7 +23,7 @@ std::size_t computeNNZ(M&& matrix)
 template<class M>
 struct Builder
 {
-  void randomBuild(int m, int n)
+  void randomBuild(long long m, long long n)
   {
     DUNE_THROW(Dune::NotImplemented, "No specialization");
   }
@@ -33,19 +33,19 @@ struct Builder
 template<class B, class A>
 struct Builder<Dune::BCRSMatrix<B,A> >
 {
-  Dune::TestSuite randomBuild(int rows, int cols)
+  Dune::TestSuite randomBuild(long long rows, long long cols)
   {
     Dune::TestSuite testSuite("BCRSMatrix::random");
 
-    int maxNZCols = 15; // maximal number of nonzeros per row
+    long long maxNZCols = 15; // maximal number of nonzeros per row
     {
       Dune::BCRSMatrix<B,A> matrix( rows, cols, Dune::BCRSMatrix<B,A>::random );
-      for(int i=0; i<rows; ++i)
+      for(long long i=0; i<rows; ++i)
         matrix.setrowsize(i,maxNZCols);
       matrix.endrowsizes();
 
       // During setup, or before, if there is no other way.
-      for(int i=0; i<rows; ++i) {
+      for(long long i=0; i<rows; ++i) {
         if(i<cols)
           matrix.addindex(i,i);
         if(i-1>=0)
@@ -68,11 +68,11 @@ struct Builder<Dune::BCRSMatrix<B,A> >
     /*{
 
        Dune::BCRSMatrix<B,A> matrix( rows, cols, rows*maxNZCols, Dune::BCRSMatrix<B,A>::random );
-       for(int i=0; i<rows; ++i)
+       for(long long i=0; i<rows; ++i)
          matrix.setrowsize(i,maxNZCols);
        matrix.endrowsizes();
 
-       for(int i=0; i<rows; ++i){
+       for(long long i=0; i<rows; ++i){
         if(i<cols)
           matrix.addindex(i,i);
         if(i-1>=0)
@@ -87,12 +87,12 @@ struct Builder<Dune::BCRSMatrix<B,A> >
     return testSuite;
   }
 
-  void rowWiseBuild(Dune::TestSuite& testSuite, Dune::BCRSMatrix<B,A>& matrix, int /* rows */, int cols)
+  void rowWiseBuild(Dune::TestSuite& testSuite, Dune::BCRSMatrix<B,A>& matrix, long long /* rows */, long long cols)
   {
     for(typename Dune::BCRSMatrix<B,A>::CreateIterator ci=matrix.createbegin(), cend=matrix.createend();
         ci!=cend; ++ci)
     {
-      int i=ci.index();
+      long long i=ci.index();
       if(i<cols)
         ci.insert(i);
       if(i-1>=0 && i-1<cols)
@@ -130,7 +130,7 @@ struct Builder<Dune::BCRSMatrix<B,A> >
     }
   }
 
-  Dune::TestSuite rowWiseBuild(int rows, int cols)
+  Dune::TestSuite rowWiseBuild(long long rows, long long cols)
   {
     Dune::TestSuite testSuite("BCRSMatrix::row_wise without nnz");
     Dune::BCRSMatrix<B,A> matrix( rows, cols, Dune::BCRSMatrix<B,A>::row_wise );
@@ -138,7 +138,7 @@ struct Builder<Dune::BCRSMatrix<B,A> >
     return testSuite;
   }
 
-  Dune::TestSuite rowWiseBuild(int rows, int cols, int nnz)
+  Dune::TestSuite rowWiseBuild(long long rows, long long cols, long long nnz)
   {
     Dune::TestSuite testSuite("BCRSMatrix::row_wise with nnz");
     Dune::BCRSMatrix<B,A> matrix( rows, cols, nnz, Dune::BCRSMatrix<B,A>::row_wise );
@@ -157,7 +157,7 @@ void testDoubleSetSize()
 }
 
 
-int main()
+long long main()
 {
   Dune::TestSuite testSuite;
 

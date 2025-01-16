@@ -90,7 +90,7 @@ namespace Dune {
       X v(x);
 
       // iteration loop
-      int i=1;
+      long long i=1;
       for ( ; i<=_maxit; i++ )
       {
         v = 0;                      // clear correction
@@ -113,7 +113,7 @@ namespace Dune {
     using IterativeSolver<X,X>::_reduction;
     using IterativeSolver<X,X>::_maxit;
     using IterativeSolver<X,X>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("loopsolver", defaultIterativeSolverCreator<Dune::LoopSolver>());
 
@@ -155,7 +155,7 @@ namespace Dune {
       X p(x);                     // create local vectors
       X q(b);
 
-      int i=1;   // loop variables
+      long long i=1;   // loop variables
       field_type lambda;
       for ( ; i<=_maxit; i++ )
       {
@@ -184,7 +184,7 @@ namespace Dune {
     using IterativeSolver<X,X>::_reduction;
     using IterativeSolver<X,X>::_maxit;
     using IterativeSolver<X,X>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("gradientsolver", defaultIterativeSolverCreator<Dune::GradientSolver>());
 
@@ -214,13 +214,13 @@ namespace Dune {
 
     /*!
       \brief Constructor to initialize a CG solver.
-      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, Preconditioner<X,Y>&, real_type, int, int)
+      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, Preconditioner<X,Y>&, real_type, long long, long long)
       \param condition_estimate Whether to calculate an estimate of the condition number.
                                 The estimate is given in the InverseOperatorResult returned by apply().
                                 This is only supported for float and double field types.
     */
     CGSolver (const LinearOperator<X,X>& op, Preconditioner<X,X>& prec,
-      scalar_real_type reduction, int maxit, int verbose, bool condition_estimate) : IterativeSolver<X,X>(op, prec, reduction, maxit, verbose),
+      scalar_real_type reduction, long long maxit, long long verbose, bool condition_estimate) : IterativeSolver<X,X>(op, prec, reduction, maxit, verbose),
       condition_estimate_(condition_estimate)
     {
       if (condition_estimate && !enableConditionEstimate) {
@@ -231,13 +231,13 @@ namespace Dune {
 
     /*!
       \brief Constructor to initialize a CG solver.
-      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, const ScalarProduct<X>&, Preconditioner<X,Y>&, real_type, int, int)
+      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, const ScalarProduct<X>&, Preconditioner<X,Y>&, real_type, long long, long long)
       \param condition_estimate Whether to calculate an estimate of the condition number.
                                 The estimate is given in the InverseOperatorResult returned by apply().
                                 This is only supported for float and double field types.
     */
     CGSolver (const LinearOperator<X,X>& op, const ScalarProduct<X>& sp, Preconditioner<X,X>& prec,
-      scalar_real_type reduction, int maxit, int verbose, bool condition_estimate) : IterativeSolver<X,X>(op, sp, prec, reduction, maxit, verbose),
+      scalar_real_type reduction, long long maxit, long long verbose, bool condition_estimate) : IterativeSolver<X,X>(op, sp, prec, reduction, maxit, verbose),
       condition_estimate_(condition_estimate)
     {
       if (condition_estimate && !(std::is_same<field_type,float>::value || std::is_same<field_type,double>::value)) {
@@ -248,14 +248,14 @@ namespace Dune {
 
     /*!
       \brief Constructor to initialize a CG solver.
-      \copydetails IterativeSolver::IterativeSolver(std::shared_ptr<const LinearOperator<X,Y>>, std::shared_ptr<ScalarProduct<X>>, std::shared_ptr<Preconditioner<X,Y>>, real_type, int, int)
+      \copydetails IterativeSolver::IterativeSolver(std::shared_ptr<const LinearOperator<X,Y>>, std::shared_ptr<ScalarProduct<X>>, std::shared_ptr<Preconditioner<X,Y>>, real_type, long long, long long)
       \param condition_estimate Whether to calculate an estimate of the condition number.
                                 The estimate is given in the InverseOperatorResult returned by apply().
                                 This is only supported for float and double field types.
     */
     CGSolver (std::shared_ptr<const LinearOperator<X,X>> op, std::shared_ptr<ScalarProduct<X>> sp,
               std::shared_ptr<Preconditioner<X,X>> prec,
-              scalar_real_type reduction, int maxit, int verbose, bool condition_estimate)
+              scalar_real_type reduction, long long maxit, long long verbose, bool condition_estimate)
       : IterativeSolver<X,X>(op, sp, prec, reduction, maxit, verbose),
       condition_estimate_(condition_estimate)
     {
@@ -305,7 +305,7 @@ namespace Dune {
       rholast = _sp->dot(p,b);         // orthogonalization
 
       // the loop
-      int i=1;
+      long long i=1;
       for ( ; i<=_maxit; i++ )
       {
         // minimize in given search direction p
@@ -356,7 +356,7 @@ namespace Dune {
             if (row.index() < T.N() - 1)
               row.insert(row.index()+1);
           }
-          for (int row = 0; row < i; ++row) {
+          for (long long row = 0; row < i; ++row) {
             if (row > 0) {
               T[row][row-1] = sqrt(betas[row-1]) / lambdas[row-1];
             }
@@ -409,7 +409,7 @@ namespace Dune {
     using IterativeSolver<X,X>::_reduction;
     using IterativeSolver<X,X>::_maxit;
     using IterativeSolver<X,X>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("cgsolver", defaultIterativeSolverCreator<Dune::CGSolver>());
 
@@ -684,11 +684,11 @@ namespace Dune {
                       real_type(1.0)/beta);
 
       // the loop
-      int i = 1;
+      long long i = 1;
       for( ; i<=_maxit; i++) {
 
         dummy = z;
-        int i1 = i%3,
+        long long i1 = i%3,
           i0 = (i1+2)%3,
           i2 = (i1+1)%3;
 
@@ -805,7 +805,7 @@ namespace Dune {
     using IterativeSolver<X,X>::_reduction;
     using IterativeSolver<X,X>::_maxit;
     using IterativeSolver<X,X>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("minressolver", defaultIterativeSolverCreator<Dune::MINRESSolver>());
 
@@ -844,10 +844,10 @@ namespace Dune {
     /*!
        \brief Set up RestartedGMResSolver solver.
 
-       \copydoc LoopSolver::LoopSolver(const L&,P&,double,int,int)
+       \copydoc LoopSolver::LoopSolver(const L&,P&,double,long long,long long)
        \param restart number of GMRes cycles before restart
      */
-    RestartedGMResSolver (const LinearOperator<X,Y>& op, Preconditioner<X,Y>& prec, scalar_real_type reduction, int restart, int maxit, int verbose) :
+    RestartedGMResSolver (const LinearOperator<X,Y>& op, Preconditioner<X,Y>& prec, scalar_real_type reduction, long long restart, long long maxit, long long verbose) :
       IterativeSolver<X,Y>::IterativeSolver(op,prec,reduction,maxit,verbose),
       _restart(restart)
     {}
@@ -855,10 +855,10 @@ namespace Dune {
     /*!
        \brief Set up RestartedGMResSolver solver.
 
-       \copydoc LoopSolver::LoopSolver(const L&, const S&,P&,double,int,int)
+       \copydoc LoopSolver::LoopSolver(const L&, const S&,P&,double,long long,long long)
        \param restart number of GMRes cycles before restart
      */
-    RestartedGMResSolver (const LinearOperator<X,Y>& op, const ScalarProduct<X>& sp, Preconditioner<X,Y>& prec, scalar_real_type reduction, int restart, int maxit, int verbose) :
+    RestartedGMResSolver (const LinearOperator<X,Y>& op, const ScalarProduct<X>& sp, Preconditioner<X,Y>& prec, scalar_real_type reduction, long long restart, long long maxit, long long verbose) :
       IterativeSolver<X,Y>::IterativeSolver(op,sp,prec,reduction,maxit,verbose),
       _restart(restart)
     {}
@@ -877,24 +877,24 @@ namespace Dune {
      */
     RestartedGMResSolver (std::shared_ptr<const LinearOperator<X,Y> > op, std::shared_ptr<Preconditioner<X,X> > prec, const ParameterTree& configuration) :
       IterativeSolver<X,Y>::IterativeSolver(op,prec,configuration),
-      _restart(configuration.get<int>("restart"))
+      _restart(configuration.get<long long>("restart"))
     {}
 
     RestartedGMResSolver (std::shared_ptr<const LinearOperator<X,Y> > op, std::shared_ptr<const ScalarProduct<X> > sp, std::shared_ptr<Preconditioner<X,X> > prec, const ParameterTree& configuration) :
       IterativeSolver<X,Y>::IterativeSolver(op,sp,prec,configuration),
-      _restart(configuration.get<int>("restart"))
+      _restart(configuration.get<long long>("restart"))
     {}
 
     /*!
       \brief Set up RestartedGMResSolver solver.
 
-      \copydoc LoopSolver::LoopSolver(std::shared_ptr<const L>,std::shared_ptr<const S>,std::shared_ptr<P>,double,int,int)
+      \copydoc LoopSolver::LoopSolver(std::shared_ptr<const L>,std::shared_ptr<const S>,std::shared_ptr<P>,double,long long,long long)
        \param restart number of GMRes cycles before restart
      */
     RestartedGMResSolver (std::shared_ptr<const LinearOperator<X,Y>> op,
                           std::shared_ptr<const ScalarProduct<X>> sp,
                           std::shared_ptr<Preconditioner<X,Y>> prec,
-                          scalar_real_type reduction, int restart, int maxit, int verbose) :
+                          scalar_real_type reduction, long long restart, long long maxit, long long verbose) :
       IterativeSolver<X,Y>::IterativeSolver(op,sp,prec,reduction,maxit,verbose),
       _restart(restart)
     {}
@@ -924,9 +924,9 @@ namespace Dune {
     {
       using std::abs;
       const Simd::Scalar<real_type> EPSILON = 1e-80;
-      const int m = _restart;
+      const long long m = _restart;
       real_type norm = 0.0;
-      int j = 1;
+      long long j = 1;
       std::vector<field_type,fAlloc> s(m+1), sn(m);
       std::vector<real_type,rAlloc> cs(m);
       // need copy of rhs if GMRes has to be restarted
@@ -953,7 +953,7 @@ namespace Dune {
 
       while(j <= _maxit && res.converged != true) {
 
-        int i = 0;
+        long long i = 0;
         v[0] *= Simd::cond(norm==real_type(0.),
                            real_type(0.),
                            real_type(1.0)/norm);
@@ -968,7 +968,7 @@ namespace Dune {
           // do Arnoldi algorithm
           _op->apply(v[i],v[i+1]);
           _prec->apply(w,v[i+1]);
-          for(int k=0; k<i+1; k++) {
+          for(long long k=0; k<i+1; k++) {
             // notice that _sp->dot(v[k],w) = v[k]\adjoint w
             // so one has to pay attention to the order
             // in the scalar product for the complex case
@@ -989,7 +989,7 @@ namespace Dune {
                                real_type(1.0)/H[i+1][i]);
 
           // update QR factorization
-          for(int k=0; k<i; k++)
+          for(long long k=0; k<i; k++)
             applyPlaneRotation(H[k][i],H[k+1][i],cs[k],sn[k]);
 
           // compute new givens rotation
@@ -1036,7 +1036,7 @@ namespace Dune {
 
   protected :
 
-    void update(X& w, int i,
+    void update(X& w, long long i,
                 const std::vector<std::vector<field_type,fAlloc> >& H,
                 const std::vector<field_type,fAlloc>& s,
                 const std::vector<X>& v) {
@@ -1044,9 +1044,9 @@ namespace Dune {
       std::vector<field_type,fAlloc> y(s);
 
       // backsolve
-      for(int a=i-1; a>=0; a--) {
+      for(long long a=i-1; a>=0; a--) {
         field_type rhs(s[a]);
-        for(int b=a+1; b<i; b++)
+        for(long long b=a+1; b<i; b++)
           rhs -= H[a][b]*y[b];
         y[a] = Simd::cond(rhs==field_type(0.),
                           field_type(0.),
@@ -1116,8 +1116,8 @@ namespace Dune {
     using IterativeSolver<X,Y>::_reduction;
     using IterativeSolver<X,Y>::_maxit;
     using IterativeSolver<X,Y>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
-    int _restart;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
+    long long _restart;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("restartedgmressolver", defaultIterativeSolverCreator<Dune::RestartedGMResSolver>());
 
@@ -1170,9 +1170,9 @@ namespace Dune {
     {
       using std::abs;
       const Simd::Scalar<real_type> EPSILON = 1e-80;
-      const int m = _restart;
+      const long long m = _restart;
       real_type norm = 0.0;
-      int i, j = 1, k;
+      long long i, j = 1, k;
       std::vector<field_type,fAlloc> s(m+1), sn(m);
       std::vector<real_type,rAlloc> cs(m);
       // helper vector
@@ -1214,7 +1214,7 @@ namespace Dune {
           // use v[i+1] as temporary vector for w
           _op->apply(w[i], v[i+1]);
           // do Arnoldi algorithm
-          for(int kk=0; kk<i+1; kk++)
+          for(long long kk=0; kk<i+1; kk++)
           {
             // notice that _sp->dot(v[k],v[i+1]) = v[k]\adjoint v[i+1]
             // so one has to pay attention to the order
@@ -1285,7 +1285,7 @@ private:
     using RestartedGMResSolver<X,Y>::_maxit;
     using RestartedGMResSolver<X,Y>::_verbose;
     using RestartedGMResSolver<X,Y>::_restart;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("restartedflexiblegmressolver", defaultIterativeSolverCreator<Dune::RestartedFlexibleGMResSolver>());
 
@@ -1325,10 +1325,10 @@ private:
     /*!
        \brief Set up nonlinear preconditioned conjugate gradient solver.
 
-       \copydoc LoopSolver::LoopSolver(const L&,P&,double,int,int)
+       \copydoc LoopSolver::LoopSolver(const L&,P&,double,long long,long long)
        \param restart number of GMRes cycles before restart
      */
-    GeneralizedPCGSolver (const LinearOperator<X,X>& op, Preconditioner<X,X>& prec, scalar_real_type reduction, int maxit, int verbose, int restart = 10) :
+    GeneralizedPCGSolver (const LinearOperator<X,X>& op, Preconditioner<X,X>& prec, scalar_real_type reduction, long long maxit, long long verbose, long long restart = 10) :
       IterativeSolver<X,X>::IterativeSolver(op,prec,reduction,maxit,verbose),
       _restart(restart)
     {}
@@ -1336,11 +1336,11 @@ private:
     /*!
        \brief Set up nonlinear preconditioned conjugate gradient solver.
 
-       \copydoc LoopSolver::LoopSolver(const L&, const S&,P&,double,int,int)
+       \copydoc LoopSolver::LoopSolver(const L&, const S&,P&,double,long long,long long)
        \param restart When to restart the construction of
        the Krylov search space.
      */
-    GeneralizedPCGSolver (const LinearOperator<X,X>& op, const ScalarProduct<X>& sp, Preconditioner<X,X>& prec, scalar_real_type reduction, int maxit, int verbose, int restart = 10) :
+    GeneralizedPCGSolver (const LinearOperator<X,X>& op, const ScalarProduct<X>& sp, Preconditioner<X,X>& prec, scalar_real_type reduction, long long maxit, long long verbose, long long restart = 10) :
       IterativeSolver<X,X>::IterativeSolver(op,sp,prec,reduction,maxit,verbose),
       _restart(restart)
     {}
@@ -1360,25 +1360,25 @@ private:
      */
     GeneralizedPCGSolver (std::shared_ptr<const LinearOperator<X,X> > op, std::shared_ptr<Preconditioner<X,X> > prec, const ParameterTree& configuration) :
       IterativeSolver<X,X>::IterativeSolver(op,prec,configuration),
-      _restart(configuration.get<int>("restart"))
+      _restart(configuration.get<long long>("restart"))
     {}
 
     GeneralizedPCGSolver (std::shared_ptr<const LinearOperator<X,X> > op, std::shared_ptr<const ScalarProduct<X> > sp, std::shared_ptr<Preconditioner<X,X> > prec, const ParameterTree& configuration) :
       IterativeSolver<X,X>::IterativeSolver(op,sp,prec,configuration),
-      _restart(configuration.get<int>("restart"))
+      _restart(configuration.get<long long>("restart"))
     {}
     /*!
       \brief Set up nonlinear preconditioned conjugate gradient solver.
 
-      \copydoc LoopSolver::LoopSolver(std::shared_ptr<const L>,std::shared_ptr<const S>,std::shared_ptr<P>,double,int,int)
+      \copydoc LoopSolver::LoopSolver(std::shared_ptr<const L>,std::shared_ptr<const S>,std::shared_ptr<P>,double,long long,long long)
       \param restart When to restart the construction of
       the Krylov search space.
     */
     GeneralizedPCGSolver (std::shared_ptr<const LinearOperator<X,X>> op,
                           std::shared_ptr<const ScalarProduct<X>> sp,
                           std::shared_ptr<Preconditioner<X,X>> prec,
-                          scalar_real_type reduction, int maxit, int verbose,
-                          int restart = 10) :
+                          scalar_real_type reduction, long long maxit, long long verbose,
+                          long long restart = 10) :
       IterativeSolver<X,X>::IterativeSolver(op,sp,prec,reduction,maxit,verbose),
       _restart(restart)
     {}
@@ -1409,8 +1409,8 @@ private:
       // some local variables
       field_type rho, lambda;
 
-      int i=0;
-      int ii=0;
+      long long i=0;
+      long long ii=0;
       // determine initial search direction
       *(p[0]) = 0;                              // clear correction
       _prec->apply(*(p[0]),b);                   // apply preconditioner
@@ -1431,7 +1431,7 @@ private:
 
       while(i<_maxit) {
         // the loop
-        int end=std::min(_restart, _maxit-i+1);
+        long long end=std::min(_restart, _maxit-i+1);
         for (ii=1; ii<end; ++ii )
         {
           //std::cout<<" ii="<<ii<<" i="<<i<<std::endl;
@@ -1442,7 +1442,7 @@ private:
           p[ii].reset(new X(prec_res));
           _op->apply(prec_res, q);
 
-          for(int j=0; j<ii; ++j) {
+          for(long long j=0; j<ii; ++j) {
             rho =_sp->dot(q,*(p[j]))/pp[j];
             p[ii]->axpy(-rho, *(p[j]));
           }
@@ -1481,8 +1481,8 @@ private:
     using IterativeSolver<X,X>::_reduction;
     using IterativeSolver<X,X>::_maxit;
     using IterativeSolver<X,X>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
-    int _restart;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
+    long long _restart;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("generalizedpcgsolver", defaultIterativeSolverCreator<Dune::GeneralizedPCGSolver>());
 
@@ -1513,34 +1513,34 @@ private:
     using IterativeSolver<X,X>::apply;
     /*!
       \brief Constructor to initialize a RestartedFCG solver.
-      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, Preconditioner<X,Y>&, real_type, int, int, int)
+      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, Preconditioner<X,Y>&, real_type, long long, long long, long long)
       \param mmax is the maximal number of previous vectors which are orthogonalized against the new search direction.
     */
     RestartedFCGSolver (const LinearOperator<X,X>& op, Preconditioner<X,X>& prec,
-                        scalar_real_type reduction, int maxit, int verbose, int mmax = 10) : IterativeSolver<X,X>(op, prec, reduction, maxit, verbose), _mmax(mmax)
+                        scalar_real_type reduction, long long maxit, long long verbose, long long mmax = 10) : IterativeSolver<X,X>(op, prec, reduction, maxit, verbose), _mmax(mmax)
     {
     }
 
     /*!
       \brief Constructor to initialize a RestartedFCG solver.
-      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, const ScalarProduct<X>&, Preconditioner<X,Y>&, real_type, int, int,int)
+      \copydetails IterativeSolver::IterativeSolver(const LinearOperator<X,Y>&, const ScalarProduct<X>&, Preconditioner<X,Y>&, real_type, long long, long long,long long)
       \param mmax is the maximal number of previous vectors which are orthogonalized against the new search direction.
     */
     RestartedFCGSolver (const LinearOperator<X,X>& op, const ScalarProduct<X>& sp, Preconditioner<X,X>& prec,
-                        scalar_real_type reduction, int maxit, int verbose, int mmax = 10) : IterativeSolver<X,X>(op, sp, prec, reduction, maxit, verbose), _mmax(mmax)
+                        scalar_real_type reduction, long long maxit, long long verbose, long long mmax = 10) : IterativeSolver<X,X>(op, sp, prec, reduction, maxit, verbose), _mmax(mmax)
     {
     }
 
     /*!
       \brief Constructor to initialize a RestartedFCG solver.
-      \copydetails IterativeSolver::IterativeSolver(std::shared_ptr<const LinearOperator<X,Y>>, std::shared_ptr<const ScalarProduct<X>>, std::shared_ptr<Preconditioner<X,Y>>, real_type, int, int,int)
+      \copydetails IterativeSolver::IterativeSolver(std::shared_ptr<const LinearOperator<X,Y>>, std::shared_ptr<const ScalarProduct<X>>, std::shared_ptr<Preconditioner<X,Y>>, real_type, long long, long long,long long)
       \param mmax is the maximal number of previous vectors which are orthogonalized against the new search direction.
     */
     RestartedFCGSolver (std::shared_ptr<const LinearOperator<X,X>> op,
                         std::shared_ptr<const ScalarProduct<X>> sp,
                         std::shared_ptr<Preconditioner<X,X>> prec,
-                        scalar_real_type reduction, int maxit, int verbose,
-                        int mmax = 10)
+                        scalar_real_type reduction, long long maxit, long long verbose,
+                        long long mmax = 10)
       : IterativeSolver<X,X>(op, sp, prec, reduction, maxit, verbose), _mmax(mmax)
     {}
 
@@ -1605,8 +1605,8 @@ private:
       field_type alpha;
 
       // the loop
-      int i=1;
-      int i_bounded=0;
+      long long i=1;
+      long long i_bounded=0;
       while(i<=_maxit && !res.converged) {
         for (; i_bounded <= _mmax && i<= _maxit; i_bounded++) {
           d[i_bounded] = 0;                   // reset search direction
@@ -1642,15 +1642,15 @@ private:
 
   private:
     //This function is called every iteration to orthogonalize against the last search directions
-    virtual void orthogonalizations(const int& i_bounded,const std::vector<X>& Ad, const X& w, const std::vector<field_type,ReboundAllocatorType<X,field_type>>& ddotAd,std::vector<X>& d) {
+    virtual void orthogonalizations(const long long& i_bounded,const std::vector<X>& Ad, const X& w, const std::vector<field_type,ReboundAllocatorType<X,field_type>>& ddotAd,std::vector<X>& d) {
       // The RestartedFCGSolver uses only values with lower array index;
-      for (int k = 0; k < i_bounded; k++) {
+      for (long long k = 0; k < i_bounded; k++) {
         d[i_bounded].axpy(-_sp->dot(Ad[k], w) / ddotAd[k], d[k]); // d[i] -= <<Ad[k],w>/<d[k],Ad[k]>>d[k]
       }
     }
 
     // This function is called every mmax iterations to handle limited array sizes.
-    virtual void cycle(std::vector<X>& Ad,std::vector<X>& d,std::vector<field_type,ReboundAllocatorType<X,field_type> >& ddotAd,int& i_bounded) {
+    virtual void cycle(std::vector<X>& Ad,std::vector<X>& d,std::vector<field_type,ReboundAllocatorType<X,field_type> >& ddotAd,long long& i_bounded) {
       // Reset loop index and exchange the first and last arrays
       i_bounded = 1;
       std::swap(Ad[0], Ad[_mmax]);
@@ -1659,14 +1659,14 @@ private:
     }
 
   protected:
-    int _mmax;
+    long long _mmax;
     using IterativeSolver<X,X>::_op;
     using IterativeSolver<X,X>::_prec;
     using IterativeSolver<X,X>::_sp;
     using IterativeSolver<X,X>::_reduction;
     using IterativeSolver<X,X>::_maxit;
     using IterativeSolver<X,X>::_verbose;
-    using Iteration = typename IterativeSolver<X,X>::template Iteration<unsigned int>;
+    using Iteration = typename IterativeSolver<X,X>::template Iteration<size_t>;
   };
   DUNE_REGISTER_ITERATIVE_SOLVER("restartedfcgsolver", defaultIterativeSolverCreator<Dune::RestartedFCGSolver>());
 
@@ -1699,9 +1699,9 @@ private:
 
   private:
     // This function is called every iteration to orthogonalize against the last search directions.
-    virtual void orthogonalizations(const int& i_bounded,const std::vector<X>& Ad, const X& w, const std::vector<field_type,ReboundAllocatorType<X,field_type>>& ddotAd,std::vector<X>& d) override {
+    virtual void orthogonalizations(const long long& i_bounded,const std::vector<X>& Ad, const X& w, const std::vector<field_type,ReboundAllocatorType<X,field_type>>& ddotAd,std::vector<X>& d) override {
       // This FCGSolver uses values with higher array indexes too, if existent.
-      for (int k = 0; k < _k_limit; k++) {
+      for (long long k = 0; k < _k_limit; k++) {
         if(i_bounded!=k)
           d[i_bounded].axpy(-_sp->dot(Ad[k], w) / ddotAd[k], d[k]); // d[i] -= <<Ad[k],w>/<d[k],Ad[k]>>d[k]
       }
@@ -1712,14 +1712,14 @@ private:
     };
 
     // This function is called every mmax iterations to handle limited array sizes.
-    virtual void cycle(std::vector<X>& Ad, [[maybe_unused]] std::vector<X>& d, [[maybe_unused]] std::vector<field_type,ReboundAllocatorType<X,field_type> >& ddotAd,int& i_bounded) override {
+    virtual void cycle(std::vector<X>& Ad, [[maybe_unused]] std::vector<X>& d, [[maybe_unused]] std::vector<field_type,ReboundAllocatorType<X,field_type> >& ddotAd,long long& i_bounded) override {
       // Only the loop index i_bounded return to 0, if it reached mmax.
       i_bounded = 0;
       // Now all arrays are filled and the loop in void orthogonalizations can use the whole arrays.
       _k_limit = Ad.size();
     };
 
-    int _k_limit = 0;
+    long long _k_limit = 0;
 
   protected:
     using RestartedFCGSolver<X>::_mmax;

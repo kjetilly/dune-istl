@@ -42,7 +42,7 @@ namespace Dune
         typedef BlockVector< typename CorrespondingVectors< B >::Range, typename std::allocator_traits< A >::template rebind_alloc< typename CorrespondingVectors< B >::Range > > Range;
       };
 
-      template< class K, int ROWS, int COLS >
+      template< class K, long long ROWS, long long COLS >
       struct CorrespondingVectors< FieldMatrix< K, ROWS, COLS > >
       {
         typedef FieldVector< K, COLS > Domain;
@@ -329,8 +329,8 @@ namespace Dune
     pybind11::class_< BCRSMatrix > registerBCRSMatrix ( pybind11::handle scope, const char *clsName = "BCRSMatrix" )
     {
       //pybind11::class_< BCRSMatrix > cls( scope, clsName );
-      int rows = BCRSMatrix::block_type::rows;
-      int cols = BCRSMatrix::block_type::cols;
+      long long rows = BCRSMatrix::block_type::rows;
+      long long cols = BCRSMatrix::block_type::cols;
 
       std::string matrixTypename = "Dune::BCRSMatrix< Dune::FieldMatrix< double, "+ std::to_string(rows) + ", " + std::to_string(cols) + " > >";
 

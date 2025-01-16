@@ -38,7 +38,7 @@
 #include <dune/istl/test/laplacian.hh>
 #include <dune/istl/test/multirhstest.hh>
 
-int main (int argc, char ** argv)
+long long main (long long argc, char ** argv)
 {
   test_all<float>();
   test_all<double>();

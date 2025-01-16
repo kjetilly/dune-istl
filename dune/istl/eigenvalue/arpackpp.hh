@@ -23,7 +23,7 @@
 #ifdef Status
 #undef Status        // prevent preprocessor from damaging the ARPACK++
                      // code when "X11/Xlib.h" is included (the latter
-                     // defines Status as "#define Status int" and
+                     // defines Status as "#define Status long long" and
                      // ARPACK++ provides a class with a method called
                      // Status)
 #endif
@@ -118,25 +118,25 @@ namespace Dune
       };
 
       //! Return number of rows in the matrix
-      inline int nrows () const { return m_; }
+      inline long long nrows () const { return m_; }
 
       //! Return number of columns in the matrix
-      inline int ncols () const { return n_; }
+      inline long long ncols () const { return n_; }
 
     protected:
       // Number of rows and columns in each block of the matrix
-      constexpr static int mBlock = BCRSMatrix::block_type::rows;
-      constexpr static int nBlock = BCRSMatrix::block_type::cols;
+      constexpr static long long mBlock = BCRSMatrix::block_type::rows;
+      constexpr static long long nBlock = BCRSMatrix::block_type::cols;
 
       // Type of vectors in the domain of the linear map associated with
       // the matrix, i.e. block vectors compatible to matrix rows
-      constexpr static int dbvBlockSize = nBlock;
+      constexpr static long long dbvBlockSize = nBlock;
       typedef Dune::FieldVector<Real,dbvBlockSize> DomainBlockVectorBlock;
       typedef Dune::BlockVector<DomainBlockVectorBlock> DomainBlockVector;
 
       // Type of vectors in the range of the linear map associated with
       // the matrix, i.e. block vectors compatible to matrix columns
-      constexpr static int rbvBlockSize = mBlock;
+      constexpr static long long rbvBlockSize = mBlock;
       typedef Dune::FieldVector<Real,rbvBlockSize> RangeBlockVectorBlock;
       typedef Dune::BlockVector<RangeBlockVectorBlock> RangeBlockVector;
 
@@ -192,7 +192,7 @@ namespace Dune
       const BCRSMatrix& A_;
 
       // Number of rows and columns in the matrix
-      const int m_, n_;
+      const long long m_, n_;
 
       // Auxiliary block vector objects which are
       // compatible to matrix rows / columns
@@ -266,8 +266,8 @@ namespace Dune
      *                            >= 4: sets the ARPACK(++) verbosity mode.
      */
     ArPackPlusPlus_Algorithms (const BCRSMatrix& m,
-                               const unsigned int nIterationsMax = 100000,
-                               const unsigned int verbosity_level = 0)
+                               const size_t nIterationsMax = 100000,
+                               const size_t verbosity_level = 0)
       : m_(m), nIterationsMax_(nIterationsMax),
         verbosity_level_(verbosity_level),
         nIterations_(0),
@@ -301,8 +301,8 @@ namespace Dune
       WrappedMatrix A(m_);
 
       // get number of rows and columns in A
-      const int nrows = A.nrows();
-      const int ncols = A.ncols();
+      const long long nrows = A.nrows();
+      const long long ncols = A.ncols();
 
       // assert that A is square
       if (nrows != ncols)
@@ -310,13 +310,13 @@ namespace Dune
                    << nrows << "x" << ncols << ").");
 
       // allocate memory for variables, set parameters
-      const int nev = 1;                     // Number of eigenvalues to compute
-      int ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
+      const long long nev = 1;                     // Number of eigenvalues to compute
+      long long ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
       const Real tol = epsilon;              // Stopping tolerance (relative accuracy of Ritz values) (0 == machine precision)
-      const int maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
+      const long long maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
       Real* ev = new Real[nev];              // Computed eigenvalues of A
       const bool ivec = true;                // Flag deciding if eigenvectors shall be determined
-      int nconv;                             // Number of converged eigenvalues
+      long long nconv;                             // Number of converged eigenvalues
 
       // define what we need: eigenvalues with largest magnitude
       char which[] = "LM";
@@ -403,8 +403,8 @@ namespace Dune
       WrappedMatrix A(m_);
 
       // get number of rows and columns in A
-      const int nrows = A.nrows();
-      const int ncols = A.ncols();
+      const long long nrows = A.nrows();
+      const long long ncols = A.ncols();
 
       // assert that A is square
       if (nrows != ncols)
@@ -412,13 +412,13 @@ namespace Dune
                    << nrows << "x" << ncols << ").");
 
       // allocate memory for variables, set parameters
-      const int nev = 1;                     // Number of eigenvalues to compute
-      int ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
+      const long long nev = 1;                     // Number of eigenvalues to compute
+      long long ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
       const Real tol = epsilon;              // Stopping tolerance (relative accuracy of Ritz values) (0 == machine precision)
-      const int maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
+      const long long maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
       Real* ev = new Real[nev];              // Computed eigenvalues of A
       const bool ivec = true;                // Flag deciding if eigenvectors shall be determined
-      int nconv;                             // Number of converged eigenvalues
+      long long nconv;                             // Number of converged eigenvalues
 
       // define what we need: eigenvalues with smallest magnitude
       char which[] = "SM";
@@ -504,8 +504,8 @@ namespace Dune
       WrappedMatrix A(m_);
 
       // get number of rows and columns in A
-      const int nrows = A.nrows();
-      const int ncols = A.ncols();
+      const long long nrows = A.nrows();
+      const long long ncols = A.ncols();
 
       // assert that A is square
       if (nrows != ncols)
@@ -513,13 +513,13 @@ namespace Dune
                    << nrows << "x" << ncols << ").");
 
       // allocate memory for variables, set parameters
-      const int nev = 2;                     // Number of eigenvalues to compute
-      int ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
+      const long long nev = 2;                     // Number of eigenvalues to compute
+      long long ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
       const Real tol = epsilon;              // Stopping tolerance (relative accuracy of Ritz values) (0 == machine precision)
-      const int maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
+      const long long maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
       Real* ev = new Real[nev];              // Computed eigenvalues of A
       const bool ivec = true;                // Flag deciding if eigenvectors shall be determined
-      int nconv;                             // Number of converged eigenvalues
+      long long nconv;                             // Number of converged eigenvalues
 
       // define what we need: eigenvalues from both ends of the spectrum
       char which[] = "BE";
@@ -553,7 +553,7 @@ namespace Dune
       A.multMv(x_min_raw,Ax_min_raw);
       Real r_max_norm = 0.0;
       Real r_min_norm = 0.0;
-      for (int i = 0; i < nrows; ++i)
+      for (long long i = 0; i < nrows; ++i)
       {
         r_max_norm += std::pow(Ax_max_raw[i] - lambda_max * x_max_raw[i],2);
         r_min_norm += std::pow(Ax_min_raw[i] - lambda_min * x_min_raw[i],2);
@@ -621,8 +621,8 @@ namespace Dune
       WrappedMatrix A(m_);
 
       // get number of rows and columns in A
-      const int nrows = A.nrows();
-      const int ncols = A.ncols();
+      const long long nrows = A.nrows();
+      const long long ncols = A.ncols();
 
       // assert that A has more rows than columns (extend code later to the opposite case!)
       if (nrows < ncols)
@@ -631,13 +631,13 @@ namespace Dune
                    << " This case is not implemented, yet.");
 
       // allocate memory for variables, set parameters
-      const int nev = 1;                     // Number of eigenvalues to compute
-      int ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
+      const long long nev = 1;                     // Number of eigenvalues to compute
+      long long ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
       const Real tol = epsilon;              // Stopping tolerance (relative accuracy of Ritz values) (0 == machine precision)
-      const int maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
+      const long long maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
       Real* ev = new Real[nev];              // Computed eigenvalues of A^T*A
       const bool ivec = true;                // Flag deciding if eigenvectors shall be determined
-      int nconv;                             // Number of converged eigenvalues
+      long long nconv;                             // Number of converged eigenvalues
 
       // define what we need: eigenvalues with largest algebraic value
       char which[] = "LA";
@@ -733,8 +733,8 @@ namespace Dune
       WrappedMatrix A(m_);
 
       // get number of rows and columns in A
-      const int nrows = A.nrows();
-      const int ncols = A.ncols();
+      const long long nrows = A.nrows();
+      const long long ncols = A.ncols();
 
       // assert that A has more rows than columns (extend code later to the opposite case!)
       if (nrows < ncols)
@@ -743,13 +743,13 @@ namespace Dune
                    << " This case is not implemented, yet.");
 
       // allocate memory for variables, set parameters
-      const int nev = 1;                     // Number of eigenvalues to compute
-      int ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
+      const long long nev = 1;                     // Number of eigenvalues to compute
+      long long ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
       const Real tol = epsilon;              // Stopping tolerance (relative accuracy of Ritz values) (0 == machine precision)
-      const int maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
+      const long long maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
       Real* ev = new Real[nev];              // Computed eigenvalues of A^T*A
       const bool ivec = true;                // Flag deciding if eigenvectors shall be determined
-      int nconv;                             // Number of converged eigenvalues
+      long long nconv;                             // Number of converged eigenvalues
 
       // define what we need: eigenvalues with smallest algebraic value
       char which[] = "SA";
@@ -841,8 +841,8 @@ namespace Dune
       WrappedMatrix A(m_);
 
       // get number of rows and columns in A
-      const int nrows = A.nrows();
-      const int ncols = A.ncols();
+      const long long nrows = A.nrows();
+      const long long ncols = A.ncols();
 
       // assert that A has more rows than columns (extend code later to the opposite case!)
       if (nrows < ncols)
@@ -851,13 +851,13 @@ namespace Dune
                    << " This case is not implemented, yet.");
 
       // allocate memory for variables, set parameters
-      const int nev = 2;                     // Number of eigenvalues to compute
-      int ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
+      const long long nev = 2;                     // Number of eigenvalues to compute
+      long long ncv = std::min(20, nrows);         // Number of Arnoldi vectors generated at each iteration (0 == auto)
       const Real tol = epsilon;              // Stopping tolerance (relative accuracy of Ritz values) (0 == machine precision)
-      const int maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
+      const long long maxit = nIterationsMax_*nev; // Maximum number of Arnoldi update iterations allowed   (0 == 100*nev)
       Real* ev = new Real[nev];              // Computed eigenvalues of A^T*A
       const bool ivec = true;                // Flag deciding if eigenvectors shall be determined
-      int nconv;                             // Number of converged eigenvalues
+      long long nconv;                             // Number of converged eigenvalues
 
       // define what we need: eigenvalues from both ends of the spectrum
       char which[] = "BE";
@@ -888,7 +888,7 @@ namespace Dune
       A.multMtMv(x_min_raw,AtAx_min_raw);
       Real r_max_norm = 0.0;
       Real r_min_norm = 0.0;
-      for (int i = 0; i < ncols; ++i)
+      for (long long i = 0; i < ncols; ++i)
       {
         r_max_norm += std::pow(AtAx_max_raw[i] - lambda_max * x_max_raw[i],2);
         r_min_norm += std::pow(AtAx_min_raw[i] - lambda_min * x_min_raw[i],2);
@@ -941,7 +941,7 @@ namespace Dune
      * \brief Return the number of iterations in last application of
      *        an algorithm.
      */
-    inline unsigned int getIterationCount () const
+    inline size_t getIterationCount () const
     {
       if (nIterations_ == 0)
         DUNE_THROW(Dune::ISTLError,"No algorithm applied, yet.");
@@ -952,15 +952,15 @@ namespace Dune
   protected:
     // parameters related to iterative eigenvalue algorithms
     const BCRSMatrix& m_;
-    const unsigned int nIterationsMax_;
+    const size_t nIterationsMax_;
 
     // verbosity setting
-    const unsigned int verbosity_level_;
+    const size_t verbosity_level_;
 
     // memory for storing temporary variables (mutable as they shall
     // just be effectless auxiliary variables of the const apply*(...)
     // methods)
-    mutable unsigned int nIterations_;
+    mutable size_t nIterations_;
 
     // constants for printing verbosity information
     const std::string title_;

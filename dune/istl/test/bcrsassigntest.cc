@@ -6,7 +6,7 @@
 
 using namespace Dune;
 
-int main (int argc, char** argv)
+long long main (long long argc, char** argv)
 {
   typedef BCRSMatrix<FieldMatrix<double,2,2> >  Mat;
 

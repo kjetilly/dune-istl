@@ -51,7 +51,7 @@ namespace Dune{
        @tparam O the assembled linear operator type
     */
     template<class O>
-    int initSolverFactories(){
+    long long initSolverFactories(){
       using M  = typename O::matrix_type;
       using X  = typename O::range_type;
       using Y  = typename O::domain_type;
@@ -76,7 +76,7 @@ namespace Dune{
     */
     template<class O, class X, class Y>
     [[deprecated("Use method 'initSolverFactories<O>' instead")]]
-    int initSolverFactories() {
+    long long initSolverFactories() {
       return initSolverFactories<O>();
     }
   } // end anonymous namespace
@@ -150,8 +150,8 @@ namespace Dune{
 
     template<class O>
     using _matrix_type = typename O::matrix_type;
-    using matrix_type = Std::detected_or_t<int, _matrix_type, Operator>;
-    static constexpr bool isAssembled = !std::is_same<matrix_type, int>::value;
+    using matrix_type = Std::detected_or_t<long long, _matrix_type, Operator>;
+    static constexpr bool isAssembled = !std::is_same<matrix_type, long long>::value;
 
     static const matrix_type* getmat(std::shared_ptr<Operator> op){
       std::shared_ptr<AssembledLinearOperator<matrix_type, Domain, Range>> aop

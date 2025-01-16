@@ -26,14 +26,14 @@
 
 using namespace Dune;
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
 #if HAVE_SUITESPARSE_UMFPACK
   try
   {
 
-    int N = 30; // number of nodes
-    const int bs = 2; // block size
+    long long N = 30; // number of nodes
+    const long long bs = 2; // block size
 
     // fill matrix with external method
     BCRSMatrix<FieldMatrix<double,bs,bs>> A;

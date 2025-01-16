@@ -14,7 +14,7 @@
 
 using namespace Dune;
 
-int main()
+long long main()
 {
   TestSuite suite;
 

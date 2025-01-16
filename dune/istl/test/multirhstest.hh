@@ -67,7 +67,7 @@ template <typename V>
 V detectVectorType(Dune::LinearOperator<V,V> &);
 
 template<typename Operator, typename Solver>
-std::vector<double> run_test (std::string precName, std::string solverName, Operator & op, Solver & solver, unsigned int N, unsigned int Runs)
+std::vector<double> run_test (std::string precName, std::string solverName, Operator & op, Solver & solver, size_t N, size_t Runs)
 {
   using Vector = decltype(detectVectorType(op));
   using FT = typename Vector::field_type;
@@ -77,10 +77,10 @@ std::vector<double> run_test (std::string precName, std::string solverName, Oper
 
   std::cout << "Trying " << solverName << "(" << precName << ")"
             << " with " << Dune::className<FT>() << std::endl;
-  for (unsigned int run = 0; run < Runs; run++) {
+  for (size_t run = 0; run < Runs; run++) {
     // set up system
     Vector x(N),b(N);
-    for (unsigned int i=0; i<N; i++)
+    for (size_t i=0; i<N; i++)
       x[i] = Random<FT>::gen();
     b=0; op.apply(x,b);    // set right hand side accordingly
     x=1;                   // initial guess
@@ -104,12 +104,12 @@ std::vector<double> run_test (std::string precName, std::string solverName, Oper
 }
 
 template<typename Operator, typename Prec>
-void test_all_solvers(std::string precName, Operator & op, Prec & prec, unsigned int N, unsigned int Runs)
+void test_all_solvers(std::string precName, Operator & op, Prec & prec, size_t N, size_t Runs)
 {
   using Vector = decltype(detectVectorType(op));
 
   double reduction = 1e-1;
-  int verb = 1;
+  long long verb = 1;
   Dune::LoopSolver<Vector> loop(op,prec,reduction,18000,verb);
   Dune::CGSolver<Vector> cg(op,prec,reduction,8000,verb);
   Dune::BiCGSTABSolver<Vector> bcgs(op,prec,reduction,8000,verb);
@@ -132,7 +132,7 @@ void test_all_solvers(std::string precName, Operator & op, Prec & prec, unsigned
 }
 
 template<typename FT>
-void test_all(unsigned int Runs = 1)
+void test_all(size_t Runs = 1)
 {
   // define Types
   typedef typename Dune::Simd::Scalar<FT> MT;
@@ -143,8 +143,8 @@ void test_all(unsigned int Runs = 1)
   typedef Dune::BCRSMatrix<MB> Matrix;
 
   // size
-  unsigned int size = 100;
-  unsigned int N = size*size;
+  size_t size = 100;
+  size_t N = size*size;
 
   // make a compressed row matrix with five point stencil
   Matrix A;
@@ -169,8 +169,8 @@ void test_all(unsigned int Runs = 1)
   SmootherArgs smootherArgs;
   smootherArgs.iterations = 1;
   smootherArgs.relaxationFactor = 1;
-  unsigned int coarsenTarget = 1000;
-  unsigned int maxLevel = 10;
+  size_t coarsenTarget = 1000;
+  size_t maxLevel = 10;
   Criterion criterion(15,coarsenTarget);
   criterion.setDefaultValuesIsotropic(2);
   criterion.setAlpha(.67);

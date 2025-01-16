@@ -16,7 +16,7 @@
 using namespace Dune;
 
 
-template<class K, int n>
+template<class K, long long n>
 void test_matrix()
 {
   ScaledIdentityMatrix<K,n> A(1);
@@ -54,12 +54,12 @@ void test_matrix()
   [[maybe_unused]] FieldMatrix<K,n,n> AFM = FieldMatrix<K,n,n>(A);
 }
 
-int main()
+long long main()
 {
   try {
     test_matrix<float, 1>();
     test_matrix<double, 1>();
-    //test_matrix<int, 10>(); Does not compile with icc because there is no std::sqrt(int)  std::fabs(int)
+    //test_matrix<long long, 10>(); Does not compile with icc because there is no std::sqrt(long long)  std::fabs(long long)
     test_matrix<double, 5>();
   }
   catch (Dune::Exception & e)

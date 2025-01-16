@@ -199,8 +199,8 @@ public:
   void setMatrix(const Matrix& matrix, const Ignore* ignore)
   {
     // count the number of entries and diagonal entries
-    int nonZeros = 0;
-    int numberOfIgnoredDofs = 0;
+    long long nonZeros = 0;
+    long long numberOfIgnoredDofs = 0;
 
 
     auto [flatRows,flatCols] = flatMatrixForEach( matrix, [&](auto&& /*entry*/, auto&& flatRowIndex, auto&& flatColIndex){
@@ -217,7 +217,7 @@ public:
     }
 
     // Total number of rows
-    int N = flatRows - numberOfIgnoredDofs;
+    long long N = flatRows - numberOfIgnoredDofs;
 
     nIsZero_ = (N <= 0);
 
@@ -246,8 +246,8 @@ public:
                              ), deleter);
 
     // copy the data of BCRS matrix to Cholmod Sparse matrix
-    int* Ap = static_cast<int*>(M->p);
-    int* Ai = static_cast<int*>(M->i);
+    long long* Ap = static_cast<long long*>(M->p);
+    long long* Ai = static_cast<long long*>(M->i);
     double* Ax = static_cast<double*>(M->x);
 
 
@@ -287,7 +287,7 @@ public:
 
     // now accumulate
     Ap[0] = 0;
-    for ( int i=0; i<N; i++ )
+    for ( long long i=0; i<N; i++ )
     {
       Ap[i+1] += Ap[i];
     }
@@ -382,14 +382,14 @@ private:
 
   struct CholmodCreator{
     template<class F> struct isValidBlock : std::false_type{};
-    template<int k> struct isValidBlock<FieldVector<double,k>> : std::true_type{};
-    template<int k> struct isValidBlock<FieldVector<float,k>> : std::true_type{};
+    template<long long k> struct isValidBlock<FieldVector<double,k>> : std::true_type{};
+    template<long long k> struct isValidBlock<FieldVector<float,k>> : std::true_type{};
 
     template<class TL, typename M>
     std::shared_ptr<Dune::InverseOperator<typename Dune::TypeListElement<1, TL>::type,
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator()(TL /*tl*/, const M& mat, const Dune::ParameterTree& /*config*/,
-               std::enable_if_t<isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+               std::enable_if_t<isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
       using D = typename Dune::TypeListElement<1, TL>::type;
       auto solver = std::make_shared<Dune::Cholmod<D>>();
@@ -402,7 +402,7 @@ private:
     std::shared_ptr<Dune::InverseOperator<typename Dune::TypeListElement<1, TL>::type,
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& /*mat*/, const Dune::ParameterTree& /*config*/,
-                std::enable_if_t<!isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                std::enable_if_t<!isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
       DUNE_THROW(UnsupportedType, "Unsupported Type in Cholmod");
     }

@@ -28,7 +28,7 @@ void randomize(const M& mat, V& b)
 }
 
 typedef double XREAL;
-typedef Dune::ParallelIndexSet<int,LocalIndex,512> ParallelIndexSet;
+typedef Dune::ParallelIndexSet<long long,LocalIndex,512> ParallelIndexSet;
 typedef Dune::FieldMatrix<XREAL,1,1> MatrixBlock;
 typedef Dune::BCRSMatrix<MatrixBlock> BCRSMat;
 typedef Dune::FieldVector<XREAL,1> VectorBlock;
@@ -91,9 +91,9 @@ void *solve2(void* arg)
 
 void testTwoLevelMethod()
 {
-    const int BS=1;
-    int N=100;
-    typedef Dune::ParallelIndexSet<int,LocalIndex,512> ParallelIndexSet;
+    const long long BS=1;
+    long long N=100;
+    typedef Dune::ParallelIndexSet<long long,LocalIndex,512> ParallelIndexSet;
     ParallelIndexSet indices;
     typedef Dune::FieldMatrix<double,BS,BS> MatrixBlock;
     typedef Dune::BCRSMatrix<MatrixBlock> BCRSMat;
@@ -102,7 +102,7 @@ void testTwoLevelMethod()
     typedef Dune::MatrixAdapter<BCRSMat,Vector,Vector> Operator;
     typedef Dune::Communication<void*> Comm;
     Comm c;
-    int n;
+    long long n;
     BCRSMat mat = setupAnisotropic2d<MatrixBlock>(N, indices, c, &n, 1);
     Vector b(mat.N()), x(mat.M());
     x=0;
@@ -120,10 +120,10 @@ void testTwoLevelMethod()
     std::size_t stride=2;
     SubdomainVector subdomains((((N-1)/stride)+1)*(((N-1)/stride)+1));
 
-    for(int i=0; i<N; ++i)
-        for(int j=0; j<N; ++j)
+    for(long long i=0; i<N; ++i)
+        for(long long j=0; j<N; ++j)
         {
-            int index=i/stride*(((N-1)/stride)+1)+j/stride;
+            long long index=i/stride*(((N-1)/stride)+1)+j/stride;
             subdomains[index].insert(i*N+j);
         }
     //create smoother
@@ -156,7 +156,7 @@ void testTwoLevelMethod()
   std::vector<pthread_t> threads(NUM_THREADS);
     std::vector<Vector> xs(NUM_THREADS, x);
   std::vector<Vector> bs(NUM_THREADS, b);
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
   {
     args[i].amg=&amgs[i];
     args[i].b=&bs[i];
@@ -166,14 +166,14 @@ void testTwoLevelMethod()
   }
   void* retval;
 
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
     pthread_join(threads[i], &retval);
 
   amgs.clear();
   args.clear();
   preconditioner.pre(x, b);
   amgs.resize(NUM_THREADS, preconditioner);
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
   {
     args[i].amg=&amgs[i];
     args[i].b=&bs[i];
@@ -181,13 +181,13 @@ void testTwoLevelMethod()
     args[i].fop=&fop;
     pthread_create(&threads[i], NULL, solve2, (void*) &args[i]);
   }
-  for(int i=0; i < NUM_THREADS; ++i)
+  for(long long i=0; i < NUM_THREADS; ++i)
     pthread_join(threads[i], &retval);
 
 //    amgCG.apply(x,b,res);
 }
 
-int main()
+long long main()
 {
     testTwoLevelMethod();
     return 0;

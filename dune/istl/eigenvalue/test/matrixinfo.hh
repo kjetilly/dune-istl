@@ -62,8 +62,8 @@ public:
    */
   MatrixInfo (const BCRSMatrix& m,
               const bool verbose = false,
-              const unsigned int arppp_a_verbosity_level = 0,
-              const unsigned int pia_verbosity_level = 0)
+              const size_t arppp_a_verbosity_level = 0,
+              const size_t pia_verbosity_level = 0)
     : m_(m),
       verbose_(verbose),
       arppp_a_verbosity_level_(arppp_a_verbosity_level*verbose),
@@ -81,8 +81,8 @@ public:
        "Only BCRSMatrices with square blocks are supported.");
 
     // assert that m_ is square
-    const int nrows = m_.M() * BCRSMatrix::block_type::rows;
-    const int ncols = m_.N() * BCRSMatrix::block_type::cols;
+    const long long nrows = m_.M() * BCRSMatrix::block_type::rows;
+    const long long ncols = m_.N() * BCRSMatrix::block_type::cols;
     if (nrows != ncols)
       DUNE_THROW(Dune::Exception,"Matrix is not square ("
                  << nrows << "x" << ncols << ").");
@@ -111,7 +111,7 @@ public:
 protected:
   //! Type of block vectors compatible with the rows of a BCRSMatrix
   //! object and its columns
-  static const int bvBlockSize = BCRSMatrix::block_type::rows;
+  static const long long bvBlockSize = BCRSMatrix::block_type::rows;
   typedef Dune::FieldVector<Real,bvBlockSize> BlockVectorBlock;
   typedef Dune::BlockVector<BlockVectorBlock> BlockVector;
 
@@ -145,7 +145,7 @@ protected:
     // 5) select a linear solver for power iteration based iterative
     //    eigenvalue algorithms
     typedef Dune::SuperLU<BCRSMatrix> PIALS;
-    const unsigned int piaLS_verbosity = 0;
+    const size_t piaLS_verbosity = 0;
     PIALS piaLS(pia.getIterationMatrix(),piaLS_verbosity);
 #else
     // 5) select a linear solver for power iteration based iterative
@@ -155,8 +155,8 @@ protected:
                         typename PIA::IterationOperator::range_type> PIAPC;
     PIAPC piaPC(pia.getIterationMatrix(),2,1.0);
     const double piaLS_reduction = 1e-02;
-    const unsigned int piaLS_max_iter = 1000;
-    const unsigned int piaLS_verbosity = 0;
+    const size_t piaLS_max_iter = 1000;
+    const size_t piaLS_verbosity = 0;
     typedef Dune::BiCGSTABSolver<typename PIA::IterationOperator::domain_type> PIALS;
     PIALS piaLS(pia.getIterationOperator(),piaPC,
                 piaLS_reduction,piaLS_max_iter,piaLS_verbosity);
@@ -274,7 +274,7 @@ protected:
     // 7) select a linear solver for power iteration based iterative
     //    eigenvalue algorithms for m^t*m
     typedef Dune::SuperLU<BCRSMatrix> PIALS;
-    const unsigned int piaLS_verbosity = 0;
+    const size_t piaLS_verbosity = 0;
     PIALS piaLS(pia.getIterationMatrix(),piaLS_verbosity);
 #else
     // 7) select a linear solver for power iteration based iterative
@@ -284,8 +284,8 @@ protected:
                         typename PIA::IterationOperator::range_type> PIAPC;
     PIAPC piaPC(pia.getIterationMatrix(),2,1.0);
     const double piaLS_reduction = 1e-02;
-    const unsigned int piaLS_max_iter = 1000;
-    const unsigned int piaLS_verbosity = 0;
+    const size_t piaLS_max_iter = 1000;
+    const size_t piaLS_verbosity = 0;
     typedef Dune::BiCGSTABSolver<typename PIA::IterationOperator::domain_type> PIALS;
     PIALS piaLS(pia.getIterationOperator(),piaPC,
                 piaLS_reduction,piaLS_max_iter,piaLS_verbosity);
@@ -376,8 +376,8 @@ protected:
 
   // verbosity setting
   const bool verbose_;
-  const unsigned int arppp_a_verbosity_level_;
-  const unsigned int pia_verbosity_level_;
+  const size_t arppp_a_verbosity_level_;
+  const size_t pia_verbosity_level_;
 
   // memory for storing matrix information
   // (mutable as matrix information is computed on demand)

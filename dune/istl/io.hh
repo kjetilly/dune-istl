@@ -50,7 +50,7 @@ namespace Dune {
    */
   template<class V>
   void recursive_printvector (std::ostream& s, const V& v, std::string rowtext,
-                              int& counter, int columns, int width)
+                              long long& counter, long long columns, long long width)
   {
     if constexpr (IsNumber<V>())
     {
@@ -87,18 +87,18 @@ namespace Dune {
    */
   template<class V>
   void printvector (std::ostream& s, const V& v, std::string title,
-                    std::string rowtext, int columns=1, int width=10,
-                    int precision=2)
+                    std::string rowtext, long long columns=1, long long width=10,
+                    long long precision=2)
   {
     // count the numbers printed to make columns
-    int counter=0;
+    long long counter=0;
 
     // remember old flags
     std::ios_base::fmtflags oldflags = s.flags();
 
     // set the output format
     s.setf(std::ios_base::scientific, std::ios_base::floatfield);
-    int oldprec = s.precision();
+    long long oldprec = s.precision();
     s.precision(precision);
 
     // print title
@@ -130,9 +130,9 @@ namespace Dune {
    * #include <dune/istl/io.hh>
    * \endcode
    */
-  inline void fill_row (std::ostream& s, int m, int width, [[maybe_unused]] int precision)
+  inline void fill_row (std::ostream& s, long long m, long long width, [[maybe_unused]] long long precision)
   {
-    for (int j=0; j<m; j++)
+    for (long long j=0; j<m; j++)
     {
       s << " ";         // space in front of each entry
       s.width(width);   // set width for each entry anew
@@ -152,8 +152,8 @@ namespace Dune {
                   [[maybe_unused]] typename FieldMatrix<K,1,1>::size_type I,
                   [[maybe_unused]] typename FieldMatrix<K,1,1>::size_type J,
                   [[maybe_unused]] typename FieldMatrix<K,1,1>::size_type therow,
-                  int width,
-                  [[maybe_unused]] int precision,
+                  long long width,
+                  [[maybe_unused]] long long precision,
                   typename std::enable_if_t<Dune::IsNumber<K>::value>* sfinae = nullptr)
   {
     s << " ";         // space in front of each entry
@@ -171,7 +171,7 @@ namespace Dune {
   template<class M>
   void print_row (std::ostream& s, const M& A, typename M::size_type I,
                   typename M::size_type J, typename M::size_type therow,
-                  int width, int precision,
+                  long long width, long long precision,
                   typename std::enable_if_t<!Dune::IsNumber<M>::value>* sfinae = nullptr)
   {
     typename M::size_type i0=I;
@@ -211,7 +211,7 @@ namespace Dune {
    */
   template<class M>
   void printmatrix (std::ostream& s, const M& A, std::string title,
-                    std::string rowtext, int width=10, int precision=2)
+                    std::string rowtext, long long width=10, long long precision=2)
   {
 
     // remember old flags
@@ -219,7 +219,7 @@ namespace Dune {
 
     // set the output format
     s.setf(std::ios_base::scientific, std::ios_base::floatfield);
-    int oldprec = s.precision();
+    long long oldprec = s.precision();
     s.precision(precision);
 
     // print title
@@ -267,18 +267,18 @@ namespace Dune {
    * @param width The number of nonzero blocks to print in one line.
    * @param precision The precision to use when printing the numbers.
    */
-  template<class B, int n, int m, class A>
+  template<class B, long long n, long long m, class A>
   void printSparseMatrix(std::ostream& s,
                          const BCRSMatrix<FieldMatrix<B,n,m>,A>& mat,
                          std::string title, std::string rowtext,
-                         int width=3, int precision=2)
+                         long long width=3, long long precision=2)
   {
     typedef BCRSMatrix<FieldMatrix<B,n,m>,A> Matrix;
     // remember old flags
     std::ios_base::fmtflags oldflags = s.flags();
     // set the output format
     s.setf(std::ios_base::scientific, std::ios_base::floatfield);
-    int oldprec = s.precision();
+    long long oldprec = s.precision();
     s.precision(precision);
     // print title
     s << title
@@ -291,12 +291,12 @@ namespace Dune {
     typedef typename Matrix::ConstRowIterator Row;
 
     for(Row row=mat.begin(); row != mat.end(); ++row) {
-      int skipcols=0;
+      long long skipcols=0;
       bool reachedEnd=false;
 
       while(!reachedEnd) {
-        for(int innerrow=0; innerrow<n; ++innerrow) {
-          int count=0;
+        for(long long innerrow=0; innerrow<n; ++innerrow) {
+          long long count=0;
           typedef typename Matrix::ConstColIterator Col;
           Col col=row->begin();
           for(; col != row->end(); ++col,++count) {
@@ -321,7 +321,7 @@ namespace Dune {
               }
               s<<"      |";
             }
-            for(int innercol=0; innercol < m; ++innercol) {
+            for(long long innercol=0; innercol < m; ++innercol) {
               s.width(9);
               s<<(*col)[innerrow][innercol]<<" ";
             }
@@ -377,7 +377,7 @@ namespace Dune {
    */
   template <class FieldType>
   void writeMatrixToMatlabHelper(const FieldType& value,
-                                 int rowOffset, int colOffset,
+                                 long long rowOffset, long long colOffset,
                                  std::ostream& s,
                                  typename std::enable_if_t<Dune::IsNumber<FieldType>::value>* sfinae = nullptr)
   {
@@ -395,7 +395,7 @@ namespace Dune {
    */
   template <class MatrixType>
   void writeMatrixToMatlabHelper(const MatrixType& matrix,
-                                 int externalRowOffset, int externalColOffset,
+                                 long long externalRowOffset, long long externalColOffset,
                                  std::ostream& s,
                                  typename std::enable_if_t<!Dune::IsNumber<MatrixType>::value>* sfinae = nullptr)
   {
@@ -449,10 +449,10 @@ namespace Dune {
    */
   template <class MatrixType>
   void writeMatrixToMatlab(const MatrixType& matrix,
-                           const std::string& filename, int outputPrecision = 18)
+                           const std::string& filename, long long outputPrecision = 18)
   {
     std::ofstream outStream(filename.c_str());
-    int oldPrecision = outStream.precision();
+    long long oldPrecision = outStream.precision();
     outStream.precision(outputPrecision);
 
     writeMatrixToMatlabHelper(matrix, 0, 0, outStream);
@@ -490,10 +490,10 @@ namespace Dune {
    */
   template <class VectorType>
   void writeVectorToMatlab(const VectorType& vector,
-                           const std::string& filename, int outputPrecision = 18)
+                           const std::string& filename, long long outputPrecision = 18)
   {
     std::ofstream outStream(filename.c_str());
-    int oldPrecision = outStream.precision();
+    long long oldPrecision = outStream.precision();
     outStream.precision(outputPrecision);
 
     writeVectorToMatlabHelper(vector, outStream);

@@ -60,7 +60,7 @@ namespace Dune {
    *
    * \note This will only work if dune-istl has been configured to use SPQR
    */
-  template<typename T, typename A, int n, int m>
+  template<typename T, typename A, long long n, long long m>
   class SPQR<BCRSMatrix<FieldMatrix<T,n,m>,A > >
     : public InverseOperator<BlockVector<FieldVector<T,m>, typename std::allocator_traits<A>::template rebind_alloc<FieldVector<T,m> > >,
                              BlockVector<FieldVector<T,n>, typename std::allocator_traits<A>::template rebind_alloc<FieldVector<T,n> > > >
@@ -70,9 +70,9 @@ namespace Dune {
     typedef Dune::BCRSMatrix<FieldMatrix<T,n,m>,A> Matrix;
     typedef Dune::BCRSMatrix<FieldMatrix<T,n,m>,A> matrix_type;
     /** @brief The corresponding SuperLU Matrix type.*/
-    typedef ISTL::Impl::BCCSMatrix<T,int> SPQRMatrix;
+    typedef ISTL::Impl::BCCSMatrix<T,long long> SPQRMatrix;
     /** @brief Type of an associated initializer class. */
-    typedef ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<FieldMatrix<T,n,m>,A>, int> MatrixInitializer;
+    typedef ISTL::Impl::BCCSMatrixInitializer<BCRSMatrix<FieldMatrix<T,n,m>,A>, long long> MatrixInitializer;
     /** @brief The type of the domain of the solver. */
     typedef Dune::BlockVector<FieldVector<T,m>, typename std::allocator_traits<A>::template rebind_alloc<FieldVector<T,m> > > domain_type;
     /** @brief The type of the range of the solver. */
@@ -92,7 +92,7 @@ namespace Dune {
      *  @param matrix the matrix to solve for
      *  @param verbose, 0 or 1, set the verbosity level, defaults to 0
      */
-    SPQR(const Matrix& matrix, int verbose=0) : matrixIsLoaded_(false), verbose_(verbose)
+    SPQR(const Matrix& matrix, long long verbose=0) : matrixIsLoaded_(false), verbose_(verbose)
     {
       //check whether T is a supported type
       static_assert((std::is_same<T,double>::value) || (std::is_same<T,std::complex<double> >::value),
@@ -110,7 +110,7 @@ namespace Dune {
      * @param matrix the matrix to solve for
      * @param verbose, 0 or 1, set the verbosity level, defaults to 0
      */
-    SPQR(const Matrix& matrix, int verbose, bool) : matrixIsLoaded_(false), verbose_(verbose)
+    SPQR(const Matrix& matrix, long long verbose, bool) : matrixIsLoaded_(false), verbose_(verbose)
     {
       //check whether T is a supported type
       static_assert((std::is_same<T,double>::value) || (std::is_same<T,std::complex<double> >::value),
@@ -130,7 +130,7 @@ namespace Dune {
      * verbose           | The verbosity level. default=0
     */
     SPQR(const Matrix& matrix, const ParameterTree& config)
-      : SPQR(matrix, config.get<int>("verbose", 0))
+      : SPQR(matrix, config.get<long long>("verbose", 0))
     {}
 
     /** @brief Default constructor. */
@@ -157,7 +157,7 @@ namespace Dune {
       const std::size_t numRows(spqrMatrix_.N());
       // fill B
       for(std::size_t k = 0; k != numRows/n; ++k)
-        for (int l = 0; l < n; ++l)
+        for (long long l = 0; l < n; ++l)
           (static_cast<T*>(B_->x))[n*k+l] = b[k][l];
 
       cholmod_dense* BTemp = B_;
@@ -168,7 +168,7 @@ namespace Dune {
       const std::size_t numCols(spqrMatrix_.M());
       // fill x
       for(std::size_t k = 0; k != numCols/m; ++k)
-        for (int l = 0; l < m; ++l)
+        for (long long l = 0; l < m; ++l)
           x[k][l] = (static_cast<T*>(X->x))[m*k+l];
 
       cholmod_l_free_dense(&X, cc_);
@@ -193,7 +193,7 @@ namespace Dune {
       apply(x, b, res);
     }
 
-    void setOption([[maybe_unused]] unsigned int option, [[maybe_unused]] double value)
+    void setOption([[maybe_unused]] size_t option, [[maybe_unused]] double value)
     {}
 
     /** @brief Initialize data from given matrix. */
@@ -206,7 +206,7 @@ namespace Dune {
         spqrMatrix_.free();
       spqrMatrix_.setSize(MatrixDimension<Matrix>::rowdim(matrix),
                           MatrixDimension<Matrix>::coldim(matrix));
-      ISTL::Impl::BCCSMatrixInitializer<Matrix, int> initializer(spqrMatrix_);
+      ISTL::Impl::BCCSMatrixInitializer<Matrix, long long> initializer(spqrMatrix_);
 
       copyToBCCSMatrix(initializer, matrix);
 
@@ -224,7 +224,7 @@ namespace Dune {
 
       spqrMatrix_.setSize(rowIndexSet.size()*MatrixDimension<Matrix>::rowdim(matrix) / matrix.N(),
                           rowIndexSet.size()*MatrixDimension<Matrix>::coldim(matrix) / matrix.M());
-      ISTL::Impl::BCCSMatrixInitializer<Matrix, int> initializer(spqrMatrix_);
+      ISTL::Impl::BCCSMatrixInitializer<Matrix, long long> initializer(spqrMatrix_);
 
       copyToBCCSMatrix(initializer, ISTL::Impl::MatrixRowSubset<Matrix,std::set<std::size_t> >(matrix,rowIndexSet));
 
@@ -235,7 +235,7 @@ namespace Dune {
      * @brief Sets the verbosity level for the solver.
      * @param v verbosity level: 0 only error messages, 1 a bit of statistics.
      */
-    inline void setVerbosity(int v)
+    inline void setVerbosity(long long v)
     {
       verbose_=v;
     }
@@ -295,11 +295,11 @@ namespace Dune {
 
       // copy all the entries of Ap, Ai, Ax
       for(std::size_t k = 0; k != (ncols+1); ++k)
-        (static_cast<long int *>(A_->p))[k] = spqrMatrix_.getColStart()[k];
+        (static_cast<long long *>(A_->p))[k] = spqrMatrix_.getColStart()[k];
 
       for(std::size_t k = 0; k != nnz; ++k)
       {
-        (static_cast<long int*>(A_->i))[k] = spqrMatrix_.getRowIndex()[k];
+        (static_cast<long long*>(A_->i))[k] = spqrMatrix_.getRowIndex()[k];
         (static_cast<T*>(A_->x))[k] = spqrMatrix_.getValues()[k];
       }
 
@@ -311,7 +311,7 @@ namespace Dune {
 
     SPQRMatrix spqrMatrix_;
     bool matrixIsLoaded_;
-    int verbose_;
+    long long verbose_;
     cholmod_common* cc_;
     cholmod_sparse* A_;
     cholmod_dense* B_;
@@ -338,9 +338,9 @@ namespace Dune {
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& mat, const Dune::ParameterTree& config,
       std::enable_if_t<
-                isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+                isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
-      int verbose = config.get("verbose", 0);
+      long long verbose = config.get("verbose", 0);
       return std::make_shared<Dune::SPQR<M>>(mat,verbose);
     }
 
@@ -349,7 +349,7 @@ namespace Dune {
     std::shared_ptr<Dune::InverseOperator<typename Dune::TypeListElement<1, TL>::type,
                                           typename Dune::TypeListElement<2, TL>::type>>
     operator() (TL /*tl*/, const M& /*mat*/, const Dune::ParameterTree& /*config*/,
-      std::enable_if_t<!isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,int> = 0) const
+      std::enable_if_t<!isValidBlock<typename Dune::TypeListElement<1, TL>::type::block_type>::value,long long> = 0) const
     {
       DUNE_THROW(UnsupportedType,
         "Unsupported Type in SPQR (only double and std::complex<double> supported)");

@@ -20,14 +20,14 @@ namespace Dune
   // bildl_subtractBCT
   // -----------------
 
-  template< class K, int m, int n >
+  template< class K, long long m, long long n >
   inline static void bildl_subtractBCT ( const FieldMatrix< K, m, n > &B, const FieldMatrix< K, m, n > &CT, FieldMatrix< K, m, n > &A )
   {
-    for( int i = 0; i < m; ++i )
+    for( long long i = 0; i < m; ++i )
     {
-      for( int j = 0; j < n; ++j )
+      for( long long j = 0; j < n; ++j )
       {
-        for( int k = 0; k < n; ++k )
+        for( long long k = 0; k < n; ++k )
           A[ i ][ j ] -= B[ i ][ k ] * CT[ j ][ k ];
       }
     }

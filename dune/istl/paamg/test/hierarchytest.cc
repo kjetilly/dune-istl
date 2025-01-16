@@ -13,11 +13,11 @@
 #include <dune/istl/schwarz.hh>
 #include "anisotropic.hh"
 
-template<int blockSize>
-void testHierarchy(int N)
+template<long long blockSize>
+void testHierarchy(long long N)
 {
-  typedef int LocalId;
-  typedef int GlobalId;
+  typedef long long LocalId;
+  typedef long long GlobalId;
   typedef Dune::OwnerOverlapCopyCommunication<LocalId,GlobalId> Communication;
   typedef Communication::ParallelIndexSet ParallelIndexSet;
   typedef Dune::FieldMatrix<double,blockSize,blockSize> MatrixBlock;
@@ -25,7 +25,7 @@ void testHierarchy(int N)
   typedef Dune::FieldVector<double,blockSize> VectorBlock;
   typedef Dune::BlockVector<VectorBlock> Vector;
 
-  int n;
+  long long n;
   Communication pinfo(Dune::MPIHelper::getCommunicator());
   ParallelIndexSet& indices = pinfo.indexSet();
 
@@ -72,12 +72,12 @@ void testHierarchy(int N)
 }
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   Dune::MPIHelper::instance(argc, argv);
 
-  constexpr int blockSize = 1;
-  int N=10;
+  constexpr long long blockSize = 1;
+  long long N=10;
 
   if(argc>1)
     N = atoi(argv[1]);

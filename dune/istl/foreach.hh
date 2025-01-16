@@ -35,10 +35,10 @@ namespace Dune{
   template <class B, class A>
   struct IsRowMajorSparse<BCRSMatrix<B,A>> : std::true_type {};
 
-  template <class K, int n>
+  template <class K, long long n>
   struct IsRowMajorSparse<DiagonalMatrix<K,n>> : std::true_type {};
 
-  template <class K, int n>
+  template <class K, long long n>
   struct IsRowMajorSparse<ScaledIdentityMatrix<K,n>> : std::true_type {};
 
 

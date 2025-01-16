@@ -41,7 +41,7 @@ namespace Dune {
   //============================================================
 
   //! compile-time parameter for block recursion depth
-  template<int l>
+  template<long long l>
   struct BL {
     enum {recursion_level = l};
   };
@@ -65,7 +65,7 @@ namespace Dune {
   //============================================================
 
   // template meta program for triangular solves
-  template<int I, WithDiagType diag, WithRelaxType relax>
+  template<long long I, WithDiagType diag, WithRelaxType relax>
   struct algmeta_btsolve {
     template<class M, class X, class Y, class K>
     static void bltsolve (const M& A, X& v, const Y& d, const K& w)
@@ -227,54 +227,54 @@ namespace Dune {
   // general block recursion level >= 0
 
   //! block lower triangular solve
-  template<class M, class X, class Y, int l>
+  template<class M, class X, class Y, long long l>
   void bltsolve (const M& A, X& v, const Y& d, BL<l> /*bl*/)
   {
     typename X::field_type w=1;
     algmeta_btsolve<l,withdiag,norelax>::bltsolve(A,v,d,w);
   }
   //! relaxed block lower triangular solve
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void bltsolve (const M& A, X& v, const Y& d, const K& w, BL<l> /*bl*/)
   {
     algmeta_btsolve<l,withdiag,withrelax>::bltsolve(A,v,d,w);
   }
   //! unit block lower triangular solve
-  template<class M, class X, class Y, int l>
+  template<class M, class X, class Y, long long l>
   void ubltsolve (const M& A, X& v, const Y& d, BL<l> /*bl*/)
   {
     typename X::field_type w=1;
     algmeta_btsolve<l,nodiag,norelax>::bltsolve(A,v,d,w);
   }
   //! relaxed unit block lower triangular solve
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void ubltsolve (const M& A, X& v, const Y& d, const K& w, BL<l> /*bl*/)
   {
     algmeta_btsolve<l,nodiag,withrelax>::bltsolve(A,v,d,w);
   }
 
   //! block upper triangular solve
-  template<class M, class X, class Y, int l>
+  template<class M, class X, class Y, long long l>
   void butsolve (const M& A, X& v, const Y& d, BL<l> bl)
   {
     typename X::field_type w=1;
     algmeta_btsolve<l,withdiag,norelax>::butsolve(A,v,d,w);
   }
   //! relaxed block upper triangular solve
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void butsolve (const M& A, X& v, const Y& d, const K& w, BL<l> bl)
   {
     algmeta_btsolve<l,withdiag,withrelax>::butsolve(A,v,d,w);
   }
   //! unit block upper triangular solve
-  template<class M, class X, class Y, int l>
+  template<class M, class X, class Y, long long l>
   void ubutsolve (const M& A, X& v, const Y& d, BL<l> bl)
   {
     typename X::field_type w=1;
     algmeta_btsolve<l,nodiag,norelax>::butsolve(A,v,d,w);
   }
   //! relaxed unit block upper triangular solve
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void ubutsolve (const M& A, X& v, const Y& d, const K& w, BL<l> bl)
   {
     algmeta_btsolve<l,nodiag,withrelax>::butsolve(A,v,d,w);
@@ -290,7 +290,7 @@ namespace Dune {
   //============================================================
 
   // template meta program for diagonal solves
-  template<int I, WithRelaxType relax>
+  template<long long I, WithRelaxType relax>
   struct algmeta_bdsolve {
     template<class M, class X, class Y, class K>
     static void bdsolve (const M& A, X& v, const Y& d, const K& w)
@@ -349,14 +349,14 @@ namespace Dune {
   // general block recursion level >= 0
 
   //! block diagonal solve, no relaxation
-  template<class M, class X, class Y, int l>
+  template<class M, class X, class Y, long long l>
   void bdsolve (const M& A, X& v, const Y& d, BL<l> /*bl*/)
   {
     typename X::field_type w=1;
     algmeta_bdsolve<l,norelax>::bdsolve(A,v,d,w);
   }
   //! block diagonal solve, with relaxation
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void bdsolve (const M& A, X& v, const Y& d, const K& w, BL<l> /*bl*/)
   {
     algmeta_bdsolve<l,withrelax>::bdsolve(A,v,d,w);
@@ -371,7 +371,7 @@ namespace Dune {
   //============================================================
 
   // template meta program for iterative solver steps
-  template<int I, typename M>
+  template<long long I, typename M>
   struct algmeta_itsteps {
 
     template<class X, class Y, class K>
@@ -563,7 +563,7 @@ namespace Dune {
     }
   };
 
-  template<int I, typename T1, typename... MultiTypeMatrixArgs>
+  template<long long I, typename T1, typename... MultiTypeMatrixArgs>
   struct algmeta_itsteps<I,MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>> {
     template<
         typename... MultiTypeVectorArgs,
@@ -573,7 +573,7 @@ namespace Dune {
                       const MultiTypeBlockVector<MultiTypeVectorArgs...>& b,
                       const K& w)
     {
-      static const int N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
+      static const long long N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
       Dune::MultiTypeBlockMatrix_Solver<I,0,N>::dbgs(A, x, b, w);
     }
 
@@ -585,7 +585,7 @@ namespace Dune {
                        const MultiTypeBlockVector<MultiTypeVectorArgs...>& b,
                        const K& w)
     {
-      static const int N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
+      static const long long N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
       Dune::MultiTypeBlockMatrix_Solver<I,0,N>::bsorf(A, x, b, w);
     }
 
@@ -597,7 +597,7 @@ namespace Dune {
                        const MultiTypeBlockVector<MultiTypeVectorArgs...>& b,
                        const K& w)
     {
-      static const int N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
+      static const long long N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
       Dune::MultiTypeBlockMatrix_Solver<I,N-1,N>::bsorb(A, x, b, w);
     }
 
@@ -610,7 +610,7 @@ namespace Dune {
                        const MultiTypeBlockVector<MultiTypeVectorArgs...>& b,
                        const K& w)
     {
-      static const int N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
+      static const long long N = MultiTypeBlockMatrix<T1, MultiTypeMatrixArgs...>::N();
       Dune::MultiTypeBlockMatrix_Solver<I,0,N>::dbjac(A, x, b, w);
     }
   };
@@ -624,7 +624,7 @@ namespace Dune {
     algmeta_itsteps<1,M>::dbgs(A,x,b,w);
   }
   //! GS step
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void dbgs (const M& A, X& x, const Y& b, const K& w, BL<l> /*bl*/)
   {
     algmeta_itsteps<l,M>::dbgs(A,x,b,w);
@@ -636,7 +636,7 @@ namespace Dune {
     algmeta_itsteps<1,M>::bsorf(A,x,b,w);
   }
   //! SOR step
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void bsorf (const M& A, X& x, const Y& b, const K& w, BL<l> /*bl*/)
   {
     algmeta_itsteps<l,M>::bsorf(A,x,b,w);
@@ -648,7 +648,7 @@ namespace Dune {
     algmeta_itsteps<1,M>::bsorb(A,x,b,w);
   }
   //! Backward SOR step
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void bsorb (const M& A, X& x, const Y& b, const K& w, BL<l> /*bl*/)
   {
     algmeta_itsteps<l,typename std::remove_cv<M>::type>::bsorb(A,x,b,w);
@@ -660,7 +660,7 @@ namespace Dune {
     algmeta_itsteps<1,M>::dbjac(A,x,b,w);
   }
   //! Jacobi step
-  template<class M, class X, class Y, class K, int l>
+  template<class M, class X, class Y, class K, long long l>
   void dbjac (const M& A, X& x, const Y& b, const K& w, BL<l> /*bl*/)
   {
     algmeta_itsteps<l,M>::dbjac(A,x,b,w);

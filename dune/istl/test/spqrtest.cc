@@ -14,7 +14,7 @@
 
 #include "laplacian.hh"
 
-template <class FIELD_TYPE, int BS>
+template <class FIELD_TYPE, long long BS>
 void run(std::size_t N)
 {
 #if HAVE_SUITESPARSE_SPQR
@@ -64,7 +64,7 @@ void run(std::size_t N)
 #endif
 }
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
 #if HAVE_SUITESPARSE_SPQR
   try

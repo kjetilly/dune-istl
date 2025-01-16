@@ -10,28 +10,28 @@
 #include <dune/istl/paamg/transfer.hh>
 
 template<class Vertex>
-int createAggregates(Dune::Amg::AggregatesMap<Vertex>& aggregates, int size)
+long long createAggregates(Dune::Amg::AggregatesMap<Vertex>& aggregates, long long size)
 {
-  int index=0;
-  int i=0;
+  long long index=0;
+  long long i=0;
 
   for(i=1; index<size; ++i)
-    for(int j=0; j < i && index < size; ++j, ++index)
+    for(long long j=0; j < i && index < size; ++j, ++index)
       aggregates[index]=i-1;
 
   return i-1;
 }
 
 
-int main()
+long long main()
 {
-  const int BS=1;
-  typedef Dune::FieldVector<int,BS> VectorBlock;
+  const long long BS=1;
+  typedef Dune::FieldVector<long long,BS> VectorBlock;
   typedef Dune::BlockVector<VectorBlock> Vector;
 
   Vector b(20);
-  Dune::Amg::AggregatesMap<int> amap(20);
-  int aggregates = createAggregates(amap, 20);
+  Dune::Amg::AggregatesMap<long long> amap(20);
+  long long aggregates = createAggregates(amap, 20);
 
   Vector c(aggregates);
   b=100;
@@ -39,8 +39,8 @@ int main()
 
   SequentialInformation info;
 
-  Dune::Amg::Transfer<int,Vector,SequentialInformation>::restrictVector(amap, c, b, info);
+  Dune::Amg::Transfer<long long,Vector,SequentialInformation>::restrictVector(amap, c, b, info);
 
-  Dune::Amg::Transfer<int,Vector,SequentialInformation>::prolongateVector(amap, c, b, 1);
+  Dune::Amg::Transfer<long long,Vector,SequentialInformation>::prolongateVector(amap, c, b, 1);
   return 0;
 }

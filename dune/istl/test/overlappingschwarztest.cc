@@ -21,11 +21,11 @@
 #include <iterator>
 
 template<class MatrixBlock, class VectorBlock>
-Dune::TestSuite test(int argc, char** argv)
+Dune::TestSuite test(long long argc, char** argv)
 {
   Dune::TestSuite suite;
 #if HAVE_SUPERLU || HAVE_SUITESPARSE_UMFPACK
-  int N=4;
+  long long N=4;
 
   if(argc>1)
     N = atoi(argv[1]);
@@ -49,12 +49,12 @@ Dune::TestSuite test(int argc, char** argv)
      (*row)[row.index()]+=row.index();
    */
   // create the subdomains
-  int domainSize=2;
+  long long domainSize=2;
   if(argc>2)
     domainSize = atoi(argv[2]);
-  int overlap = 0;
+  long long overlap = 0;
 
-  int domainsPerDim=(N+domainSize-1)/domainSize;
+  long long domainsPerDim=(N+domainSize-1)/domainSize;
 
   // set up the overlapping domains
   typedef Dune::SeqOverlappingSchwarz<BCRSMat,BVector> Schwarz;
@@ -66,19 +66,19 @@ Dune::TestSuite test(int argc, char** argv)
   typedef typename Schwarz::rowtodomain_vector rowtodomain_vector;
   rowtodomain_vector rowToDomain(N*N);
 
-  for(int j=0; j < N; ++j)
-    for(int i=0; i < N; ++i)
+  for(long long j=0; j < N; ++j)
+    for(long long i=0; i < N; ++i)
     {
-      int xdomain = i/domainSize;
-      int ydomain = j/domainSize;
-      int mainDomain=ydomain*domainsPerDim+xdomain;
-      int id=j*N+i;
+      long long xdomain = i/domainSize;
+      long long ydomain = j/domainSize;
+      long long mainDomain=ydomain*domainsPerDim+xdomain;
+      long long id=j*N+i;
       domains[mainDomain].insert(id);
       rowToDomain[id].push_back(mainDomain);
 
       // check left domain
-      int domain = (i-overlap)/domainSize;
-      int neighbourDomain=ydomain*domainsPerDim+domain;
+      long long domain = (i-overlap)/domainSize;
+      long long neighbourDomain=ydomain*domainsPerDim+domain;
       if(domain>=0 && domain<domainsPerDim && neighbourDomain!=mainDomain)
       {
         domains[neighbourDomain].insert(id);
@@ -116,7 +116,7 @@ Dune::TestSuite test(int argc, char** argv)
   typedef typename subdomain_vector::const_iterator iterator;
 
   if(N<10) {
-    int i=0;
+    long long i=0;
     for(iterator iter=domains.begin(); iter != domains.end(); ++iter) {
       typedef typename std::iterator_traits<iterator>::value_type
       ::const_iterator entry_iterator;
@@ -216,7 +216,7 @@ Dune::TestSuite test(int argc, char** argv)
   //  setBoundary(x,b,N);
   if(N<10) {
     typedef typename rowtodomain_vector::const_iterator rt_iter;
-    int row=0;
+    long long row=0;
     std::cout<<" row to domain"<<std::endl;
     for(rt_iter i= rowToDomain.begin(); i!= rowToDomain.end(); ++i, ++row) {
       std::cout<<"row="<<row<<": ";
@@ -256,7 +256,7 @@ Dune::TestSuite test(int argc, char** argv)
   return suite;
 }
 
-int main(int argc, char** argv){
+long long main(long long argc, char** argv){
   Dune::TestSuite suite;
   suite.subTest(test<Dune::FieldMatrix<double, 1, 1>, Dune::FieldVector<double, 1>>(argc, argv));
   suite.subTest(test<double, double>(argc, argv));

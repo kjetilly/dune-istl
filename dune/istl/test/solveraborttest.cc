@@ -18,7 +18,7 @@
 #include <dune/istl/solvers.hh>
 
 template<class Solver, class Vector>
-void checkSolverAbort(int &status, const std::string &name,
+void checkSolverAbort(long long &status, const std::string &name,
                       Solver &solver, Vector &x, Vector &b)
 {
   try {
@@ -58,15 +58,15 @@ void checkSolverAbort(int &status, const std::string &name,
   }
 }
 
-int main()
+long long main()
 {
 
-  int status = 77;
+  long long status = 77;
 
   // How verbose the solvers should be.  Use 2 (maximum verbosity) by default,
   // this will include all information in the logs, and for the casual user of
   // the unit tests ctest will hide the output anyway.
-  int verbose = 2;
+  long long verbose = 2;
 
   { // CGSolver
     std::cout << "Checking CGSolver with an unsolvable system...\n"

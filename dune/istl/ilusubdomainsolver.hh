@@ -187,7 +187,7 @@ namespace Dune {
         if(guess!=indexMap.end()) {
           // add local index to row
           rowCreator.insert(guess->second);
-          offset=std::max(offset,(std::size_t)std::abs((int)(guess->second-rowCreator.index())));
+          offset=std::max(offset,(std::size_t)std::abs((long long)(guess->second-rowCreator.index())));
         }
       }
 

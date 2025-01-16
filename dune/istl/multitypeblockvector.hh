@@ -111,7 +111,7 @@ namespace Dune {
      *             This will be removed after Dune 2.8.
      */
     [[deprecated("Use method 'N' instead")]]
-    int count() const
+    long long count() const
     {
       return sizeof...(Args);
     }
@@ -194,7 +194,7 @@ namespace Dune {
 
     /** \brief Multiplication with a scalar */
     template<class T,
-             std::enable_if_t< IsNumber<T>::value, int> = 0>
+             std::enable_if_t< IsNumber<T>::value, long long> = 0>
     void operator*= (const T& w) {
       Hybrid::forEach(*this, [&](auto&& entry) {
         entry *= w;
@@ -203,7 +203,7 @@ namespace Dune {
 
     /** \brief Division by a scalar */
     template<class T,
-             std::enable_if_t< IsNumber<T>::value, int> = 0>
+             std::enable_if_t< IsNumber<T>::value, long long> = 0>
     void operator/= (const T& w) {
       Hybrid::forEach(*this, [&](auto&& entry) {
         entry /= w;

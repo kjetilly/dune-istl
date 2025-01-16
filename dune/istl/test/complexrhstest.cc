@@ -93,12 +93,12 @@ public:
     return true;
   }
 
-  int getNumTests() const
+  long long getNumTests() const
   {
     return m_numTests;
   }
 
-  int getNumFailures() const
+  long long getNumFailures() const
   {
     return m_numFailures;
   }
@@ -108,16 +108,16 @@ private:
   Vector m_x, m_x0, m_b;
   const Vector m_rhs;
   double m_maxError;
-  int m_numTests, m_numFailures;
+  long long m_numTests, m_numFailures;
   Dune::InverseOperatorResult m_res;
 };
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
-  const int BS = 1;
+  const long long BS = 1;
   std::size_t N = 3;
 
-  const int maxIter = int(N*N*N*N);
+  const long long maxIter = (long long)(N*N*N*N);
   const double reduction = 1e-16;
 
   if (argc > 1)
@@ -244,8 +244,8 @@ int main(int argc, char** argv)
   GMRES solverGMRES(fop,dummyPrec, reduction, maxIter, maxIter*maxIter, 1);
   std::cout << "GMRES with identity preconditioner converged: " << solverTest(solverGMRES)  << std::endl <<  std::endl;
 
-  const int testCount = solverTest.getNumTests();
-  const int errorCount = solverTest.getNumFailures();
+  const long long testCount = solverTest.getNumTests();
+  const long long errorCount = solverTest.getNumFailures();
   std::cout << "Tested " << testCount << " different solvers or preconditioners " << " for a laplacian with complex rhs. " << testCount -  errorCount << " out of " << testCount << " solvers converged! " << std::endl << std::endl;
 
   return errorCount;

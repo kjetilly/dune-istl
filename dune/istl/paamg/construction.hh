@@ -58,7 +58,7 @@ namespace Dune
     template<class T, class A>
     struct ConstructionTraits<BlockVector<T,A> >
     {
-      typedef const int Arguments;
+      typedef const long long Arguments;
       static inline std::shared_ptr<BlockVector<T,A>> construct(Arguments& n)
       {
         return std::make_shared<BlockVector<T,A>>(n);
@@ -90,7 +90,7 @@ namespace Dune
 
     struct SequentialCommunicationArgs
     {
-      SequentialCommunicationArgs(Communication<void*> comm, [[maybe_unused]] int cat)
+      SequentialCommunicationArgs(Communication<void*> comm, [[maybe_unused]] long long cat)
         : comm_(comm)
       {}
 

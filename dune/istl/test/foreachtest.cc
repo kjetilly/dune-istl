@@ -44,7 +44,7 @@ TestSuite testFlatVectorForEach()
   v[Indices::_0] = d3;
   v[Indices::_1] = v1;
 
-  int entries = 0;
+  long long entries = 0;
 
   auto countEntres = [&](auto&& entry, auto&& index){
     entries++;
@@ -63,7 +63,7 @@ TestSuite testFlatVectorForEachBitSetVector()
 {
   TestSuite t;
 
-  int entries = 0;
+  long long entries = 0;
 
   auto countEntres = [&](auto&& entry, auto&& index){
     entries++;
@@ -122,7 +122,7 @@ TestSuite testFlatMatrixForEachStatic()
   M[Indices::_1][Indices::_1] = B11;
 
 
-  int entries = 0;
+  long long entries = 0;
 
   auto [ rows , cols ] = flatMatrixForEach( M, [&](auto&& /*entry*/, auto&& rowIndex, auto&& colIndex){
 
@@ -161,7 +161,7 @@ TestSuite testFlatMatrixForEachDynamic()
   B[1][1] = F33;
 
 
-  int entries = 0;
+  long long entries = 0;
 
   auto [ rows , cols ] = flatMatrixForEach( B, [&](auto&& /*entry*/, auto&& rowIndex, auto&& colIndex){
 
@@ -177,7 +177,7 @@ TestSuite testFlatMatrixForEachDynamic()
 
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   TestSuite t;
 

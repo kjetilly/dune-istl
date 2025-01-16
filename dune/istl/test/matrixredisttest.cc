@@ -19,16 +19,16 @@
 class MPIError {
 public:
   /** @brief Constructor. */
-  MPIError(std::string s, int e) : errorstring(s), errorcode(e){}
+  MPIError(std::string s, long long e) : errorstring(s), errorcode(e){}
   /** @brief The error string. */
   std::string errorstring;
   /** @brief The mpi error code. */
-  int errorcode;
+  long long errorcode;
 };
 
-void MPI_err_handler(MPI_Comm *, int *err_code, ...){
+void MPI_err_handler(MPI_Comm *, long long *err_code, ...){
   char *err_string=new char[MPI_MAX_ERROR_STRING];
-  int err_length;
+  long long err_length;
   MPI_Error_string(*err_code, err_string, &err_length);
   std::string s(err_string, err_length);
   std::cerr << "An MPI Error occurred:"<<std::endl<<s<<std::endl;
@@ -37,20 +37,20 @@ void MPI_err_handler(MPI_Comm *, int *err_code, ...){
 }
 
 template<class MatrixBlock>
-int testRepart(int N, int coarsenTarget)
+long long testRepart(long long N, long long coarsenTarget)
 {
 
   std::cout<<"==================================================="<<std::endl;
   std::cout<<" N="<<N<<" coarsenTarget="<<coarsenTarget<<std::endl;
 
-  int procs, rank;
+  long long procs, rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &procs);
 
   typedef Dune::BCRSMatrix<MatrixBlock> BCRSMat;
   typedef Dune::bigunsignedint<56> GlobalId;
   typedef Dune::OwnerOverlapCopyCommunication<GlobalId> Communication;
-  int n;
+  long long n;
 
   Communication comm(MPI_COMM_WORLD);
 
@@ -89,7 +89,7 @@ int testRepart(int N, int coarsenTarget)
   comm.communicator().barrier();
 
   // Check for symmetry
-  int ret=0;
+  long long ret=0;
   typedef typename BCRSMat::ConstRowIterator RIter;
   for(RIter row=newMat.begin(), rend=newMat.end(); row != rend; ++row) {
     typedef typename BCRSMat::ConstColIterator CIter;
@@ -114,18 +114,18 @@ int testRepart(int N, int coarsenTarget)
   return ret;
 }
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
   MPI_Init(&argc, &argv);
   MPI_Errhandler handler;
   MPI_Comm_create_errhandler(MPI_err_handler, &handler);
   MPI_Comm_set_errhandler(MPI_COMM_WORLD, handler);
-  int procs;
+  long long procs;
   MPI_Comm_size(MPI_COMM_WORLD, &procs);
 
-  int N=4*procs;
+  long long N=4*procs;
 
-  int coarsenTarget=1;
+  long long coarsenTarget=1;
 
   if(argc>1)
     N = atoi(argv[1]);

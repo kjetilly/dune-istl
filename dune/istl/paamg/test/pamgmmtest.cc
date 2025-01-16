@@ -32,7 +32,7 @@ void loadMatrix(std::shared_ptr<BCRSMat>& pA){
   }
 }
 
-std::shared_ptr<Comm> repartMatrix(const std::shared_ptr<BCRSMat>& pA_orig, std::shared_ptr<BCRSMat>& pA, MPI_Comm comm, int size){
+std::shared_ptr<Comm> repartMatrix(const std::shared_ptr<BCRSMat>& pA_orig, std::shared_ptr<BCRSMat>& pA, MPI_Comm comm, long long size){
   typedef typename Dune::Amg::MatrixGraph<BCRSMat> MatrixGraph;
   RedistInfo ri;
   std::shared_ptr<Comm> pComm;
@@ -47,12 +47,12 @@ std::shared_ptr<Comm> repartMatrix(const std::shared_ptr<BCRSMat>& pA_orig, std:
 }
 
 
-int main(int argc, char** argv){
+long long main(long long argc, char** argv){
   auto& mpihelper = MPIHelper::instance(argc, argv);
   auto world = mpihelper.getCommunication();
 
-  int size = mpihelper.size();
-  int rank = mpihelper.rank();
+  long long size = mpihelper.size();
+  long long rank = mpihelper.rank();
   std::shared_ptr<BCRSMat> mat, mat_reparted;
   loadMatrix(mat);
   std::shared_ptr<Comm> comm = repartMatrix(mat, mat_reparted, world, size);

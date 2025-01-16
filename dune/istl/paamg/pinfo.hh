@@ -28,8 +28,8 @@ namespace Dune
     {
     public:
       typedef Communication<void*> MPICommunicator;
-      typedef EmptySet<int> CopyFlags;
-      typedef AllSet<int> OwnerSet;
+      typedef EmptySet<long long> CopyFlags;
+      typedef AllSet<long long> OwnerSet;
 
       SolverCategory::Category category () const {
         return SolverCategory::sequential;
@@ -40,7 +40,7 @@ namespace Dune
         return comm_;
       }
 
-      int procs() const
+      long long procs() const
       {
         return 1;
       }
@@ -51,7 +51,7 @@ namespace Dune
         return t;
       }
 
-      typedef int GlobalLookupIndexSet;
+      typedef long long GlobalLookupIndexSet;
 
       void buildGlobalLookup(std::size_t){}
 

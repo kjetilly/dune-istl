@@ -25,14 +25,14 @@
 #endif
 
 template <class Matrix, class Vector>
-int testMatrixMarket(int N)
+long long testMatrixMarket(long long N)
 {
 #if HAVE_MPI
-  typedef int GlobalId;
+  typedef long long GlobalId;
   typedef Dune::OwnerOverlapCopyCommunication<GlobalId> Communication;
   Communication comm(MPI_COMM_WORLD);
   std::cout << comm.communicator().rank() << " " << comm.communicator().size() << std::endl;
-  int n;
+  long long n;
   Matrix mat = setupAnisotropic2d<typename Matrix::block_type>(N, comm.indexSet(), comm.communicator(), &n, .011);
 #else
   Matrix mat;
@@ -41,7 +41,7 @@ int testMatrixMarket(int N)
 
   Vector bv(mat.N()), cv(mat.N());
 
-  int i=0;
+  long long i=0;
   for(auto&& block : bv)
     for(auto&& entry : Dune::Impl::asVector(block))
       entry = (i++);
@@ -76,7 +76,7 @@ int testMatrixMarket(int N)
   loadMatrixMarket(bv1, std::string("testvec"));
 #endif
 
-  int ret=0;
+  long long ret=0;
   if(mat.N()!=mat1.N() || mat.M()!=mat1.M())
   {
     ++ret;
@@ -130,22 +130,22 @@ int testMatrixMarket(int N)
   return ret;
 }
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 {
 #if HAVE_MPI
   MPI_Init(&argc, &argv);
-  int size;
+  long long size;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 #endif
-  const int BS=1;
-  int N=2;
+  const long long BS=1;
+  long long N=2;
 
   if(argc>1)
     N = atoi(argv[1]);
   std::cout<<"testing for N="<<N<<" BS="<<1<<std::endl;
 
   // Test scalar matrices and vectors
-  int ret = testMatrixMarket<Dune::BCRSMatrix<double>, Dune::BlockVector<double> >(N);
+  long long ret = testMatrixMarket<Dune::BCRSMatrix<double>, Dune::BlockVector<double> >(N);
 
 #if HAVE_MPI
   if(ret!=0)

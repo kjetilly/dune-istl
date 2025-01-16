@@ -58,7 +58,7 @@ void runUMFPack(std::size_t N)
   Dune::UMFPack<Matrix> load_solver(mat,"umfpack_decomp",0);
 }
 
-int main(int argc, char** argv) try
+long long main(long long argc, char** argv) try
 {
 #if HAVE_SUITESPARSE_UMFPACK
   std::size_t N=100;

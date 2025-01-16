@@ -18,8 +18,8 @@
 #include "hilbertmatrix.hh"
 
 
-template< template< class, class, class, int ... > class _Prec, class MatrixBlock, class VectorBlock >
-void testDecomposition ( int n )
+template< template< class, class, class, long long ... > class _Prec, class MatrixBlock, class VectorBlock >
+void testDecomposition ( long long n )
 {
   using BlockMatrix = Dune::BCRSMatrix< MatrixBlock >;
   using BlockVector = Dune::BlockVector< VectorBlock >;
@@ -31,7 +31,7 @@ void testDecomposition ( int n )
 
   Prec prec( A, 1.0 );
 
-  for ( int i = 0; i < n; ++i )
+  for ( long long i = 0; i < n; ++i )
   {
     BlockVector x( n ), y( n ), b( n );
     y = 0.0;
@@ -48,7 +48,7 @@ void testDecomposition ( int n )
 }
 
 
-int main(int argc, char** argv)
+long long main(long long argc, char** argv)
 try {
 
   testDecomposition< Dune::SeqILDL, double, double >( 4 );

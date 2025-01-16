@@ -77,7 +77,7 @@ DUNE_NO_DEPRECATED_END
 
     // Test assignment from scalar
     multiVector2 = (double)0.5;
-    multiVector2 = (int)2;
+    multiVector2 = (long long)2;
     multiVector2 = (float)0.5;
 
     // Test the various vector norms
@@ -90,7 +90,7 @@ DUNE_NO_DEPRECATED_END
     std::cout << multiVector.dot(multiVector2) << std::endl;
 }
 
-int main(int argc, char** argv) try
+long long main(long long argc, char** argv) try
 {
   using namespace Indices;
 

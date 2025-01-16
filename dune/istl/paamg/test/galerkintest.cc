@@ -20,21 +20,21 @@
 #include <dune/istl/owneroverlapcopy.hh>
 #include "anisotropic.hh"
 
-template<int BS>
-void testCoarsenIndices(int N)
+template<long long BS>
+void testCoarsenIndices(long long N)
 {
 
-  int procs, rank;
+  long long procs, rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &procs);
 
 
-  typedef Dune::OwnerOverlapCopyCommunication<int> ParallelInformation;
+  typedef Dune::OwnerOverlapCopyCommunication<long long> ParallelInformation;
   typedef typename ParallelInformation::ParallelIndexSet ParallelIndexSet;
   typedef typename ParallelInformation::RemoteIndices RemoteIndices;
   typedef Dune::FieldMatrix<double,BS,BS> Block;
   typedef Dune::BCRSMatrix<Block> BCRSMat;
-  int n;
+  long long n;
 
   ParallelInformation pinfo(MPI_COMM_WORLD);
   ParallelIndexSet& indices = pinfo.indexSet();
@@ -72,7 +72,7 @@ void testCoarsenIndices(int N)
   std::cout << "fine indices: "<<indices << std::endl;
   std::cout << "fine remote: "<<remoteIndices << std::endl;
 
-  int noAggregates, isoAggregates, oneAggregates, skipped;
+  long long noAggregates, isoAggregates, oneAggregates, skipped;
 
   std::tie(noAggregates, isoAggregates, oneAggregates,skipped) = aggregatesMap.buildAggregates(mat, pg, Criterion(), false);
 
@@ -86,7 +86,7 @@ void testCoarsenIndices(int N)
 
   pinfo.buildGlobalLookup(aggregatesMap.noVertices());
 
-  int noCoarseVertices = Dune::Amg::IndicesCoarsener<ParallelInformation,Dune::EnumItem<GridFlag,GridAttributes::copy> >::coarsen(pinfo,
+  long long noCoarseVertices = Dune::Amg::IndicesCoarsener<ParallelInformation,Dune::EnumItem<GridFlag,GridAttributes::copy> >::coarsen(pinfo,
                                                                                                                                   pg,
                                                                                                                                   visitedMap,
                                                                                                                                   aggregatesMap,
@@ -150,10 +150,10 @@ void testCoarsenIndices(int N)
 }
 
 
-int main(int argc, char **argv)
+long long main(long long argc, char **argv)
 {
   MPI_Init(&argc, &argv);
-  int N=5;
+  long long N=5;
 
   if(argc>1)
     N = atoi(argv[1]);

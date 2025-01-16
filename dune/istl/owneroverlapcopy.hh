@@ -34,8 +34,8 @@
 #include <dune/common/parallel/communication.hh>
 #include <dune/istl/matrixmarket.hh>
 
-template<int dim, template<class,class> class Comm>
-void testRedistributed(int s);
+template<long long dim, template<class,class> class Comm>
+void testRedistributed(long long s);
 
 
 namespace Dune {
@@ -89,14 +89,14 @@ namespace Dune {
      * The triple consists of the global index and the local
      * index and an attribute
      */
-    typedef std::tuple<GlobalIdType,LocalIdType,int> IndexTripel;
+    typedef std::tuple<GlobalIdType,LocalIdType,long long> IndexTripel;
     /**
      * @brief A triple describing a remote index.
      *
      * The triple consists of a process number and the global index and
      * the attribute of the index at the remote process.
      */
-    typedef std::tuple<int,GlobalIdType,int> RemoteIndexTripel;
+    typedef std::tuple<long long,GlobalIdType,long long> RemoteIndexTripel;
 
     /**
      * @brief Add a new index triple to the set of local indices.
@@ -169,7 +169,7 @@ namespace Dune {
    *
    * set up communication from known distribution with owner/overlap/copy semantics
    */
-  template <class GlobalIdType, class LocalIdType=int>
+  template <class GlobalIdType, class LocalIdType=long long>
   class OwnerOverlapCopyCommunication
   {
     template<typename M, typename G, typename L>
@@ -612,7 +612,7 @@ namespace Dune {
       if (indexinfo.remoteIndices().size()>0)
       {
         remoteindex_iterator i=indexinfo.remoteIndices().begin();
-        int p = std::get<0>(*i);
+        long long p = std::get<0>(*i);
         RILM modifier = ri.template getModifier<false,true>(p);
         typename PIS::const_iterator pi=pis.begin();
         for ( ; i!=indexinfo.remoteIndices().end(); ++i)
@@ -663,7 +663,7 @@ namespace Dune {
           // If it is possible to query whether MPI_Finalize
           // was called, only free the communicator before
           // calling MPI_Finalize.
-          int wasFinalized = 0;
+          long long wasFinalized = 0;
           MPI_Finalized( &wasFinalized );
           if(!wasFinalized)
 #endif
@@ -689,7 +689,7 @@ namespace Dune {
     mutable IF CopyToAllInterface;
     mutable bool CopyToAllInterfaceBuilt;
     mutable std::vector<double> mask;
-    int oldseqNo;
+    long long oldseqNo;
     GlobalLookupIndexSet* globalLookup_;
     const SolverCategory::Category category_;
     bool freecomm;

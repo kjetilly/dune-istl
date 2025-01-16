@@ -15,19 +15,19 @@
 #if __has_include("slu_sdefs.h")
 extern "C" {
   extern void
-  sgssvx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
+  sgssvx(superlu_options_t *, SuperMatrix *, long long *, long long *, long long *,
          char *, float *, float *, SuperMatrix *, SuperMatrix *,
-         void *, int, SuperMatrix *, SuperMatrix *,
+         void *, long long, SuperMatrix *, SuperMatrix *,
          float *, float *, float *, float *,
-         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, int *);
+         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, long long *);
 
   extern void
-  sCreate_Dense_Matrix(SuperMatrix *, int, int, float *, int,
+  sCreate_Dense_Matrix(SuperMatrix *, long long, long long, float *, long long,
                        Stype_t, Dtype_t, Mtype_t);
   extern void
-  sCreate_CompCol_Matrix(SuperMatrix *, int, int, int, float *,
-                         int *, int *, Stype_t, Dtype_t, Mtype_t);
-  extern int     sQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
+  sCreate_CompCol_Matrix(SuperMatrix *, long long, long long, long long, float *,
+                         long long *, long long *, Stype_t, Dtype_t, Mtype_t);
+  extern long long     sQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 
   extern void    sPrint_CompCol_Matrix(char *, SuperMatrix *);
 }
@@ -36,21 +36,21 @@ extern "C" {
 #if __has_include("slu_ddefs.h")
 extern "C" {
   extern void
-  dgssvx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
+  dgssvx(superlu_options_t *, SuperMatrix *, long long *, long long *, long long *,
          char *, double *, double *, SuperMatrix *, SuperMatrix *,
-         void *, int, SuperMatrix *, SuperMatrix *,
+         void *, long long, SuperMatrix *, SuperMatrix *,
          double *, double *, double *, double *,
-         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, int *);
+         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, long long *);
 
   extern void
-  dCreate_CompCol_Matrix(SuperMatrix *, int, int, int, double *,
-                         int *, int *, Stype_t, Dtype_t, Mtype_t);
+  dCreate_CompCol_Matrix(SuperMatrix *, long long, long long, long long, double *,
+                         long long *, long long *, Stype_t, Dtype_t, Mtype_t);
 
   extern void
-  dCreate_Dense_Matrix(SuperMatrix *, int, int, double *, int,
+  dCreate_Dense_Matrix(SuperMatrix *, long long, long long, double *, long long,
                        Stype_t, Dtype_t, Mtype_t);
 
-  extern int     dQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
+  extern long long     dQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 
   extern void    dPrint_CompCol_Matrix(char *, SuperMatrix *);
 }
@@ -61,23 +61,23 @@ extern "C" {
 
 extern "C" {
   extern void
-  cgssvx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
+  cgssvx(superlu_options_t *, SuperMatrix *, long long *, long long *, long long *,
          char *, float *, float *, SuperMatrix *, SuperMatrix *,
-         void *, int, SuperMatrix *, SuperMatrix *,
+         void *, long long, SuperMatrix *, SuperMatrix *,
          float *, float *, float *, float *,
-         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, int *);
+         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, long long *);
 
 
   extern void
-  cCreate_Dense_Matrix(SuperMatrix *, int, int, ::complex *, int,
+  cCreate_Dense_Matrix(SuperMatrix *, long long, long long, ::complex *, long long,
                        Stype_t, Dtype_t, Mtype_t);
 
 
   extern void
-  cCreate_CompCol_Matrix(SuperMatrix *, int, int, int, ::complex *,
-                         int *, int *, Stype_t, Dtype_t, Mtype_t);
+  cCreate_CompCol_Matrix(SuperMatrix *, long long, long long, long long, ::complex *,
+                         long long *, long long *, Stype_t, Dtype_t, Mtype_t);
 
-  extern int     cQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
+  extern long long     cQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 
   extern void    cPrint_CompCol_Matrix(char *, SuperMatrix *);
 }
@@ -87,22 +87,22 @@ extern "C" {
 #include "slu_dcomplex.h"
 extern "C" {
   extern void
-  zgssvx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
+  zgssvx(superlu_options_t *, SuperMatrix *, long long *, long long *, long long *,
          char *, double *, double *, SuperMatrix *, SuperMatrix *,
-         void *, int, SuperMatrix *, SuperMatrix *,
+         void *, long long, SuperMatrix *, SuperMatrix *,
          double *, double *, double *, double *,
-         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, int *);
+         GlobalLU_t*, mem_usage_t *, SuperLUStat_t *, long long *);
 
 
   extern void
-  zCreate_CompCol_Matrix(SuperMatrix *, int, int, int, doublecomplex *,
-                         int *, int *, Stype_t, Dtype_t, Mtype_t);
+  zCreate_CompCol_Matrix(SuperMatrix *, long long, long long, long long, doublecomplex *,
+                         long long *, long long *, Stype_t, Dtype_t, Mtype_t);
 
   extern void
-  zCreate_Dense_Matrix(SuperMatrix *, int, int, doublecomplex *, int,
+  zCreate_Dense_Matrix(SuperMatrix *, long long, long long, doublecomplex *, long long,
                        Stype_t, Dtype_t, Mtype_t);
 
-  extern int     zQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
+  extern long long     zQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 
   extern void    zPrint_CompCol_Matrix(char *, SuperMatrix *);
 }

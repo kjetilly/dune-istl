@@ -83,7 +83,7 @@ namespace Dune
     };
 
     template<>
-    struct mm_numeric_type<int>
+    struct mm_numeric_type<long long>
     {
       enum {
         /**
@@ -193,7 +193,7 @@ namespace Dune
       }
     };
 
-    template<typename T, int j>
+    template<typename T, long long j>
     struct mm_header_printer<FieldVector<T,j> >
     {
       static void print(std::ostream& os)
@@ -203,7 +203,7 @@ namespace Dune
       }
     };
 
-    template<typename T, int i, int j>
+    template<typename T, long long i, long long j>
     struct mm_header_printer<FieldMatrix<T,i,j> >
     {
       static void print(std::ostream& os)
@@ -237,7 +237,7 @@ namespace Dune
       }
     };
 
-    template<typename T, typename A, int i>
+    template<typename T, typename A, long long i>
     struct mm_block_structure_header<BlockVector<FieldVector<T,i>,A> >
     {
       typedef BlockVector<FieldVector<T,i>,A> M;
@@ -262,7 +262,7 @@ namespace Dune
       }
     };
 
-    template<typename T, typename A, int i, int j>
+    template<typename T, typename A, long long i, long long j>
     struct mm_block_structure_header<BCRSMatrix<FieldMatrix<T,i,j>,A> >
     {
       typedef BCRSMatrix<FieldMatrix<T,i,j>,A> M;
@@ -275,7 +275,7 @@ namespace Dune
     };
 
 
-    template<typename T, int i, int j>
+    template<typename T, long long i, long long j>
     struct mm_block_structure_header<FieldMatrix<T,i,j> >
     {
       typedef FieldMatrix<T,i,j> M;
@@ -284,7 +284,7 @@ namespace Dune
       {}
     };
 
-    template<typename T, int i>
+    template<typename T, long long i>
     struct mm_block_structure_header<FieldVector<T,i> >
     {
       typedef FieldVector<T,i> M;
@@ -672,7 +672,7 @@ namespace Dune
      * This is specialized for PatternDummy. The specialization does not
      * set anything.
      */
-    template<typename D, int brows, int bcols>
+    template<typename D, long long brows, long long bcols>
     struct MatrixValuesSetter
     {
       /**
@@ -716,7 +716,7 @@ namespace Dune
       }
     };
 
-    template<int brows, int bcols>
+    template<long long brows, long long bcols>
     struct MatrixValuesSetter<PatternDummy,brows,bcols>
     {
       template<typename M>
@@ -752,7 +752,7 @@ namespace Dune
       };
     };
 
-    template<typename B, int i, int j, typename A>
+    template<typename B, long long i, long long j, typename A>
     struct mm_multipliers<BCRSMatrix<FieldMatrix<B,i,j>,A> >
     {
       enum {
@@ -769,8 +769,8 @@ namespace Dune
       typedef Dune::BCRSMatrix<T,A> Matrix;
 
       // Number of rows and columns of T, if it is a matrix (1x1 otherwise)
-      constexpr int brows = mm_multipliers<Matrix>::rows;
-      constexpr int bcols = mm_multipliers<Matrix>::cols;
+      constexpr long long brows = mm_multipliers<Matrix>::rows;
+      constexpr long long bcols = mm_multipliers<Matrix>::cols;
 
       // First path
       // store entries together with column index in a separate
@@ -827,7 +827,7 @@ namespace Dune
       }
 
       // Setup the matrix sparsity pattern
-      int nnz=0;
+      long long nnz=0;
       for(typename Matrix::CreateIterator iter=matrix.createbegin();
           iter!= matrix.createend(); ++iter)
       {
@@ -902,17 +902,17 @@ namespace Dune
                               std::istream& istr,
                               size_t lane)
   {
-    for (int i=0; size>0; ++i, --size)
+    for (long long i=0; size>0; ++i, --size)
         istr>>Simd::lane(lane,vector[i]);
   }
 
-  template<typename T, typename A, int entries>
+  template<typename T, typename A, long long entries>
   void mm_read_vector_entries(Dune::BlockVector<Dune::FieldVector<T,entries>,A>& vector,
                               std::size_t size,
                               std::istream& istr,
                               size_t lane)
   {
-    for(int i=0; size>0; ++i, --size) {
+    for(long long i=0; size>0; ++i, --size) {
       Simd::Scalar<T> val;
       istr>>val;
       Simd::lane(lane, vector[i/entries][i%entries])=val;
@@ -1008,8 +1008,8 @@ namespace Dune
     std::size_t nnz, blockrows, blockcols;
 
     // Number of rows and columns of T, if it is a matrix (1x1 otherwise)
-    constexpr int brows = mm_multipliers<Matrix>::rows;
-    constexpr int bcols = mm_multipliers<Matrix>::cols;
+    constexpr long long brows = mm_multipliers<Matrix>::rows;
+    constexpr long long bcols = mm_multipliers<Matrix>::cols;
 
     std::tie(blockrows, blockcols, nnz) = calculateNNZ<brows, bcols>(rows, cols, entries, header);
 
@@ -1037,7 +1037,7 @@ namespace Dune
     else
     {
       for (auto row=entry.begin(); row != entry.end(); ++row, ++rowidx) {
-        int coli=colidx;
+        long long coli=colidx;
         for (auto col = row->begin(); col != row->end(); ++col, ++coli)
           ostr<< rowidx<<" "<<coli<<" "<<*col<<std::endl;
       }
@@ -1047,7 +1047,7 @@ namespace Dune
   // Write a vector entry
   template<typename V>
   void mm_print_vector_entry(const V& entry, std::ostream& ostr,
-                             const std::integral_constant<int,1>&,
+                             const std::integral_constant<long long,1>&,
                              size_t lane)
   {
     ostr<<Simd::lane(lane,entry)<<std::endl;
@@ -1056,19 +1056,19 @@ namespace Dune
   // Write a vector
   template<typename V>
   void mm_print_vector_entry(const V& vector, std::ostream& ostr,
-                             const std::integral_constant<int,0>&,
+                             const std::integral_constant<long long,0>&,
                              size_t lane)
   {
     using namespace MatrixMarketImpl;
 
     // Is the entry a supported numeric type?
-    const int isnumeric = mm_numeric_type<Simd::Scalar<typename V::block_type>>::is_numeric;
+    const long long isnumeric = mm_numeric_type<Simd::Scalar<typename V::block_type>>::is_numeric;
     typedef typename V::const_iterator VIter;
 
     for(VIter i=vector.begin(); i != vector.end(); ++i)
 
       mm_print_vector_entry(*i, ostr,
-                            std::integral_constant<int,isnumeric>(),
+                            std::integral_constant<long long,isnumeric>(),
                             lane);
   }
 
@@ -1078,7 +1078,7 @@ namespace Dune
     return vector.size();
   }
 
-  template<typename T, typename A, int i>
+  template<typename T, typename A, long long i>
   std::size_t countEntries(const BlockVector<FieldVector<T,i>,A>& vector)
   {
     return vector.size()*i;
@@ -1087,15 +1087,15 @@ namespace Dune
   // Version for writing vectors.
   template<typename V>
   void writeMatrixMarket(const V& vector, std::ostream& ostr,
-                         const std::integral_constant<int,0>&)
+                         const std::integral_constant<long long,0>&)
   {
     using namespace MatrixMarketImpl;
     typedef typename V::field_type field_type;
 
     ostr<<countEntries(vector)<<" "<<Simd::lanes<field_type>()<<std::endl;
-    const int isnumeric = mm_numeric_type<Simd::Scalar<V>>::is_numeric;
+    const long long isnumeric = mm_numeric_type<Simd::Scalar<V>>::is_numeric;
     for(size_t l=0;l<Simd::lanes<field_type>(); ++l){
-      mm_print_vector_entry(vector,ostr, std::integral_constant<int,isnumeric>(), l);
+      mm_print_vector_entry(vector,ostr, std::integral_constant<long long,isnumeric>(), l);
     }
   }
 
@@ -1103,7 +1103,7 @@ namespace Dune
   template<typename M>
   void writeMatrixMarket(const M& matrix,
                          std::ostream& ostr,
-                         const std::integral_constant<int,1>&)
+                         const std::integral_constant<long long,1>&)
   {
     ostr<<matrix.N()*MatrixMarketImpl::mm_multipliers<M>::rows<<" "
         <<matrix.M()*MatrixMarketImpl::mm_multipliers<M>::cols<<" "
@@ -1132,10 +1132,10 @@ namespace Dune
     mm_header_printer<M>::print(ostr);
     mm_block_structure_header<M>::print(ostr,matrix);
     // Choose the correct function for matrix and vector
-    writeMatrixMarket(matrix,ostr,std::integral_constant<int,IsMatrix<M>::value>());
+    writeMatrixMarket(matrix,ostr,std::integral_constant<long long,IsMatrix<M>::value>());
   }
 
-  static const int default_precision = -1;
+  static const long long default_precision = -1;
   /**
    * @brief Stores a parallel matrix/vector in matrix market format in a file.
    *
@@ -1150,7 +1150,7 @@ namespace Dune
   template<typename M>
   void storeMatrixMarket(const M& matrix,
                          std::string filename,
-                         int prec=default_precision)
+                         long long prec=default_precision)
   {
     auto [pureFilename, extension] = MatrixMarketImpl::splitFilename(filename);
     std::string rfilename;
@@ -1196,10 +1196,10 @@ namespace Dune
                          std::string filename,
                          const OwnerOverlapCopyCommunication<G,L>& comm,
                          bool storeIndices=true,
-                         int prec=default_precision)
+                         long long prec=default_precision)
   {
     // Get our rank
-    int rank = comm.communicator().rank();
+    long long rank = comm.communicator().rank();
     // Write the local matrix
     auto [pureFilename, extension] = MatrixMarketImpl::splitFilename(filename);
     std::string rfilename;
@@ -1239,12 +1239,12 @@ namespace Dune
     for(Iterator iter = comm.indexSet().begin();
         iter != comm.indexSet().end(); ++iter) {
       file << iter->global()<<" "<<(std::size_t)iter->local()<<" "
-           <<(int)iter->local().attribute()<<" "<<(int)iter->local().isPublic()<<std::endl;
+           <<(long long)iter->local().attribute()<<" "<<(long long)iter->local().isPublic()<<std::endl;
     }
     // Store neighbour information for efficient remote indices setup.
     file<<"neighbours:";
-    const std::set<int>& neighbours=comm.remoteIndices().getNeighbours();
-    typedef std::set<int>::const_iterator SIter;
+    const std::set<long long>& neighbours=comm.remoteIndices().getNeighbours();
+    typedef std::set<long long>::const_iterator SIter;
     for(SIter neighbour=neighbours.begin(); neighbour != neighbours.end(); ++neighbour) {
       file<<" "<< *neighbour;
     }
@@ -1276,7 +1276,7 @@ namespace Dune
     using LocalIndexT = typename OwnerOverlapCopyCommunication<G,L>::ParallelIndexSet::LocalIndex;
     typedef typename LocalIndexT::Attribute Attribute;
     // Get our rank
-    int rank = comm.communicator().rank();
+    long long rank = comm.communicator().rank();
     // load local matrix
     auto [pureFilename, extension] = MatrixMarketImpl::splitFilename(filename);
     std::string rfilename;
@@ -1322,7 +1322,7 @@ namespace Dune
       file >>g;
       std::size_t l;
       file >>l;
-      int c;
+      long long c;
       file >>c;
       bool b;
       file >> b;
@@ -1336,9 +1336,9 @@ namespace Dune
       file>>s;
       if(s!="neighbours:")
         DUNE_THROW(MatrixMarketFormatError, "was expecting the string: \"neighbours:\"");
-      std::set<int> nb;
+      std::set<long long> nb;
       while(!file.eof()) {
-        int i;
+        long long i;
         file >> i;
         nb.insert(i);
       }
