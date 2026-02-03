@@ -54,6 +54,7 @@ install(FILES
    superlu.hh
    superlufunctions.hh
    supermatrix.hh
+   temporaryscopetimer.hh
    umfpack.hh
    vbvector.hh
    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/istl)

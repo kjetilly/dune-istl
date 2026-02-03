@@ -27,41 +27,7 @@
 #include <dune/common/scalarmatrixview.hh>
 
 #include <dune/istl/blocklevel.hh>
-
-#include <chrono>
-#include <fstream>
-#include <string>
-#include <execution>
-#include <algorithm>
-
-#include <execution>
-#include <algorithm>
-#include <ranges>
-
-struct TimeScope {
-  int line;
-  std::string file;
-  std::string function;
-  std::chrono::high_resolution_clock::time_point start;
-  std::string basename;
-
-  TimeScope(const char* n, int l, const char* f, const char* func)
-    : basename(n), line(l), file(f), function(func), start(std::chrono::high_resolution_clock::now())
-  {}
-
-
-  ~TimeScope() {
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> diff = end - start;
-    std::string base = file.substr(file.find_last_of("/\\") + 1);
-    std::string filename = base + "_" + function + "_" + std::to_string(line) + ".txt";
-    std::ofstream out(filename, std::ios_base::app);
-    out << diff.count() << "\n";
-  }
-};
-
-#define TIME_SCOPE(name) TimeScope name(#name, __LINE__, __FILE__, __func__)
-
+#include <dune/istl/temporaryscopetimer.hh>
 
 
 
@@ -1750,6 +1716,7 @@ namespace Dune {
     template<class X, class Y, class F>
     void usmv (F&& alpha, const X& x, Y& y) const
     {
+      TIME_SCOPE(usmv);
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1757,8 +1724,12 @@ namespace Dune {
       if (y.N()!=N()) DUNE_THROW(BCRSMatrixError,"index out of range");
 #endif
       ConstRowIterator endi=end();
-      for (ConstRowIterator i=this->begin(); i!=endi; ++i)
+      auto nRows = this->N(); // or however you get the count
+      #pragma omp parallel for
+      for(size_type r = 0; r < nRows; ++r) {
       {
+        ConstRowIterator i = this->begin() + r;
+
         ConstColIterator endj = (*i).end();
         for (ConstColIterator j=(*i).begin(); j!=endj; ++j)
         {

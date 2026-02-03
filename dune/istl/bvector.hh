@@ -27,6 +27,7 @@
 
 #include "basearray.hh"
 #include "istlexception.hh"
+#include <dune/istl/temporaryscopetimer.hh>
 
 /*! \file
 
