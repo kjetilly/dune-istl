@@ -1614,7 +1614,7 @@ namespace Dune {
     template<class X, class Y>
     void mv (const X& x, Y& y) const
     {
-      TIME_SCOPE(mv);
+      TIME_SCOPE("mv");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1669,7 +1669,7 @@ namespace Dune {
     template<class X, class Y>
     void umv (const X& x, Y& y) const
     {
-      TIME_SCOPE(umv);
+      TIME_SCOPE("umv");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1716,7 +1716,7 @@ namespace Dune {
     template<class X, class Y, class F>
     void usmv (F&& alpha, const X& x, Y& y) const
     {
-      TIME_SCOPE(usmv);
+      TIME_SCOPE("usmv");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
