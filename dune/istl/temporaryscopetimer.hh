@@ -35,6 +35,6 @@ struct TimeScope {
 };
 }
 
-#define TIME_SCOPE(name) ::Dune::util::TimeScope temporarytimer(name, __LINE__, __FILE__, __func__)
+#define TIME_SCOPE(name) // ::Dune::util::TimeScope temporarytimer(name, __LINE__, __FILE__, __func__)
 
 #endif // DUNE_ISTL_TEMPORARYSCOPETIMER_HH

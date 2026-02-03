@@ -805,7 +805,7 @@ namespace Imp {
 
     compressed_block_vector_unmanaged& operator= (const field_type& k)
     {
-      TIME_SCOPE("compressed_block_vector_unmanaged::operator=");
+      //TIME_SCOPE("compressed_block_vector_unmanaged::operator=");
       #pragma omp parallel for
       for (size_type i=0; i<this->n; i++)
         (this->p)[i] = k;
@@ -1106,7 +1106,7 @@ namespace Imp {
     //! assignment
     CompressedBlockVectorWindow& operator= (const CompressedBlockVectorWindow& a)
     {
-      TIME_SCOPE("CompressedBlockVectorWindow::operator=");
+      //TIME_SCOPE("CompressedBlockVectorWindow::operator=");
       // check correct size
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=a.N()) DUNE_THROW(ISTLError,"vector size mismatch");
