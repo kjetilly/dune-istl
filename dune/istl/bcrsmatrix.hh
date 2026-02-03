@@ -28,6 +28,43 @@
 
 #include <dune/istl/blocklevel.hh>
 
+#include <chrono>
+#include <fstream>
+#include <string>
+#include <execution>
+#include <algorithm>
+
+#include <execution>
+#include <algorithm>
+#include <ranges>
+
+struct TimeScope {
+  int line;
+  std::string file;
+  std::string function;
+  std::chrono::high_resolution_clock::time_point start;
+  std::string basename;
+
+  TimeScope(const char* n, int l, const char* f, const char* func)
+    : basename(n), line(l), file(f), function(func), start(std::chrono::high_resolution_clock::now())
+  {}
+
+
+  ~TimeScope() {
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    std::string base = file.substr(file.find_last_of("/\\") + 1);
+    std::string filename = base + "_" + function + "_" + std::to_string(line) + ".txt";
+    std::ofstream out(filename, std::ios_base::app);
+    out << diff.count() << "\n";
+  }
+};
+
+#define TIME_SCOPE(name) TimeScope name(#name, __LINE__, __FILE__, __func__)
+
+
+
+
 /*! \file
  * \brief Implementation of the BCRSMatrix class
  */
@@ -1611,6 +1648,7 @@ namespace Dune {
     template<class X, class Y>
     void mv (const X& x, Y& y) const
     {
+      TIME_SCOPE(mv);
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
@@ -1620,6 +1658,33 @@ namespace Dune {
                                  "Size mismatch: M: " << N() << "x" << M() << " y: " << y.N());
 #endif
       ConstRowIterator endi=end();
+      #if true
+      auto nRows = this->N(); // or however you get the count
+      #pragma omp parallel for
+      for(size_type r = 0; r < nRows; ++r) {
+        y[r]=0;
+        ConstRowIterator i = this->begin() + r;
+            ConstColIterator endj = (*i).end();
+            for (ConstColIterator j=(*i).begin(); j!=endj; ++j)
+            {
+              auto&& xj = Impl::asVector(x[j.index()]);
+              auto&& yi = Impl::asVector(y[i.index()]);
+              Impl::asMatrix(*j).umv(xj, yi);
+            }
+      }
+      #elif false
+      std::for_each(std::execution::par, this->begin(), endi, [&](const auto& i)
+      {
+        y[i.index()]=0;
+        ConstColIterator endj = (*i).end();
+        for (ConstColIterator j=(*i).begin(); j!=endj; ++j)
+        {
+          auto&& xj = Impl::asVector(x[j.index()]);
+          auto&& yi = Impl::asVector(y[i.index()]);
+          Impl::asMatrix(*j).umv(xj, yi);
+        }
+      });
+      #else 
       for (ConstRowIterator i=this->begin(); i!=endi; ++i)
       {
         y[i.index()]=0;
@@ -1631,12 +1696,14 @@ namespace Dune {
           Impl::asMatrix(*j).umv(xj, yi);
         }
       }
+      #endif
     }
 
     //! y += A x
     template<class X, class Y>
     void umv (const X& x, Y& y) const
     {
+      TIME_SCOPE(umv);
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (ready != built)
         DUNE_THROW(BCRSMatrixError,"You can only call arithmetic operations on fully built BCRSMatrix instances");
