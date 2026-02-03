@@ -118,6 +118,8 @@ namespace Imp {
 
     block_vector_unmanaged& operator= (const field_type& k)
     {
+      TIME_SCOPE("block_vector_unmanaged::operator=");
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; i++)
         (*this)[i] = k;
       return *this;
@@ -127,9 +129,11 @@ namespace Imp {
     //! vector space addition
     block_vector_unmanaged& operator+= (const block_vector_unmanaged& y)
     {
+      TIME_SCOPE("block_vector_unmanaged::operator+=");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] += y[i];
       return *this;
     }
@@ -137,9 +141,11 @@ namespace Imp {
     //! vector space subtraction
     block_vector_unmanaged& operator-= (const block_vector_unmanaged& y)
     {
+      TIME_SCOPE("block_vector_unmanaged::operator-=");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] -= y[i];
       return *this;
     }
@@ -147,6 +153,8 @@ namespace Imp {
     //! vector space multiplication with scalar
     block_vector_unmanaged& operator*= (const field_type& k)
     {
+      TIME_SCOPE("block_vector_unmanaged::operator*=");
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] *= k;
       return *this;
     }
@@ -154,6 +162,8 @@ namespace Imp {
     //! vector space division by scalar
     block_vector_unmanaged& operator/= (const field_type& k)
     {
+      TIME_SCOPE("block_vector_unmanaged::operator/=");
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] /= k;
       return *this;
     }
@@ -161,9 +171,11 @@ namespace Imp {
     //! vector space axpy operation
     block_vector_unmanaged& axpy (const field_type& a, const block_vector_unmanaged& y)
     {
+      TIME_SCOPE("block_vector_unmanaged::axpy");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i)
         Impl::asVector((*this)[i]).axpy(a,Impl::asVector(y[i]));
 
@@ -181,11 +193,13 @@ namespace Imp {
     template<class OtherB, class OtherA>
     auto operator* (const block_vector_unmanaged<OtherB,OtherA>& y) const
     {
+      TIME_SCOPE("block_vector_unmanaged::operator*");
       typedef typename PromotionTraits<field_type,typename BlockTraits<OtherB>::field_type>::PromotedType PromotedType;
       PromotedType sum(0);
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) {
         sum += PromotedType(((*this)[i])*y[i]);
       }
@@ -202,12 +216,14 @@ namespace Imp {
     template<class OtherB, class OtherA>
     auto dot(const block_vector_unmanaged<OtherB,OtherA>& y) const
     {
+      TIME_SCOPE("block_vector_unmanaged::dot");
       typedef typename PromotionTraits<field_type,typename BlockTraits<OtherB>::field_type>::PromotedType PromotedType;
       PromotedType sum(0);
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
 
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).dot(Impl::asVector(y[i]));
 
@@ -219,7 +235,9 @@ namespace Imp {
     //! one norm (sum over absolute values of entries)
     typename FieldTraits<field_type>::real_type one_norm () const
     {
+      TIME_SCOPE("block_vector_unmanaged::one_norm");
       typename FieldTraits<field_type>::real_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).one_norm();
       return sum;
@@ -228,7 +246,9 @@ namespace Imp {
     //! simplified one norm (uses Manhattan norm for complex values)
     typename FieldTraits<field_type>::real_type one_norm_real () const
     {
+      TIME_SCOPE("block_vector_unmanaged::one_norm_real");
       typename FieldTraits<field_type>::real_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).one_norm_real();
       return sum;
@@ -244,7 +264,9 @@ namespace Imp {
     //! Square of the two-norm (the sum over the squared values of the entries)
     typename FieldTraits<field_type>::real_type two_norm2 () const
     {
+      TIME_SCOPE("block_vector_unmanaged::two_norm2");
       typename FieldTraits<field_type>::real_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).two_norm2();
       return sum;
@@ -329,8 +351,10 @@ namespace Imp {
     //! dimension of the vector space
     size_type dim () const
     {
+      TIME_SCOPE("block_vector_unmanaged::dim");
       size_type d=0;
 
+      #pragma omp parallel for reduction(+:d)
       for (size_type i=0; i<this->n; i++)
         d += Impl::asVector((*this)[i]).dim();
 
@@ -675,6 +699,7 @@ namespace Imp {
     //! assignment
     BlockVectorWindow& operator= (const BlockVectorWindow& a)
     {
+      TIME_SCOPE("BlockVectorWindow::operator=");
       // check correct size
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=a.N()) DUNE_THROW(ISTLError,"vector size mismatch");
@@ -683,6 +708,7 @@ namespace Imp {
       if (&a!=this)     // check if this and a are different objects
       {
         // copy data
+        #pragma omp parallel for
         for (size_type i=0; i<this->n; i++) this->p[i]=a.p[i];
       }
       return *this;
@@ -779,6 +805,8 @@ namespace Imp {
 
     compressed_block_vector_unmanaged& operator= (const field_type& k)
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::operator=");
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; i++)
         (this->p)[i] = k;
       return *this;
@@ -791,9 +819,11 @@ namespace Imp {
     template<class V>
     compressed_block_vector_unmanaged& operator+= (const V& y)
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::operator+=");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y)) DUNE_THROW(ISTLError,"index set mismatch");
 #endif
+      #pragma omp parallel for
       for (size_type i=0; i<y.n; ++i) this->operator[](y.j[i]) += y.p[i];
       return *this;
     }
@@ -802,9 +832,11 @@ namespace Imp {
     template<class V>
     compressed_block_vector_unmanaged& operator-= (const V& y)
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::operator-=");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y)) DUNE_THROW(ISTLError,"index set mismatch");
 #endif
+      #pragma omp parallel for
       for (size_type i=0; i<y.n; ++i) this->operator[](y.j[i]) -= y.p[i];
       return *this;
     }
@@ -813,9 +845,11 @@ namespace Imp {
     template<class V>
     compressed_block_vector_unmanaged& axpy (const field_type& a, const V& y)
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::axpy");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y)) DUNE_THROW(ISTLError,"index set mismatch");
 #endif
+      #pragma omp parallel for
       for (size_type i=0; i<y.n; ++i)
         Impl::asVector((*this)[y.j[i]]).axpy(a,Impl::asVector(y.p[i]));
       return *this;
@@ -824,6 +858,8 @@ namespace Imp {
     //! vector space multiplication with scalar
     compressed_block_vector_unmanaged& operator*= (const field_type& k)
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::operator*=");
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (this->p)[i] *= k;
       return *this;
     }
@@ -831,6 +867,8 @@ namespace Imp {
     //! vector space division by scalar
     compressed_block_vector_unmanaged& operator/= (const field_type& k)
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::operator/=");
+      #pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (this->p)[i] /= k;
       return *this;
     }
@@ -841,11 +879,13 @@ namespace Imp {
     //! scalar product
     field_type operator* (const compressed_block_vector_unmanaged& y) const
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::operator*");
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y) || !y.includesindexset(*this) )
         DUNE_THROW(ISTLError,"index set mismatch");
 #endif
       field_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += (this->p)[i] * y[(this->j)[i]];
       return sum;
@@ -857,7 +897,9 @@ namespace Imp {
     //! one norm (sum over absolute values of entries)
     typename FieldTraits<field_type>::real_type one_norm () const
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::one_norm");
       typename FieldTraits<field_type>::real_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) sum += (this->p)[i].one_norm();
       return sum;
     }
@@ -865,7 +907,9 @@ namespace Imp {
     //! simplified one norm (uses Manhattan norm for complex values)
     typename FieldTraits<field_type>::real_type one_norm_real () const
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::one_norm_real");
       typename FieldTraits<field_type>::real_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) sum += (this->p)[i].one_norm_real();
       return sum;
     }
@@ -882,7 +926,9 @@ namespace Imp {
     //! Square of the two-norm (the sum over the squared values of the entries)
     typename FieldTraits<field_type>::real_type two_norm2 () const
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::two_norm2");
       typename FieldTraits<field_type>::real_type sum=0;
+      #pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) sum += (this->p)[i].two_norm2();
       return sum;
     }
@@ -962,7 +1008,9 @@ namespace Imp {
     //! dimension of the vector space
     size_type dim () const
     {
+      TIME_SCOPE("compressed_block_vector_unmanaged::dim");
       size_type d=0;
+      #pragma omp parallel for reduction(+:d)
       for (size_type i=0; i<this->n; i++)
         d += (this->p)[i].dim();
       return d;
@@ -1058,6 +1106,7 @@ namespace Imp {
     //! assignment
     CompressedBlockVectorWindow& operator= (const CompressedBlockVectorWindow& a)
     {
+      TIME_SCOPE("CompressedBlockVectorWindow::operator=");
       // check correct size
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=a.N()) DUNE_THROW(ISTLError,"vector size mismatch");
@@ -1066,7 +1115,9 @@ namespace Imp {
       if (&a!=this)     // check if this and a are different objects
       {
         // copy data
+        #pragma omp parallel for
         for (size_type i=0; i<this->n; i++) this->p[i]=a.p[i];
+        #pragma omp parallel for
         for (size_type i=0; i<this->n; i++) this->j[i]=a.j[i];
       }
       return *this;
