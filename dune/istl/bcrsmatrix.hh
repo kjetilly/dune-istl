@@ -1726,7 +1726,7 @@ namespace Dune {
       ConstRowIterator endi=end();
       auto nRows = this->N(); // or however you get the count
       #pragma omp parallel for
-      for(size_type r = 0; r < nRows; ++r) {
+      for(size_type r = 0; r < nRows; ++r) 
       {
         ConstRowIterator i = this->begin() + r;
 
