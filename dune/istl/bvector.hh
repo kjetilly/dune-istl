@@ -119,7 +119,7 @@ namespace Imp {
     block_vector_unmanaged& operator= (const field_type& k)
     {
       TIME_SCOPE("block_vector_unmanaged::operator=");
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; i++)
         (*this)[i] = k;
       return *this;
@@ -133,7 +133,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] += y[i];
       return *this;
     }
@@ -145,7 +145,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] -= y[i];
       return *this;
     }
@@ -154,7 +154,7 @@ namespace Imp {
     block_vector_unmanaged& operator*= (const field_type& k)
     {
       TIME_SCOPE("block_vector_unmanaged::operator*=");
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] *= k;
       return *this;
     }
@@ -163,7 +163,7 @@ namespace Imp {
     block_vector_unmanaged& operator/= (const field_type& k)
     {
       TIME_SCOPE("block_vector_unmanaged::operator/=");
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (*this)[i] /= k;
       return *this;
     }
@@ -175,7 +175,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i)
         Impl::asVector((*this)[i]).axpy(a,Impl::asVector(y[i]));
 
@@ -199,7 +199,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) {
         sum += PromotedType(((*this)[i])*y[i]);
       }
@@ -223,7 +223,7 @@ namespace Imp {
       if (this->n!=y.N()) DUNE_THROW(ISTLError,"vector size mismatch");
 #endif
 
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).dot(Impl::asVector(y[i]));
 
@@ -237,7 +237,7 @@ namespace Imp {
     {
       TIME_SCOPE("block_vector_unmanaged::one_norm");
       typename FieldTraits<field_type>::real_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).one_norm();
       return sum;
@@ -248,7 +248,7 @@ namespace Imp {
     {
       TIME_SCOPE("block_vector_unmanaged::one_norm_real");
       typename FieldTraits<field_type>::real_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).one_norm_real();
       return sum;
@@ -266,7 +266,7 @@ namespace Imp {
     {
       TIME_SCOPE("block_vector_unmanaged::two_norm2");
       typename FieldTraits<field_type>::real_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += Impl::asVector((*this)[i]).two_norm2();
       return sum;
@@ -708,7 +708,7 @@ namespace Imp {
       if (&a!=this)     // check if this and a are different objects
       {
         // copy data
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (size_type i=0; i<this->n; i++) this->p[i]=a.p[i];
       }
       return *this;
@@ -806,7 +806,7 @@ namespace Imp {
     compressed_block_vector_unmanaged& operator= (const field_type& k)
     {
       //TIME_SCOPE("compressed_block_vector_unmanaged::operator=");
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; i++)
         (this->p)[i] = k;
       return *this;
@@ -823,7 +823,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y)) DUNE_THROW(ISTLError,"index set mismatch");
 #endif
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<y.n; ++i) this->operator[](y.j[i]) += y.p[i];
       return *this;
     }
@@ -836,7 +836,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y)) DUNE_THROW(ISTLError,"index set mismatch");
 #endif
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<y.n; ++i) this->operator[](y.j[i]) -= y.p[i];
       return *this;
     }
@@ -849,7 +849,7 @@ namespace Imp {
 #ifdef DUNE_ISTL_WITH_CHECKING
       if (!includesindexset(y)) DUNE_THROW(ISTLError,"index set mismatch");
 #endif
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<y.n; ++i)
         Impl::asVector((*this)[y.j[i]]).axpy(a,Impl::asVector(y.p[i]));
       return *this;
@@ -859,7 +859,7 @@ namespace Imp {
     compressed_block_vector_unmanaged& operator*= (const field_type& k)
     {
       TIME_SCOPE("compressed_block_vector_unmanaged::operator*=");
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (this->p)[i] *= k;
       return *this;
     }
@@ -868,7 +868,7 @@ namespace Imp {
     compressed_block_vector_unmanaged& operator/= (const field_type& k)
     {
       TIME_SCOPE("compressed_block_vector_unmanaged::operator/=");
-      #pragma omp parallel for
+      //#pragma omp parallel for
       for (size_type i=0; i<this->n; ++i) (this->p)[i] /= k;
       return *this;
     }
@@ -885,7 +885,7 @@ namespace Imp {
         DUNE_THROW(ISTLError,"index set mismatch");
 #endif
       field_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i)
         sum += (this->p)[i] * y[(this->j)[i]];
       return sum;
@@ -899,7 +899,7 @@ namespace Imp {
     {
       TIME_SCOPE("compressed_block_vector_unmanaged::one_norm");
       typename FieldTraits<field_type>::real_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) sum += (this->p)[i].one_norm();
       return sum;
     }
@@ -909,7 +909,7 @@ namespace Imp {
     {
       TIME_SCOPE("compressed_block_vector_unmanaged::one_norm_real");
       typename FieldTraits<field_type>::real_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) sum += (this->p)[i].one_norm_real();
       return sum;
     }
@@ -928,7 +928,7 @@ namespace Imp {
     {
       TIME_SCOPE("compressed_block_vector_unmanaged::two_norm2");
       typename FieldTraits<field_type>::real_type sum=0;
-      #pragma omp parallel for reduction(+:sum)
+      //#pragma omp parallel for reduction(+:sum)
       for (size_type i=0; i<this->n; ++i) sum += (this->p)[i].two_norm2();
       return sum;
     }
@@ -1010,7 +1010,7 @@ namespace Imp {
     {
       TIME_SCOPE("compressed_block_vector_unmanaged::dim");
       size_type d=0;
-      #pragma omp parallel for reduction(+:d)
+      //#pragma omp parallel for reduction(+:d)
       for (size_type i=0; i<this->n; i++)
         d += (this->p)[i].dim();
       return d;
@@ -1115,9 +1115,9 @@ namespace Imp {
       if (&a!=this)     // check if this and a are different objects
       {
         // copy data
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (size_type i=0; i<this->n; i++) this->p[i]=a.p[i];
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (size_type i=0; i<this->n; i++) this->j[i]=a.j[i];
       }
       return *this;
